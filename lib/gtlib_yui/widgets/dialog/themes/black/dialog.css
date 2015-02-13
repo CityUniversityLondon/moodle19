@@ -1,0 +1,342 @@
+/**
+/* To set your own theme, first bit of css is always div.[themename]_DW (DW stands for dialogue window
+**/
+
+.black_DW{
+z-index:999;
+font-family:tahoma, verdana, helvetica, arial;
+font-size:0.8em;
+overflow:hidden;
+}
+
+div.black_DW .DialogInner{
+position:relative;
+background-color:#eee;
+height:100%;
+width:auto;
+margin-left:5px;
+margin-right:5px;
+overflow:auto;
+}
+
+div.black_DW .DialogPrompt{
+position:relative;
+margin:0.5em 0.5em 0.5em 0.5em;
+}
+
+div.black_DW .DialogToolbar{
+z-index:1001;
+position:relative;
+height:20px;
+color:#ffffff;
+cursor:default;
+padding-left:10px;
+padding-top:4px;
+}
+
+
+div.black_DW .DialogToolbarTitle{
+position:relative;
+padding-top:4px;
+top:0px;
+left:0px;
+color:#fff;
+font-weight:bold;
+font-size:8pt;
+padding-right:0.5em;
+overflow:hidden;
+white-space:nowrap;
+/*cursor:move;*/
+cursor:default;
+width:100%;
+height:100%;
+}
+
+div.black_DW .DialogBaseBar{
+position:absolute;
+bottom:0px;
+height:24px;
+width:100%;
+cursor:default;
+z-index:1200;
+}
+
+div.black_DW .DialogBaseBarInner{
+position:relative;
+top:0px;
+left:0px;
+color:#fff;
+width:100%;
+height:100%;
+overflow:hidden;
+white-space:nowrap;
+}
+
+div.black_DW .DialogToolbarButtons{
+position:absolute;
+right:14px;
+top:2px;
+width:90px;
+}
+
+div.black_DW .DialogToolbarButton{
+position:relative; float:right;background-repeat: no-repeat; height:23px; width: 22px; z-index:5; margin-top:-3px; margin-bottom:2px; margin-right:-1px;cursor:default
+}
+
+div.black_DW .ButtonClose{
+background-position:center top;
+background-image:url(pix/dialog/button_close.png);
+}
+
+div.black_DW .ButtonClose_hover{
+background-position:center top;
+background-image:url(pix/dialog/button_close_hover.png);
+}
+
+div.black_DW .ButtonMax{
+background-position:center top;
+background-image:url(pix/dialog/button_maximise.png);
+}
+
+div.black_DW .ButtonMax_hover{
+background-position:center top;
+background-image:url(pix/dialog/button_maximise_hover.png);
+}
+
+div.black_DW .ButtonRest{
+background-position:center top;
+background-image:url(pix/dialog/button_restore.png);
+}
+
+div.black_DW .ButtonRest_hover{
+background-position:center top;
+background-image:url(pix/dialog/button_restore_hover.png);
+}
+
+
+div.black_DW .WindowDragExpContainer{
+position:absolute;
+font-size:1px;
+line-height:1px;
+bottom:8px;
+right:10px;
+height:14px;
+width:14px;
+background-image:url('pix/dialog/windrag.png');
+background-repeat:no-repeat;
+z-index:1000;
+}
+
+div.black_DW .WindowDragExpander{
+height:14px;
+width:14px;
+cursor:se-resize;
+}
+
+div.black_DW .DialogButtonContainer{
+position:absolute;
+bottom:2px;
+right:10px;
+margin:0px 10px 5px 10px;
+}
+
+div.black_DW .DialogButton, div.black_DW .DialogButton_hover{
+position:relative;
+display:block;
+float:left;
+margin-right:10px;
+text-decoration:none;
+background-position:left top;
+background-repeat:no-repeat;
+height:15px;
+padding-left:10px;
+cursor:pointer;
+white-space:nowrap;
+}
+
+div.black_DW .DialogButton{
+background-image:url(pix/dialog/button_left_15.png);
+color:#fff;
+}
+
+div.black_DW .DialogButton_hover{
+background-image:url(pix/dialog/button_left_15_hover.png);
+color:#fff;
+}
+
+div.black_DW .DialogButtonInner, div.black_DW .DialogButtonInner_hover{
+position:relative;
+width:auto;
+height:15px;
+margin-left:-5px;
+padding-right:5px;
+background-position:right top;
+background-repeat:no-repeat;
+cursor:pointer;
+font-size:7pt;
+}
+
+div.black_DW .DialogButtonInner{
+background-image:url(pix/dialog/button_right_15.png);
+}
+
+div.black_DW .DialogButtonInner_hover{
+background-image:url(pix/dialog/button_right_15_hover.png);
+}
+
+
+div.lightBoxDarkDiv{
+background-color:#000;
+opacity:.35;
+filter: alpha(opacity=35);
+}
+
+
+div.black_DW .TopLeftCorner, div.black_DW .TopRightCorner, div.black_DW .BotLeftCorner, div.black_DW .BotRightCorner{
+position:absolute;
+width:20px;
+height:24px;
+background-repeat:no-repeat;
+}
+
+div.black_DW .TopLeftCorner{
+top:0px;
+left:0px;
+background-image:url('pix/dialog/corner_top_left.png');
+background-position:top left;
+z-index:2;
+}
+
+div.black_DW .TopRightCorner{
+top:0px;
+right:0px;
+background-image:url('pix/dialog/corner_top_right.png');
+background-position:top right;
+height:24px;
+z-index:2;
+}
+
+div.black_DW .BotLeftCorner{
+bottom:0px;
+left:1px;
+background-image:url('pix/dialog/corner_bot_left.png');
+background-position:bottom left;
+}
+
+div.black_DW .BotRightCorner{
+bottom:0px;
+right:1px;
+background-image:url('pix/dialog/corner_bot_right.png');
+background-position:bottom right;
+}
+
+div.black_DW .LeftEdge{
+position:absolute;
+left:1px;
+top:0px;
+width:5px;
+background-image:url('pix/dialog/edge_left.png');
+background-repeat:repeat-y;
+}
+
+
+
+div.black_DW .RightEdge{
+position:absolute;
+right:1px;
+top:0px;
+width:5px;
+background-image:url('pix/dialog/edge_right.png');
+background-repeat:repeat-y;
+}
+
+div.black_DW .BotEdge{
+position:absolute;
+height:24px;
+background-image:url('pix/dialog/edge_bot.png');
+background-repeat:repeat-x;
+}
+
+div.black_DW .TopEdge{
+position:absolute;
+top:0px; 
+height:24px;
+background-image:url('pix/dialog/edge_top.png');
+background-repeat:repeat-x;
+}
+
+div.black_DW .DialogCoords{
+	position:absolute;
+	bottom:0px;
+	left:0px;
+	width:400px;
+	height:14px;
+	z-index:999;
+}
+
+div.black_DW div.mainLoader{
+    position:absolute;
+    top:40px;
+    width:100%;
+    white-space:no-wrap;
+    text-align:center;
+    color:#005;
+    font-weight:bold;
+}
+
+div.black_DW .SizeX, div.black_DW .SizeY, div.black_DW .PosX, div.black_DW .PosY{
+	position:relative;
+	float:left;
+	margin-right:10px;
+}
+
+div.black_DW div.imgLoaderBar{
+text-align:center;
+background-repeat:no-repeat;
+background-position:center center;
+background-image:url(pix/dialog/progress_bar.gif);
+margin:20px auto;
+width:190px;
+height:14px;
+position:relative;
+}
+
+div.black_DW span.title_error{
+    background-image:url(pix/dialog/error1616.png);
+    padding-left:20px;    
+    background-repeat:no-repeat;
+    background-position:0px;
+}
+
+div.black_DW div.body_error{
+    background-image:url(pix/dialog/error3232.png);
+    padding-left:40px;
+    height:40px;
+    background-repeat:no-repeat;
+    background-position:0px;
+    font-weight:bold;
+}
+
+div.black_DW h1{
+font-size:14pt;
+}
+
+div.black_DW h2{
+font-size:12pt;
+}
+
+div.black_DW h3{
+font-size:11pt;
+}
+
+div.black_DW h4{
+font-size:9pt;
+}
+
+div.black_DW h5{
+font-size:8pt;
+}
+
+div.black_DW h6{
+font-size:7pt;
+}

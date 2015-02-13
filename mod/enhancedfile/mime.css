@@ -1,0 +1,120 @@
+/**********************************/
+/* custom file type images                      */
+/**********************************/
+
+.mimetypes .file, .mimetypes .folder {
+display:block;
+padding-left: 22px !important;
+min-height:18px;
+background-repeat:no-repeat;
+background-position:center left;
+}
+
+.mimetypes .file{
+background-image:url(pix/mimetypes/file.png);
+}
+
+.mimetypes .folder{
+background-image:url(pix/mimetypes/folder.png);
+}
+
+.mimetypes .file.ext_bat{
+background-image:url(pix/mimetypes/file_bat.png) !important;
+}
+
+.mimetypes .file.ext_bmp, .mimetypes .file.ext_png, .mimetypes .file.ext_gif, .mimetypes .file.ext_jpg, .mimetypes .file.ext_wmf {
+background-image:url(pix/mimetypes/file_img.png) !important;
+}
+
+.mimetypes .file.ext_ini, .mimetypes .file.ext_cfg{
+background-image:url(pix/mimetypes/file_ini.png) !important;
+}
+
+.mimetypes .file.ext_htm, .mimetypes .file.ext_html, .mimetypes .file.ext_jsp{
+background-image:url(pix/mimetypes/file_web.png) !important;
+}
+
+.mimetypes .file.ext_php{
+background-image:url(pix/mimetypes/file_php.png) !important;
+}
+
+.mimetypes .file.ext_pdf{
+background-image:url(pix/mimetypes/file_pdf.png) !important;
+}
+
+.mimetypes .file.ext_avi, .mimetypes .file.ext_wmv, .mimetypes .file.ext_asf, .mimetypes .file.ext_asx, .mimetypes .file.ext_divx, .mimetypes .file.ext_mpeg, .mimetypes .file.ext_mpg4, .mimetypes .file.ext_mpeg4, .mimetypes .file.ext_mpg{
+background-image:url(pix/mimetypes/file_vid.png) !important;
+}
+
+.mimetypes .file.ext_mov, .mimetypes .file.ext_qt {
+background-image:url(pix/mimetypes/file_mov.png) !important;
+}
+
+.mimetypes .file.ext_ra, .mimetypes .file.ext_rm, .mimetypes .file.ext_ram, .mimetypes .file.ext_rmvb {
+background-image:url(pix/mimetypes/file_rmn.png) !important;
+}
+
+.mimetypes .file.ext_mdb, .mimetypes .file.ext_accdb, .mimetypes .file.ext_accde, .mimetypes .file.ext_accdt, .mimetypes .file.ext_accdr{
+background-image:url(pix/mimetypes/file_mdb.png) !important;
+}
+
+.mimetypes .file.ext_doc, .mimetypes .file.ext_dot, .mimetypes .file.ext_docx, .mimetypes .file.ext_docm, .mimetypes .file.ext_dotx, .mimetypes .file.ext_dotm{
+background-image:url(pix/mimetypes/file_doc.png) !important;
+}
+
+.mimetypes .file.ext_exe{
+background-image:url(pix/mimetypes/file_exe.png) !important;
+}
+
+.mimetypes .file.ext_xls, .mimetypes .file.ext_xlt, .mimetypes .file.ext_xlsx, .mimetypes .file.ext_xltx{
+background-image:url(pix/mimetypes/file_xls.png) !important;
+}
+
+.mimetypes .file.ext_ppt, .mimetypes .file.ext_pps, .mimetypes .file.ext_pot, .mimetypes .file.ext_pptx, .mimetypes .file.ext_pptm, .mimetypes .file.ext_potx, .mimetypes .file.ext_potm, .mimetypes .file.ext_ppam, .mimetypes .file.ext_ppsx, .mimetypes .file.ext_ppsm{
+background-image:url(pix/mimetypes/file_ppt.png) !important;
+}
+
+.mimetypes .file.ext_zip, .mimetypes .file.ext_7z, .mimetypes .file.ext_tgz, .mimetypes .file.ext_tar, .mimetypes .file.ext_gz, .mimetypes .file.ext_rar {
+background-image:url(pix/mimetypes/file_zip.png) !important;
+}
+
+.mimetypes .file.ext_txt{
+background-image:url(pix/mimetypes/file_txt.png) !important;
+}
+
+.mimetypes .file.ext_odb{
+background-image:url(pix/mimetypes/file_odb.png) !important;
+}
+
+.mimetypes .file.ext_odg{
+background-image:url(pix/mimetypes/file_odg.png) !important;
+}
+
+.mimetypes .file.ext_odp{
+background-image:url(pix/mimetypes/file_odp.png) !important;
+}
+
+.mimetypes .file.ext_ods{
+background-image:url(pix/mimetypes/file_ods.png) !important;
+}
+
+.mimetypes .file.ext_odt{
+background-image:url(pix/mimetypes/file_odt.png) !important;
+}
+
+.mimetypes .file.ext_htm, .mimetypes .file.ext_html{
+background-image:url(pix/mimetypes/file_htm.png) !important;
+}
+
+.mimetypes .file.ext_vnc{
+background-image:url(pix/mimetypes/file_vnc.png) !important;
+}
+
+.mimetypes .file.ext_iso{
+background-image:url(pix/mimetypes/file_iso.png) !important;
+}
+
+
+/**********************************/
+/* END OF custom file type images */
+/**********************************/

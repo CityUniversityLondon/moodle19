@@ -1,0 +1,42 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <h1>Bulk upload feedback</h1>
+     In order to use this feature, you must first download all submissions using the button 'Bulk download all submissions'. The download will be a zip file which, when extracted, will be of the format:<br /><br />
+    <div style="margin-left: 40px;"> [course shortname]_[assignment name]_[assno]<br /></div>
+    <div style="margin-left: 80px;">[lastname]_[firstname]_[userid]<br /></div>
+    <div style="margin-left: 120px;"> filename.ext<br /></div>
+    <div style="margin-left: 80px;"> [lastname]_[firstname]_[userid]</div>
+    <div style="margin-left: 120px;"> filename.ext<br /></div>
+    <div style="margin-left: 80px;">...<br /></div>
+    <div style="margin-left: 80px;"> do_not_edit.txt<br /></div><br />
+    <div style="margin-left: 40px;"> eg:<br /></div><br />
+    <div style="margin-left: 40px;"> EDM116_PRD1_2009_10_Discuss_Life_42</div>
+    <div style="margin-left: 80px;"> Doughty_Amanda_1029<br />
+      <div style="margin-left: 40px;"> myassignment.docx<br /></div> Hughes_Mike_6057<br />
+      <div style="margin-left: 40px;"> myattempt.xls<br /></div> ...<br /> do_not_edit.txt<br /></div><br /><br />You can edit the downloaded files or add extra files to the [lastname]_[firstname]_[userid] directories. But DO NOT rename or add directories.<br /><br />When all feedback is complete, zip up the [course shortname]_[assignment name]_[assno] folder and upload it using this form.<br /><br />The uploaded files will not overwrite the student files. They will be renamed and saved in a sub directory for each user (within the file structure courseid/moddata/assignment):<br /><br />
+    <div style="margin-left: 40px;"> assignmentid<br />
+      <div style="margin-left: 40px;"> userid<br />
+        <div style="margin-left: 40px;"> responses<br />
+          <div style="margin-left: 40px;"> filename_feedback.ext<br /></div> filename.ext<br /></div> userid<br />
+        <div style="margin-left: 40px;"> responses<br />
+          <div style="margin-left: 40px;"> filename_feedback.ext<br /></div>
+          <div style="margin-left: 40px;"> extrafile_feedback.ext<br /></div> filename.ext<br /></div> ...<br /></div></div><br /> eg:<br /><br />
+    <div style="margin-left: 40px;"> 42<br />
+      <div style="margin-left: 40px;"> 1029<br />
+        <div style="margin-left: 40px;"> responses<br />
+          <div style="margin-left: 40px;"> myassignment_feedback.docx<br /></div> myassignment.docx<br /></div> 6057<br />
+        <div style="margin-left: 40px;"> responses<br />
+          <div style="margin-left: 40px;"> myattempt_feedback.xls<br /></div>
+          <div style="margin-left: 40px;"> notes_feedback.txt<br /></div> myattempt.xls<br /></div> ...<br /></div></div><br />IMPORTANT - Do not edit or delete the 'do_not_edit.txt' file. This is used to verify that you are uploading the correct zip file for the current course and assignment.<br /><br />Also note that each time you use this feature, any feedback files will be overwritten, unless you rename them.<br /><br /> eg:<br /><br /> 1. bulk download files as above example<br /> 2. edit myassignment.docx<br /> 3. bulk upload the files<br /><br />This results in a new file .../responses/myassignment_feedback.docx<br /><br /> repeat steps 1 - 3<br /><br />File .../responses/myassignment_feedback.docx is overwritten with the uploaded file.<br /><br /> Now try<br /> 1. bulk download files as above<br /> 2. rename myassignment.docx as myassignment2.docx and edit it<br /> 3. bulk upload the files<br /><br />This results in a new file .../responses/myassignment2_feedback.docx, whilst<br />.../responses/myassignment_feedback.docx is preserved.<br /><br />Once feedback is released. the student will see all files that reside in their corresponding responses directory.<br /><br />So in this example student abbf999 will see:<br />
+    <div style="margin-left: 40px;"> myassignment_feedback.docx<br /> myassignment_feedback2.docx</div>
+  </body>
+</html>

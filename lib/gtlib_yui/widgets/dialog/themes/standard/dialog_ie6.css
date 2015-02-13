@@ -1,0 +1,62 @@
+/* I HATE IE 6 */
+
+div.standard_DW .DialogToolbar{
+height:16px !important;
+margin-right:4px;
+}
+
+div.standard_DW .DialogToolbarTitle{
+height:16px !important;
+}
+
+div.standard_DW .DialogInner{
+/*overflow:scroll !important;*/
+}
+
+div.standard_DW .DialogPrompt{
+position:absolute !important;
+padding:0.5em 0.5em 0.5em 0.5em !important;
+margin:0 0 0 0 !important;
+}
+
+div.standard_DW .BotLeftCorner, div.standard_DW .TopLeftCorner{
+margin-left:1px;
+width:19px;
+}
+
+div.standard_DW .BotRightCorner, div.standard_DW .TopRightCorner{
+margin-right:1px;
+width:19px;
+}
+
+div.standard_DW .ButtonClose{
+background-position:center top;
+background-image:url(images/button_close_ie6.png);
+}
+
+div.standard_DW .ButtonClose_hover{
+background-image:url(images/button_close_hover_ie6.png);
+}
+
+div.standard_DW .ButtonMax{
+background-image:url(images/button_maximise_ie6.png);
+}
+
+div.standard_DW .ButtonMax_hover{
+background-image:url(images/button_maximise_hover_ie6.png);
+}
+
+div.standard_DW .ButtonRest{
+background-image:url(images/button_restore_ie6.png);
+}
+
+div.standard_DW .ButtonRest_hover{
+background-image:url(images/button_restore_hover_ie6.png);
+}
+
+
+div.standard_DW .DialogToolbarButton{
+position:relative; float:right;background-repeat: no-repeat; height:23px; width: 20px; z-index:5; margin-top:-1px; margin-bottom:2px; margin-right:-2px;cursor:default
+}
+
+

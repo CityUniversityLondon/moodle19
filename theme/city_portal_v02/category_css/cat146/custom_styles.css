@@ -1,0 +1,15 @@
+
+#course-view .weekscss .section, #course-view .section td  h1{
+background-image: url(img/h1-bubble-banner.jpg); 
+background-repeat: no-repeat;
+background-color: #00454E;
+background-position:right;
+color: white;
+font-size: 13pt;
+padding:0.35em;
+border: 0px solid #0078A3; 
+-moz-border-radius-topleft: 8px; 
+-moz-border-radius-topright: 0px; 
+-moz-border-radius-bottomright: 0px; 
+-moz-border-radius-bottomleft: 8px;
+}

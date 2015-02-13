@@ -1,0 +1,49 @@
+.gtlib_loader {
+    position:absolute;
+    top:20px;
+    text-align:center;
+    width:100%;
+    z-index:1000;
+}
+
+
+.gtlib_loaderbox{
+    position:relative;
+    width:200px;
+    margin: 4px auto 4px;
+    padding: 2px 2px 2px 2px;
+    border:2px solid #abf;    
+    background-color:#fff;
+    text-align:center;
+}
+
+
+.gtlib_loadertxt{
+    position:relative;
+    margin: 4px auto;
+}
+
+form.gtlib label{
+    position:relative;
+    float:left;
+    font-weight:bold;
+    color:#00a;
+    margin:4px 4px 4px 4px;
+    padding:2px 2px 2px 2px;    
+}
+
+form.gtlib input[readonly], form.gtlib .txtreadonly{
+    position:relative;
+    float:left;
+    border:1px solid #aaa;
+    background-color:#ddd;
+    margin:4px 4px 4px 4px;
+    min-width:3em;
+    padding:2px 2px 2px 2px;
+}
+
+form.gtlib .formrow{
+    position:relative;
+    clear:both;
+    width:auto;
+}

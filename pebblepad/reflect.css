@@ -1,0 +1,251 @@
+/*
+* Reflect export preview styles
+*/
+
+*{
+
+}
+
+wrapper {
+    padding: 0px;
+}
+
+body    {
+    margin: auto;
+    background-color: #FFFFFF;
+    width:960px;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: 0.8em;
+}
+
+.clearer    {
+  clear:both;
+}
+
+.element    {
+    padding: 5px;    
+    border-style:solid;
+    border-width: 1px;
+}
+
+#pebbleHeadElement{
+    background-image: url(./images/reflectheader.png);
+    background-repeat: no-repeat;
+    height: 115px;
+    width: 839px;
+    margin: auto;
+    text-align: center;
+    color: #44F;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.pebbleElement{
+    background-color: #eee;
+    color: #666666;
+    font-size: 0.7em;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding: 5px;
+    border-style: dotted;
+    border-width: 1px;
+    text-align:center;
+}
+
+input{
+    font-size: 1.3em;
+    padding: 5px;
+    margin: 10px;
+}
+
+a img {
+  border:none;
+}
+
+
+/* ----------------- forum preview formatting -----------------------*/
+.forumtopic {
+    width: 99%;
+    background-color: #EFEFEF;
+    margin: auto;
+    border-style: solid;
+    border: 1px #666666 solid;
+    margin-bottom: 15px;
+}
+
+.forumtopictitle{
+   padding: 5px;
+   border-bottom:medium #AACCFF solid;
+   background-color: #EDEDED;
+   color:#333333;
+   font-weight: bold;
+}
+
+.forumtopicowner{
+   font-style: italic;
+}
+
+.forumtopicbody{
+   width:100%;
+   background-color: transparent;
+   padding: 3px 5px 3px 5px;
+}
+
+.forumreply{
+   width: 95%;
+   background-color: #EFEFEF;
+   margin: auto;
+   margin-bottom: 10px;
+   border-style: solid;
+   border: 1px #666666 solid;  
+}
+
+
+/* ----------------- blog preview formatting -----------------------*/
+.blogpost{
+    width: 99%;
+    background-color: #EFEFEF;
+    margin: auto;
+    border-style: solid;
+    border: 1px #666666 solid;
+    margin-bottom: 5px;
+}
+
+.blogtitle{
+    padding: 5px;
+    border-bottom:medium #AACCFF solid;
+    background-color: #EDEDED;
+    color:#333333;
+    font-weight: bold;
+}
+
+.blogcontent{
+    background-color: transparent;
+    padding: 3px 5px 3px 5px;
+}
+
+
+/* ----------------- submission preview formatting -----------------------*/
+
+#wrapper{
+    margin: auto;
+    
+}
+
+.title{    
+    background-color: #EDEDED;
+    color:#333333;
+    font-weight: bold;
+    padding: 5px;
+    text-align:center;
+}
+
+#assignment{
+    
+}
+
+#dates{
+    background-color: #EDEDED;
+    color:#333333;
+    font-weight: bold;
+    padding: 5px;
+}
+
+
+/* ----------------- export opions formatting -----------------------*/
+.datetime{
+    float: right;
+    display:inline;
+    padding: 2px 3px 2px 3px;
+    font-style:italic;
+}
+
+#exportdone{
+    margin: auto;
+    text-align:center;
+    background-color: #FFFFFF;
+    color: #FF6633;
+    font-size:larger;
+    padding: 3px;
+}
+
+#closebtn{
+    margin: auto 15px;
+    padding: 5px;
+    background-color: #EDEDED;
+    font-size: large;
+}
+
+#success{
+    width:80%;
+    margin:auto;
+    text-align: center;
+    background-color:#0B0;
+    color: #FFF;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+#fail{
+    width:80%;
+    margin:auto;
+    text-align: center;
+    background-color:#B00;
+    color: #FFF;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+#zip{
+    width:80%;
+    margin:auto;
+    text-align: center;
+    background-color:#33B;
+    color: #FFF;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+#zip a{
+    color: #FFF;
+}
+
+#zip a:hover{
+    color: #FF0;
+}
+
+/* ---------------------  help window  ---------------------- */
+#pebblehelp{
+    color: #333;
+    width:300px;
+}
+
+h3{
+    padding:0px 5px 0px 5px;
+}
+
+h4{
+    background-color: #DDD;
+    padding:5px;
+}
+
+#pebbleHelp p{
+    width:300px;
+    padding: 0px 5px 0px 5px;
+}
+
+#pebbleHelpFooter{
+    background-color: #EEE;
+    text-align:center;
+    padding: 4px;
+    
+}
+
+#pebbleHelpFooter a{
+    color:#33B;
+}
+
+#pebbleHelpFooter a:hover{
+    color:#F00;
+}

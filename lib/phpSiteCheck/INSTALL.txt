@@ -1,0 +1,30 @@
+phpSiteCheck v.1.0
+
+
+1/ How to install this tool to your server?
+
+Just perform the following easy steps:
+ 1. Unpack phpSiteCheck.zip to your website folder
+ 2. Configure settings at the bottom of sitecheck.inc.php if necessary
+ 3. Add the following PHP code into your PHP page code:
+    include("./sitecheck.inc.php");
+			 
+Also you can check our example.php script. 
+
+
+
+2/ License
+
+Read LICENSE file to check our lisense agreement.
+
+
+
+3/ Contacts
+
+Please do not hesitate to contact us if you have problems with our 
+tool or have any ideas. 
+
+info@phpsitetools.com
+
+http://www.ServiceUptime.com/psc/
+http://www.phpSiteTools.com/psc/

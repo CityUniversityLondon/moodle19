@@ -1,0 +1,342 @@
+/**
+/* To set your own theme, first bit of css is always div.[themename]_DW (DW stands for dialogue window
+**/
+
+.standard_DW{
+z-index:999;
+font-family:tahoma, verdana, helvetica, arial;
+font-size:0.8em;
+overflow:hidden;
+}
+
+div.standard_DW .DialogInner{
+position:relative;
+background-color:#eee;
+height:100%;
+width:auto;
+margin-left:5px;
+margin-right:5px;
+overflow:auto;
+}
+
+div.standard_DW .DialogPrompt{
+position:relative;
+margin:0.5em 0.5em 0.5em 0.5em;
+}
+
+div.standard_DW .DialogToolbar{
+z-index:1001;
+position:relative;
+height:20px;
+color:#ffffff;
+cursor:default;
+padding-left:10px;
+padding-top:4px;
+}
+
+
+div.standard_DW .DialogToolbarTitle{
+position:relative;
+padding-top:4px;
+top:0px;
+left:0px;
+color:#fff;
+font-weight:bold;
+font-size:8pt;
+padding-right:0.5em;
+overflow:hidden;
+white-space:nowrap;
+/*cursor:move;*/
+cursor:default;
+width:100%;
+height:100%;
+}
+
+div.standard_DW .DialogBaseBar{
+position:absolute;
+bottom:0px;
+height:24px;
+width:100%;
+cursor:default;
+z-index:1200;
+}
+
+div.standard_DW .DialogBaseBarInner{
+position:relative;
+top:0px;
+left:0px;
+color:#fff;
+width:100%;
+height:100%;
+overflow:hidden;
+white-space:nowrap;
+}
+
+div.standard_DW .DialogToolbarButtons{
+position:absolute;
+right:14px;
+top:2px;
+width:90px;
+}
+
+div.standard_DW .DialogToolbarButton{
+position:relative; float:right;background-repeat: no-repeat; height:23px; width: 22px; z-index:5; margin-top:-3px; margin-bottom:2px; margin-right:-1px;cursor:default
+}
+
+div.standard_DW .ButtonClose{
+background-position:center top;
+background-image:url(images/button_close.png);
+}
+
+div.standard_DW .ButtonClose_hover{
+background-position:center top;
+background-image:url(images/button_close_hover.png);
+}
+
+div.standard_DW .ButtonMax{
+background-position:center top;
+background-image:url(images/button_maximise.png);
+}
+
+div.standard_DW .ButtonMax_hover{
+background-position:center top;
+background-image:url(images/button_maximise_hover.png);
+}
+
+div.standard_DW .ButtonRest{
+background-position:center top;
+background-image:url(images/button_restore.png);
+}
+
+div.standard_DW .ButtonRest_hover{
+background-position:center top;
+background-image:url(images/button_restore_hover.png);
+}
+
+
+div.standard_DW .WindowDragExpContainer{
+position:absolute;
+font-size:1px;
+line-height:1px;
+bottom:8px;
+right:10px;
+height:14px;
+width:14px;
+background-image:url('images/windrag.png');
+background-repeat:no-repeat;
+z-index:1000;
+}
+
+div.standard_DW .WindowDragExpander{
+height:14px;
+width:14px;
+cursor:se-resize;
+}
+
+div.standard_DW .DialogButtonContainer{
+position:absolute;
+bottom:2px;
+right:10px;
+margin:0px 10px 5px 10px;
+}
+
+div.standard_DW .DialogButton, div.standard_DW .DialogButton_hover{
+position:relative;
+display:block;
+float:left;
+margin-right:10px;
+text-decoration:none;
+background-position:left top;
+background-repeat:no-repeat;
+height:15px;
+padding-left:10px;
+cursor:pointer;
+white-space:nowrap;
+}
+
+div.standard_DW .DialogButton{
+background-image:url(images/button_left_15.png);
+color:#000;
+}
+
+div.standard_DW .DialogButton_hover{
+background-image:url(images/button_left_15_hover.png);
+color:#fff;
+}
+
+div.standard_DW .DialogButtonInner, div.standard_DW .DialogButtonInner_hover{
+position:relative;
+width:auto;
+height:15px;
+margin-left:-5px;
+padding-right:5px;
+background-position:right top;
+background-repeat:no-repeat;
+cursor:pointer;
+font-size:7pt;
+}
+
+div.standard_DW .DialogButtonInner{
+background-image:url(images/button_right_15.png);
+}
+
+div.standard_DW .DialogButtonInner_hover{
+background-image:url(images/button_right_15_hover.png);
+}
+
+
+div.lightBoxDarkDiv{
+background-color:#000;
+opacity:.35;
+filter: alpha(opacity=35);
+}
+
+
+div.standard_DW .TopLeftCorner, div.standard_DW .TopRightCorner, div.standard_DW .BotLeftCorner, div.standard_DW .BotRightCorner{
+position:absolute;
+width:20px;
+height:24px;
+background-repeat:no-repeat;
+}
+
+div.standard_DW .TopLeftCorner{
+top:0px;
+left:0px;
+background-image:url('images/corner_top_left.png');
+background-position:top left;
+z-index:2;
+}
+
+div.standard_DW .TopRightCorner{
+top:0px;
+right:0px;
+background-image:url('images/corner_top_right.png');
+background-position:top right;
+height:24px;
+z-index:2;
+}
+
+div.standard_DW .BotLeftCorner{
+bottom:0px;
+left:1px;
+background-image:url('images/corner_bot_left.png');
+background-position:bottom left;
+}
+
+div.standard_DW .BotRightCorner{
+bottom:0px;
+right:1px;
+background-image:url('images/corner_bot_right.png');
+background-position:bottom right;
+}
+
+div.standard_DW .LeftEdge{
+position:absolute;
+left:1px;
+top:0px;
+width:5px;
+background-image:url('images/edge_left.png');
+background-repeat:repeat-y;
+}
+
+
+
+div.standard_DW .RightEdge{
+position:absolute;
+right:1px;
+top:0px;
+width:5px;
+background-image:url('images/edge_right.png');
+background-repeat:repeat-y;
+}
+
+div.standard_DW .BotEdge{
+position:absolute;
+height:24px;
+background-image:url('images/edge_bot.png');
+background-repeat:repeat-x;
+}
+
+div.standard_DW .TopEdge{
+position:absolute;
+top:0px; 
+height:24px;
+background-image:url('images/edge_top.png');
+background-repeat:repeat-x;
+}
+
+div.standard_DW .DialogCoords{
+	position:absolute;
+	bottom:0px;
+	left:0px;
+	width:400px;
+	height:14px;
+	z-index:999;
+}
+
+div.standard_DW div.mainLoader{
+    position:absolute;
+    top:40px;
+    width:100%;
+    white-space:no-wrap;
+    text-align:center;
+    color:#005;
+    font-weight:bold;
+}
+
+div.standard_DW .SizeX, div.standard_DW .SizeY, div.standard_DW .PosX, div.standard_DW .PosY{
+	position:relative;
+	float:left;
+	margin-right:10px;
+}
+
+div.standard_DW div.imgLoaderBar{
+text-align:center;
+background-repeat:no-repeat;
+background-position:center center;
+background-image:url(images/progress_bar.gif);
+margin:20px auto;
+width:190px;
+height:14px;
+position:relative;
+}
+
+div.standard_DW span.title_error{
+    background-image:url(images/error1616.png);
+    padding-left:20px;    
+    background-repeat:no-repeat;
+    background-position:0px;
+}
+
+div.standard_DW div.body_error{
+    background-image:url(images/error3232.png);
+    padding-left:40px;
+    height:40px;
+    background-repeat:no-repeat;
+    background-position:0px;
+    font-weight:bold;
+}
+
+div.standard_DW h1{
+font-size:14pt;
+}
+
+div.standard_DW h2{
+font-size:12pt;
+}
+
+div.standard_DW h3{
+font-size:11pt;
+}
+
+div.standard_DW h4{
+font-size:9pt;
+}
+
+div.standard_DW h5{
+font-size:8pt;
+}
+
+div.standard_DW h6{
+font-size:7pt;
+}

@@ -1,0 +1,37 @@
+.headermenu, .headerimage, .accessibility, .navbutton {
+  display: none;
+}
+#footer, #left-column, #right-column {
+  display: none;
+}
+#middle-column {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+div#page {
+  margin: 0;
+  padding: 0;
+}
+body.nolayouttable div#content div.i3 {
+  padding: 0;
+}
+.ims-nav-bar {
+  display: none;
+}
+#ims-menudiv {
+  display: none;
+}
+#ims-contentframe {
+  left: 0px;
+  width: 100%;
+}
+#course-view .section .right {
+  display: none;
+}
+div.bb, div.bt {
+  display: none;
+}
+#course-view .section .spacer {
+  display: none;
+}

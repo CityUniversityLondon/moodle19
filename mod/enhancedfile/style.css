@@ -1,0 +1,183 @@
+@CHARSET "ISO-8859-1";
+
+#filequeuecontainer{
+	position:relative;
+	display:inline;
+	width:100%;
+	padding:1px 1px 1px 1px;
+}
+
+#filequeuecontainer caption{
+	font-size:1.2em;
+	font-weight:bold;	
+}
+
+#filequeuecontainer th, #filequeuecontainer td{
+	padding:0.5em 0.5em 0.5em 0.5em;
+}
+
+#filequeuecontainer .error{
+	background-image:url(pix/alert.png);
+	background-repeat:no-repeat;
+	background-position:center left;
+	padding-left:20px;
+	border:0 none transparent;
+	color:#f00;
+	font-size:1em;
+}
+
+#filequeuecontainer .skip{
+	background-image:url(pix/cancel.png);
+	background-repeat:no-repeat;
+	background-position:center left;
+	padding-left:20px;
+	border:0 none transparent;
+	color:#f00;
+	font-size:1em;
+}
+
+.progbar{
+    background-image:url(pix/progress.png);
+    background-repeat:repeat-x;
+}
+
+.progress_active{
+	background-image:url(pix/progress_active.png);
+	background-repeat:repeat-x;
+}
+
+.progress_uploaded{
+    background-image:url(pix/progress_uploaded.png);
+    background-repeat:repeat-x;
+}
+
+.progress_error{
+    background-image:url(pix/progress_error.png);
+    background-repeat:repeat-x;
+}
+
+.progress_complete{
+    background-image:url(pix/progress_complete.png);
+    background-repeat:repeat-x;
+}
+
+.yui-dt table{
+	width:100%;
+	max-width:100%;
+}
+
+.yui-dt-resizerliner{
+	border-right:1px solid #aaa;
+}
+
+.yui-dt table{
+	font-size:0.8em;
+}
+
+.yui-dt table th{
+    background-image:url(pix/gradient.jpg);
+    background-repeat:repeat-x;
+	background-color:#E1E1DF !important;	
+}
+
+.yui-dt table th a{
+	color:#000;
+}
+
+.action_cancel{
+	position:relative;
+	display:block;
+	width:16px;
+	height:16px;
+	border:0px none transparent;
+    background-image:url(pix/edit_remove.png);
+    background-repeat:no-repeat;	
+}
+
+ul.mimetypes{
+	list-style-type:none;
+}
+
+ul.mimetypes li {
+	display:block;
+	clear:both;
+	margin-top:4px;
+	margin-bottom:4px;
+	padding-top:4px;
+	padding-bottom:4px;
+}
+
+.warning.alert{
+	font-style:normal;
+	font-weight:bold;
+    display:block;
+    min-height:26px;
+    padding-left: 28px !important;	
+    background-repeat:no-repeat;
+    background-position:center left;
+    background-image:url(pix/alert_med.png);
+}
+
+div.file_warning{
+	display:block;
+    min-height:18px;
+    padding-left: 22px !important;
+}
+
+div.file_warning, div.file_upfailed, div.file_upok{
+	background-repeat:no-repeat;
+	background-position:center left;
+    background-image:url(pix/alert.png);    	
+}
+
+div.file_upfailed, div.file_upok{
+	display:block;
+	float:left;
+	margin-right:2px;
+	width:16px;
+	height:16px;
+}
+
+.uploadedfiles div.file{
+	display:block;
+	float:left;
+}
+
+div.file_upfailed{
+	background-image:url(pix/fail.png); 
+}
+
+div.file_upok{
+    background-image:url(pix/success.png); 
+}
+
+div.optiontxt{
+	background-color:#fff;
+	font-weight:bold;
+	border:1px solid #ccc;
+	padding:0.5em 0.5em 0.5em 0.5em;
+	margin:0.5em 0.5em 0.5em 0.5em;
+	text-align:center;
+}
+
+div.loader{
+    background-image:url(pix/loader_sm.gif);
+    background-position: center left;
+    background-repeat:no-repeat;
+    min-height:16px;
+    min-width:16px;
+    padding-left:18px;
+}
+
+.filethumbcont{
+    border: 4px solid #fff;
+    background-color:#000;
+}
+
+#hoverthumb{
+    border: 4px solid #fff;
+    margin:6px 6px 6px 6px;
+     -moz-box-shadow: 0px 2px 4px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 0px 2px 4px rgba(0,0,0,0.5);
+     box-shadow: 0px 2px 4px rgba(0,0,0,0.5);
+}

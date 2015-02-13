@@ -1,0 +1,42 @@
+
+#course-view .weekscss .section, #course-view .section td  h1{
+background-image: url(img/h1-banner.jpg); 
+background-repeat: no-repeat;
+background-color: #401766;
+background-position:right;
+color: white;
+font-size: 13pt;
+padding:0.35em;
+border: 0px solid #401766; 
+-moz-border-radius-topleft: 8px; 
+-moz-border-radius-topright: 0px; 
+-moz-border-radius-bottomright: 0px; 
+-moz-border-radius-bottomleft: 8px;
+}
+a:link{
+
+color: #401766;
+}
+
+a{
+
+color: #401766;
+}
+
+a:visited  
+
+{
+
+color: #401766;
+
+}
+
+ .sideblock .header, .sideblock .header h2  
+
+{
+
+color: #401766;
+
+}
+
+ 

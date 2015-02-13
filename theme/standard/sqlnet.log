@@ -1,0 +1,18 @@
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.4.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.4.0 - Production
+  Time: 09-MAR-2010 10:33:39
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: TNS:operation timed out
+    ns secondary err code: 12606
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+  Client address: <unknown>

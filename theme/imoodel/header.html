@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<!--imoodel[en]: Delistavrou Constantinos' [MAI 09/07] UOM Dep/t of Applied Informatics MSc thesis (c) 2008.-->
+<!--imoodel[el]: Διπλωματική εργασία του Δελησταύρου Κωνσταντίνου [MAI 09/07] για το ΠΜΣ του Τμ. Εφαρμοσμένης Πληροφορικής του Πανεπιστημίου Μακεδονίας (c) 2008.-->
+
+<!--imoodel[en]: If you want this moodle installation to be used by other LAN computers, change [ $CFG- >wwwroot ] value to [ $CFG- >wwwroot   = 'http://<this computer's ip address>/moodle'; ] in <moodle root>/config.php and disable this computer's firewall.-->
+<!--imoodel[el]: Αν θέλετε η παρούσα εγκατάσταση moodle να χρησιμοποιηθεί από άλλους υπολογιστές-πελάτες στο ίδιο τοπικό δίκτυο, αλλάξτε την τιμή [ $CFG- >wwwroot ] σε [ $CFG- >wwwroot   = 'http://<η διεύθυνση ip αυτού του υπολογιστή>/moodle'; ] στο <ριζικός κατάλογος του moodle>/config.php και απενεργοποιήστε το firewall του υπολογιστή.-->
+
+<?php 
+    //imoodel[en]: System definitions inclusion.
+	//imoodel[el]: Συμπερίληψη των ορισμών συστήματος.
+    require_once("$CFG->dirroot/config.php");
+?>
+
+<html<?php echo $direction ?>>
+<head>
+    <?php echo $meta ?>
+    <meta name="keywords" content="moodle, <?php echo $title ?> " />
+    <title><?php echo $title ?></title>
+    <link rel="shortcut icon" href="<?php echo $CFG->themewww .'/'. current_theme() ?>/favicon.ico" />
+    <?php include("$CFG->javascript"); ?>
+	
+	<!--imoodel[en]: imoodel functionality inclusion only for registered and connected users.-->
+    <!--imoodel[el]: Συμπερίληψη/ενεργοποίηση της imoodel λειτουργικότητας μόνο για κατοχυρωμένους και συνδεδεμένους χρήστες.-->
+    
+	<?php
+    
+		//imoodel[en]: Attach main imoodle code when the user is logged-in and he/she is NOT a guest.
+        //imoodel[el]: Προσάρτηση του κυρίως κώδικα του imoodle όταν ο χρήστης έχει συνδεθεί και ΔΕΝ είναι επισκέπτης.
+		if (    ($USER->id != 0) && ($USER->id != 1)
+		     && ($USER->username != "") && ($USER->username != "guest")) {
+		    require_once("imoodel_main.php");
+		}
+	?>
+
+</head>
+
+<body<?php
+    echo " $bodytags";
+    if ($focus) {
+        echo " onload=\"setfocus()\"";
+    }
+    ?>>
+
+<div id="page">
+
+<?php //Accessibility: 'headermain' is now H1, see theme/standard/styles_layout.css: .headermain
+      if ($home) {  // This is what gets printed on the home page only
+?>
+    <?php print_container_start(true, '', 'header-home'); ?>
+        <h1 class="headermain"><?php echo $heading ?></h1>
+        <div class="headermenu"><?php echo $menu ?></div>
+    <?php print_container_end(); ?>
+<?php } else if ($heading) {  // This is what gets printed on any other page with a heading
+?>
+    <?php print_container_start(true, '', 'header'); ?>
+        <h1 class="headermain"><?php echo $heading ?></h1>
+        <div class="headermenu"><?php echo $menu ?></div>
+    <?php print_container_end(); ?>
+<?php } ?>
+<?php //Accessibility: breadcrumb trail/navbar now a DIV, not a table.
+      if ($navigation) { // This is the navigation bar with breadcrumbs  ?>
+    <div class="navbar clearfix">
+        <div class="breadcrumb"><?php print_navigation($navigation); ?></div>
+        <div class="navbutton"><?php echo $button; ?></div>
+    </div>
+<?php } else if ($heading) { // If no navigation, but a heading, then print a line
+?>
+        <hr />
+<?php } ?>
+    <!-- END OF HEADER -->
+    <?php print_container_start(false, '', 'content'); ?>
+    

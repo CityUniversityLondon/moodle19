@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html<?php echo $direction ?>>
+<head>
+    <?php 
+      echo $meta;    
+      // allow course to have it's own stylesheet called custom_styles.css
+      // css file and any images must be in the course file store 'css' folder
+      // e.g. if custom_styles.css refers to img/pic.jpg then you must ensure 
+      // the folder css/img/ contains a file called pic.jpg
+      // php insertion prevents broken link error if file not there
+      $localfile = $CFG->dataroot . '/'. $COURSE->id . '/css/custom_styles.css';
+      $httpfile = $CFG->wwwroot . '/file.php/' . $COURSE->id . '/css/custom_styles.css';
+      if (is_file($localfile)) {
+        echo "\n<link href=\"$httpfile\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />\n";
+      }      
+    ?>
+    
+    <meta name="keywords" content="moodle, <?php echo $title ?> " />
+    <title><?php echo $title ?></title>
+    <link rel="shortcut icon" href="<?php echo $CFG->httpsthemewww .'/'. current_theme() ?>/favicon.ico" />
+    <!-- one-line patch to allow custom font sizes from block_accessibility -->
+    <link title="access_stylesheet" rel="stylesheet" href="<?php if($CFG->wwwroot != $CFG->httpswwwroot) {echo $CFG->httpswwwroot;} else {echo $CFG->wwwroot;} ?>/blocks/accessibility/userstyles.php" type="text/css" />
+    <?php 
+        include("$CFG->javascript");
+        include($CFG->themedir.'/custom_corners/js/js.php');
+        
+        // check if page is opened within a popup window
+        if (function_exists('is_in_popup')) {
+            $inpopup = is_in_popup();
+        } else {
+            $inpopup = false;
+        }
+        
+        // get class list
+        preg_match('/class="([^"]*)"/i', $bodytags, $classes);
+        $classlist = explode (' ', $classes[1]);
+                
+        // add "inpopup" or "notinpopup" to class list
+        if ($inpopup) {
+            array_push($classlist, 'inpopup');
+        } else {
+            array_push($classlist, 'notinpopup');
+        }
+        
+        //replace classlist with new one
+        $bodytags = str_replace($classes[0], 'class="'.implode(' ', $classlist).'"', $bodytags);
+
+        // Custom bit to construct special pseudo_url variable
+        // need this because Moodle URLs not very meaningful
+        // aim is to construct a pseudo URL alongs lines of
+        // moodleroot/course/role/topic/task/taskid   
+        // that we can send to Google Analytics in script below.
+        // Note use of Moodle DML functions as good practise
+        // http://docs.moodle.org/en/Development:DML_functions_-_pre_2.0
+        // but code will need updating for Moodle 2.0 
+        // see http://docs.moodle.org/en/Development:DML_functions
+        
+        // get course shortname, could also use id, fullname, idnumber although latter not always given
+        $gaCourse =  $COURSE->shortname; 
+     
+        // get role of user for the course context (level=50)   
+        $gaUserID = $USER->id;
+        $gaRole = 'unknownrole'; //default
+        if ($gaUserID > 0) { 
+          // get contextID for this course first
+          $gaQry = get_record('context','instanceid',$COURSE->id,'contextlevel','50');
+          $gaContextID = $gaQry->id; 
+          // then count records to see if user has an entry in role_assignments table
+          $gaQryCnt = count_records('role_assignments','contextid',$gaContextID,'userid',$USER->id);
+          // note a user may have multiple roles in db so get highest one  
+          if ($gaQryCnt > 0) { // ok, there are entries so get role
+            $gaQry = get_records_sql("SELECT * FROM m_role_assignments WHERE contextid='" . $gaContextID . "' AND userid='" . $USER->id . "' ORDER BY roleid ASC",0,1);
+            $gaQryObj = $gaQry[key($gaQry)]; // get key for 1st element in associative array
+            $gaQry = get_record('role','id',$gaQryObj->roleid);  // get role name
+            $gaRole = $gaQry->shortname;
+          } else { // no specific course role, then what are they then?
+            if ($gaUserID == 1) $gaRole = 'guest';  // assuming standard Moodle setup!
+            if ($gaUserID == 2) $gaRole = 'superadmin';  // assuming standard Moodle setup!
+            // is user a Moodle admin?
+            $gaQryCnt2 = count_records('role_assignments','contextid',1,'userid',$USER->id);
+            if ($gaQryCnt2 > 0) $gaRole = 'superadmin';
+          }
+        } else {
+          $gaRole = 'notloggedin';
+        }
+        
+        $gaTopic = '0'; // can't work out how to get topic
+        // we could just look for topic or section in args but most of time this won't work
+        //if ( ($gaTopic == '') && (isset($_REQUEST['topic']))) $gaTopic = $_REQUEST['topic'];
+        //if ( ($gaTopic == '') && (isset($_REQUEST['section']))) $gaTopic = $_REQUEST['section'];
+        
+        // if still no topicID then set to 0
+        if ($gaTopic == '') $gaTopic = '0';
+        
+        // work out what major task is being done by looking at raw URL
+        $gaPagePath = $CFG->pagepath;
+        $gaTask = $gaPagePath;
+        $gaURLParts = explode('/',$gaPagePath); 
+        $gaURLPartsCount = count($gaURLParts); 
+        // we're interested in array elements 3 and above, the bits after Moodle root URL
+        // so if URL is http://mdl1ap0.vlearn2.city.ac.uk/course/view.php?id=102
+        // element 3 = 'course', 4 = 'view.php'   (except for some admin pages, see below))
+        // following bit checks down the path and grabs relevent keywords to build task
+        if ($gaURLPartsCount > 3) {
+          $gaTask = $gaURLParts[3];
+          if ($gaTask == '') $gaTask = 'home';
+        }
+        if ($gaURLPartsCount > 4) { 
+          if ($gaURLParts[4] != '') {
+            if (strpos($gaURLParts[4],'.') > 0) {
+              $gaTask = $gaTask . '-' . substr($gaURLParts[4],0,strpos($gaURLParts[4],'.'));
+            } else {
+              $gaTask = $gaTask . '-' . $gaURLParts[4];
+            }
+          }
+        }
+        if ($gaURLPartsCount > 5) {
+          if ($gaURLParts[5] != '') {
+            if (strpos($gaURLParts[5],'.') > 0) {
+              $gaTask = $gaTask . '-' . substr($gaURLParts[5],0,strpos($gaURLParts[5],'.'));
+            } else {
+              $gaTask = $gaTask . '-' . $gaURLParts[5];
+            }
+          }
+        }
+        // fix for moodle bug where admin urls are not getting reported correctly in $CFG->pagepath
+        // http://tracker.moodle.org/browse/MDL-20342
+        $gaTask = str_replace('/','-',$gaTask);
+        
+        $gaTaskID = '';
+        // get id number if page has id=xx argument
+        if (isset($_REQUEST['id'])) $gaTaskID = $_REQUEST['id'];
+        
+        // if $gaTaskID still 0 try looking for mod id e.g. mod/forum/post.php?forum=7 
+        // look for $_REQUEST['forum'] and use this to get id number
+        if ($gaURLPartsCount >= 5) {
+          if ($gaURLParts[3] == 'mod') {
+            if (isset($_REQUEST[$gaURLParts[4]])) {
+              $gaTaskID =  $_REQUEST[$gaURLParts[4]];
+              if ($gaTaskID == '') {   // still no id and forum then try f=xx
+                if (($gaURLParts[4] == 'forum') && (isset($_REQUEST['f']))) $gaTaskID =  $_REQUEST['f'];
+              }
+            }
+          }
+        }
+        // still no taskID? try update=xx from editing resource
+        if ( ($gaTaskID == '') && (isset($_REQUEST['update']))) $gaTaskID = $_REQUEST['update'];
+        
+        // if still no taskID then set to 0
+        if ($gaTaskID == '') $gaTaskID = '0';
+        
+        // now construct pseudo URL using . separator    
+        $pseudoUrl = $gaCourse . '.' . $gaRole . '.' . $gaTopic . '.' . $gaTask . '.' . $gaTaskID;
+        $pseudoUrl = strtolower($pseudoUrl); // all lower case for neatness
+        
+        // set GA account to Mike's test if on dev server - otherwsie GA will mix up hits from dev and live
+        if ($_SERVER['SERVER_NAME'] == 'mdl1ap0.vlearn2.city.ac.uk') {
+          $gaAccount = 'UA-10591949-1';
+        } else {
+          $gaAccount = 'UA-1851757-10';
+        }
+          
+    ?>
+    
+    
+    <script>     
+      // Google Analytics code as a function instead of inline
+      function gaSSDSLoad (acct,pseudo_url) {  
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        var s,pageTracker;  
+        s = document.createElement('script');  
+        s.src = gaJsHost + 'google-analytics.com/ga.js';  
+        s.type = 'text/javascript';  
+        s.onloadDone = false;  
+        function init () { 
+          try { pageTracker = _gat._getTracker(acct); } catch (err) {}
+          pageTracker._trackPageview(pseudo_url);
+        }
+        s.onload = function () {    
+          s.onloadDone = true;    
+          init();  
+        };
+        s.onreadystatechange = function() {    
+          if (('loaded' === s.readyState || 'complete' === s.readyState) && !s.onloadDone) {      
+            s.onloadDone = true;      
+            init();    
+          }  
+        };   
+      document.getElementsByTagName('head')[0].appendChild(s);
+      }  
+      // now run script using City Uni GA account # and pseudo_url
+      window.onload = gaSSDSLoad ("<? echo $gaAccount; ?>","<? echo $pseudoUrl; ?>");    
+    </script>
+
+</head>
+
+<body<?php
+    echo " $bodytags";
+    if ($focus) {
+        echo " onload=\"setfocus()\"";
+    };
+    ?>>
+    <?php if(!empty($infooutput)) { ?>
+        <div id="infowrapper"><div id="infooverlay"><?php echo $infooutput; ?></div></div>
+    <?php } ?>
+<div id="page">
+
+<?php if (!$inpopup) { 
+    if ($home) {  // This is what gets printed on the home page only
+?>
+    <?php print_container_start(true, '', 'header-home'); ?>
+        <img border="0" alt="City University Logo" src="<?php echo $CFG->themewww .'/'. current_theme() ?>/pix/logo.gif" align="left" />
+        <h1 class="headermain"><?php echo $heading ?></h1>
+        <div class="headermenu"><?php echo $menu ?></div>
+    <?php print_container_end(); ?>
+<?php } else if ($heading) {  // This is what gets printed on any other page with a heading
+?>
+    <?php print_container_start(true, '', 'header'); ?>
+        <a href="/"><img border="0" alt="City University Logo" src="<?php echo $CFG->themewww .'/'. current_theme() ?>/pix/logo.gif" align="left" /></a>
+        <h1 class="headermain"><?php echo $heading ?></h1>
+        <div class="headermenu"><?php echo $menu ?></div>
+        <div class="navbar clearfix">
+            <?php if ($navigation) { // This is the navigation table with breadcrumbs
+            ?>
+            <div class="breadcrumb"><?php print_navigation($navigation); ?></div>
+            <div class="navbutton"><?php echo $button; ?></div>
+            <?php } ?>
+        </div>
+    <?php print_container_end(); ?>
+<?php }
+    }
+?>
+    <!-- END OF HEADER -->
+<?php print_container_start(false, '', 'content'); ?>

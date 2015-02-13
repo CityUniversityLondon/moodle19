@@ -1,0 +1,781 @@
+/* Core */
+
+body {
+    margin: 0px;
+}
+
+
+h1.main,
+h2.main,
+h3.main,
+h4.main,
+h5.main,
+h6.main {
+  text-align: left;
+  padding-left: 5px;
+} 
+
+h1, h2, h3, h4 {
+  text-align: left;
+}
+
+h1 {
+  padding: 6px;
+}
+
+h2 {
+  padding: 7px;
+}
+
+h3 {
+  padding: 3px;
+
+}
+
+#layout-table #left-column, #layout-table #right-column {
+    /*border: 1px solid;*/
+    border: none;
+    padding: 0px;
+}
+
+#left-column .hidden .header, #right-column .hidden .header {
+border-bottom-style:solid;
+border-bottom-width:1px;
+}
+
+#layout-table {
+  border: none;
+}
+
+#content {
+clear:both;
+}
+
+h1, h2, h3, th.header {
+  border-width: 0px;
+  border-style: solid; 
+}
+
+h4 {
+  border-bottom-style: solid;
+  border-bottom-width:1px; 
+}
+
+input, select {
+  padding: 0px;
+}
+#layout-table #middle-column{
+  vertical-align:top;
+  padding-left:17px;
+  padding-right:17px;
+}
+.sitetopic {
+  padding:0px;
+  margin: 0 0 10px 0;
+}
+
+.generaltable {
+  border-width:0px; 
+}
+
+
+.generalbox {
+  border-width:1px; 
+  border-style:solid;  
+}
+
+.sitetopiccontent {
+  border-width:1px;
+  border-style:solid;
+}
+
+.clearfix { 
+ min-width: 0; 
+ /* overflow: hidden; */ 
+}
+
+.clearfix:after {
+  /* content: "<!-- -->";  */
+  content: "."; 
+  display: block; 
+  height: 0; 
+  clear: both; 
+  visibility: hidden;
+}
+
+/* Hides from IE-mac \*/
+* html .clearfix {height: 1%;}
+.clearfix {display: block;}
+/* End hide from IE-mac */
+
+/***
+ *** Header
+ ***/
+
+#header-home {
+  /* padding:1em 0.5em; */
+  height:100px;
+  border-width:0px;
+  border-style:solid;
+}
+
+#header {
+  /*height:50px;*/
+  border-width:0px;
+  border-style:solid;
+}
+
+.headermain, h1.headermain {
+  float:left;
+  margin:0%;
+  padding:0%;
+  border-width: 0px;
+  padding-left: 5px;
+}
+
+.headermenu {
+  float:right;
+  text-align:right;
+}
+
+.navbar {
+  width:100%;
+  padding:3px 0.5em;
+  border-width:0px;
+/*  border-style:solid; */
+}
+
+div.navbar {
+  width: auto;
+}
+
+table.navbar {
+  width: 100%;
+}
+
+.navbar .navbutton form {
+  float: left;
+}
+
+.navbar .navbutton {
+  margin-top: 3px;
+}
+
+.navbar .breadcrumb {
+  float:left;
+  margin:0.2em 0em;
+}
+
+.breadcrumb ul {
+  padding:0%;
+  margin:0%;
+  text-indent:0%;
+  list-style:none;
+}
+.breadcrumb li {
+  display:inline;
+}
+
+.navbar .navbutton,
+.navbar .menu {
+  float:right;
+}
+
+#cityfooter table th {
+   text-align: left;
+   padding-left: 15px;
+} 
+
+#cityfooter ul {
+  padding: 10px;
+  margin: 0;
+}
+
+#cityfooter ul li {
+   text-align: left;
+   padding: 1px 5px 1px 5px;
+   margin: 0;
+} 
+
+/* remove help icon */
+#cityfooter td ul li img.iconhelp {
+  display: none;
+}
+
+/* remove first item in breadcrumb */
+.breadcrumb ul li.first {
+  display: none;
+}
+
+
+/***
+ *** Login
+ ***/
+
+TABLE.loginbox {
+  margin-top: 40px;
+}
+.loginbox {
+
+}
+
+.loginbox .header {
+  border-width:1px;
+  border-style:solid;
+  border-bottom-width: 0px;
+}
+
+.loginbox .content {
+  border-top-width: 1px;
+}
+.loginbox h2, .loginbox .subcontent {
+  padding: 5px;
+}
+
+
+.loginpanel {
+  border: 1px solid #999;
+  padding: 10px;
+}
+
+.loginpanel .subcontent {
+  padding-left: 5px;
+}
+
+.loginform {
+  padding: 10px;
+}
+.loginform .form-label {
+  float: left;
+  width: 20%;
+}
+
+.loginbox .forgotsub {
+  margin-left:auto;
+  margin-right:auto;
+}
+
+
+/***
+ *** Global nav
+ ***/
+
+#global-nav {
+  display: block;
+  text-transform: uppercase;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  width: 980px;
+  background-color: #eee;
+  color: #696969;
+  padding: 0;
+}
+#global-nav ul{
+  padding: 0;
+  margin: 0;
+}
+
+#global-nav-items li {
+  border-left: 1px solid #B1BEBE;
+  display: inline;
+  font-weight: bold;
+  line-height: 2.1em;
+  margin: 0;
+}
+
+#global-nav-items li.first {
+  border: 0;
+}
+
+#global-nav-items li a {
+	color:#696969;
+}
+#global-nav-items li a span {
+  padding:5px 39px 5px 39px;
+  background-color:#eee;
+  margin: 0;
+}
+#global-nav-items li a span:hover {
+  background-color:#696969;
+  color:#FFF;
+}
+
+/***
+ *** Footer
+ ***/
+ 
+#cityfooter {
+border-top:2px solid #D9D9DB;
+margin-top:.5em;
+padding-top:1.5em;
+background-color: #f7f7f7;
+text-transform:uppercase;
+}
+
+#cityfooter ul li {
+list-style:none outside none;
+}
+
+#cityfooter ul li a {
+color:#446077;
+text-transform:none;
+}
+ 
+#cityfooter p.helplink {
+margin-bottom: 0px;
+}
+
+#cityfooter-content {
+margin-left:auto;
+margin-right:auto;
+/*width:950px;*/
+width: 100%;
+color:#D9D9DB;
+}
+
+/***
+ *** Blocks
+ ***/
+.sideblock, .sideblock .header, .sideblock .content  {
+  border-width: 0px;  
+ }
+
+
+.sideblock .header h2 {
+  border-width: 0px;
+  padding-top: 4px;
+ }
+
+.sideblock .header .hide-show-image {
+ padding-top: 4px;
+}
+
+.sideblock ul.list li.listentry {
+  padding-top: 2px;
+}
+ 
+.sideblock .footer {
+  border-top-width:1px;
+  border-top-style:dashed;
+  margin-top: 20px;
+}
+
+.block_adminblock {
+    width: 100%;
+}
+
+/***
+ *** Calendar
+ ***/
+ 
+ 
+#calendar .today,
+.minicalendar .today {
+  border:1px solid !important;
+}
+
+ 
+table.minicalendar {
+  width: 100%;
+  margin:10px auto;
+  padding:2px;
+  border-width:1px;
+  border-style:solid;
+  border-collapse:separate;
+  border-spacing:1px !important;
+}
+
+table.minicalendar tr.weekdays th {
+   border-style: none;
+}
+
+
+
+table.minicalendar tr td.day {
+  border-style: solid;
+  border-width: 1px;
+}
+
+table.minicalendar tr.weekdays th abbr {
+  border-style: none;
+
+  }
+  
+table.minicalendar {
+  border: none;
+}
+
+table.calendarmonth {
+  border-collapse:separate;
+  border-spacing:1px !important;
+  border: none;
+}
+
+
+
+table.calendarmonth tr td  {
+  border-style: solid;
+  border-width: 1px;
+}
+
+
+#calendar th.header {
+  border: 0;
+}
+
+#calendar td.sidecalendar .sideblock {
+  border: 0;
+}
+
+#calendar .sideblock div.header {
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}    
+                      
+/***
+ *** Course
+ ***/
+ 
+h2.headingblock.header {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+ 
+.headingblock {
+  border-width:1px;
+  border-style:solid;
+  padding:5px;
+}
+
+
+.categorybox .category,
+.categorybox .category {
+  border-bottom: solid;
+  border-width: 1px;
+  padding-top: 7px;
+}
+
+#course-view .section .left {
+  border-right-width: 1px;
+  border-right-style: solid;
+}
+
+#course-view .section.hidden .content,
+#course-view .section.hidden .side {
+  border-width: 1px;
+  border-style: dashed;
+}
+
+#course-view .section.hidden .side.left {
+  border-right: none;
+}
+#course-view .section.hidden .side.right {
+  border-left: none;
+}
+#course-view .section.hidden .content {
+  border-left: none;
+  border-right: none;
+}
+
+
+#course-view .section td.content ul.section.img-text {
+	line-height: 22px;
+}
+
+#course-view .section td.content ul.section.img-text li.activity.label {
+	line-height: 16px;
+	margin-bottom: 5px;
+}
+
+.coursebox {
+  margin-bottom: 5px;
+}
+.coursebox .info .name {
+  padding-bottom: 5px;
+}
+
+.tabrow0 { 
+   padding-top: 2px;    /* 4px */
+} 
+
+.tabrow0 div, .tabrow0 ul { 
+   padding-bottom: 0; 
+   border: 0;
+   background-image: none;
+   border-bottom: 1px solid #ccc;
+} 
+
+ul.tabrow1  {
+   padding: 0; 
+   border: 0;
+   background-image: none;
+   border-top: 1px solid #ccc;
+   border-bottom: 1px solid #ccc;
+   background-color: #efefef;
+}
+
+ul.tabrow1 li span {
+  font-size: 0.8em;
+}
+
+
+
+/***
+ *** Modules: glossary
+ ***/
+
+.entry .concept,
+.entryheader .concept {
+   margin-top: 5px;
+   margin-bottom: 10px;
+}
+
+.glossarypost.continuous {
+	padding: 5px;
+}
+
+/***
+ *** Error message
+ ***/
+
+.errorbox {
+/*   color:#ffffff; */
+   border-width: 2px;
+}
+
+
+.generalbox p {
+  padding: 0 5px 0 5px;
+}
+
+#intro {
+  margin: 0;
+}
+#intro.generalbox {
+  width: 100%; 
+  margin: 0;
+  padding: 0;
+}
+
+
+/* hide certain things in popup boxes */
+
+body#mod-glossary-showentry #header, body#mod-glossary-showentry #cityfooter {
+  display: none;
+}
+
+body#help #header, body#help #cityfooter {
+  display: none;
+}
+
+body#help #header, body#message-index #cityfooter {
+  display: none;
+}
+
+/* added by Mike - custom css for new mods/block
+
+/* cs for quickfindblock lists */
+
+div.block_quickfindlist div.content p {
+    padding-left: 15px;
+}
+
+/* Course contents block */
+div.block_course_contents div.content ul.section-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+div.block_course_contents div.content ul.section-list li a span.section-number {
+  color: #000;
+}
+
+/* course lists */
+
+body#course-index #middle-column .editcourse td  {
+  border: 1px solid #666;
+}
+
+body#course-index #middle-column .editcourse .count {
+  text-align: center;
+}
+
+body#course-category #middle-column td {
+  border: 1px solid #666;
+}
+
+/* fix for database template pages being too wide */
+
+body#mod-data-templates .boxwidthwide {
+  width: 980px;
+  text-align: center;
+}
+
+/* remove Topic Outline H2 at top of each course outline, can reinstate with custom css */
+.headingblock, h2.headingblock {
+  display: none;
+}
+
+
+
+/* new css, integrate properly later */
+
+
+#header, #page, #footer {
+  width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#header #logo {
+  float: left;
+  margin: 15px 0;
+  padding: 0;
+}
+
+#header #navarea {
+
+  float: right; 
+  text-align: right;
+}
+
+#header #navarea #mainnav {
+  display: block;
+  text-transform: uppercase;
+  text-align: right;
+  background-color: #fff;
+  color: #696969;
+  padding: 0;
+  width: auto;
+}
+#header #navarea #mainnav ul {
+  padding: 0;
+  margin: 0;
+  padding-left: 20px;
+  background-color: #eee;
+  background-image: url(pix/misc/ll-small-cut-off-white.png);
+  background-repeat: no-repeat;
+  background-position: left bottom;
+}
+#header #navarea #mainnav li {
+  border-left: 1px solid #B1BEBE;
+  display: inline;
+  font-weight: bold;
+  line-height: 2.1em;
+  margin: 0;
+}
+#header #navarea #mainnav li.first {
+  border: 0;
+}
+
+#header #navarea #mainnav li a {
+	color:#696969;  
+}
+#header #navarea #mainnav li a span {
+  padding:5px 15px 5px 15px;
+  background-color:#eee;
+  margin: 0;
+}
+#header #navarea #mainnav li a span:hover {
+  background-color:#696969;
+  color:#FFF;
+}
+
+#header #navarea #mmenu {
+  padding: 6px 0 6px 0;
+}
+
+#header #navarea #mbuttons div, #header #navarea #mbuttons form {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+#header #navarea #mbuttons form input {
+  margin-left: 3px;
+}
+
+#header #bcbar {
+  width: 100%; 
+  clear: both;
+}
+
+
+
+
+
+
+
+
+/* fix for group management table width, overrides setting in standard/styles/php */
+.groupmanagementtable select {
+width: 450px;
+}
+
+
+#course-index #content {
+    position:relative;
+}
+
+#site-index #coursesearch {
+    text-align: right;
+    padding-bottom: 1em;
+}
+
+#course-index #coursesearch {
+    margin-top:0;
+    position:absolute;
+    right:0;
+    text-align:center;
+    top:0;
+}
+
+
+/* ensure popup help is not 950px wide! */
+body#help #page {
+  width: 460px;
+  padding: 10px 0 10px 0;
+}
+/* ensure popup message is not 950px wide! */
+body.message #page {
+  width: 400px;
+  padding: 10px 0 10px 0;
+}
+
+
+/* hack for IE7 and below which shows uneven line-spacing for sup/sub */
+sup, sub {
+	height: 0;
+	line-height: 1;
+	vertical-align: baseline;
+	_vertical-align: bottom; /* for IE6 */
+	position: relative;	
+}
+
+sup {
+	bottom: 1ex;
+}
+
+sub {
+	top: .5ex;
+}
+
+/* turnitin fixes, changes were in core code before */
+
+#turnitintool_style th,
+#turnitintool_style td {
+    font-size: 0.9em;
+    padding: 0.4em 0.2em;
+}
+#turnitintool_style .submissionTable td.c0,
+#turnitintool_style .submissionTable th,
+#turnitintool_style table, #turnitintool_style table.uploadtable
+{
+    border: 1px solid #DDDDDD;
+    vertical-align: top;
+}
+#turnitintool_style .uploadtable {
+    margin: 0px;
+}

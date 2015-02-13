@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">        
+        <script type="text/javascript" src="../yui/yahoo/yahoo.js"></script>
+        <script type="text/javascript" src="../yui/dom/dom.js"></script>
+        <script type="text/javascript" src="../yui/event/event.js"></script>
+        <script type="text/javascript" src="../yui/dragdrop/dragdrop.js"></script>
+        <script type="text/javascript" src="lib.gt_all.js"></script>
+        <script type="text/javascript">
+            var unittests={
+                testitems:[],
+                go:function(){
+                    this.formitems();
+                },
+                log:function(msg){
+                  if (typeof(console)!='undefined' && typeof(console.log)!='undefined'){
+                      console.log(msg);
+                  }  
+                },
+                tresults:function(){
+                    return (document.getElementById('test_results'));  
+                },
+                tarea:function(){
+                    return (document.getElementById('test_area'));  
+                },
+                trwrite:function(msg, tag){
+                    if (!tag){
+                        tag='p';
+                    }
+                    var tr=this.tresults();
+                    var tn=document.createElement(tag);
+                    tn.innerHTML=msg;
+                    tr.appendChild(tn);
+                },
+                starttest:function(testname){
+                  this.trwrite('Start test: '+testname,'h3');
+                  this.log('Start test: '+testname);
+                },
+                additemwithbr:function(itema, itemb){
+                    var br=GTLib.DOM.createEl('br');
+                    itema.appendChild(br);
+                    itema.appendChild(itemb);
+                },
+                addtestitem:function(id, name){
+                    name=!name ? id : name;  
+                    var i=document.createElement('div');
+                    i.id=id;
+                    i.innerHTML='TEST: '+name;
+                    this.tresults().appendChild(i);
+                    this.testitems[id]={id:id, name:name, el:i,
+                        setstatus:function(ok, msg){
+                            var output='';
+                            var el=this.el;
+                            var tn=document.createElement('span');
+                            if (ok){
+                                output=' [OK] ';                                
+                                tn.style.color='#0a0';                                
+                            } else {
+                                output=' [FAIL] ';                                
+                                tn.style.color='#a00';
+                            }
+                            if (msg){
+                                output+=' '+msg;
+                            }
+                            tn.innerHTML=output;
+                            el.appendChild(tn);
+                        }
+                    };
+                    return (i);
+                },
+                formitems:function(){
+                    this.starttest('Form Items');
+                    var ta=this.tarea();                    
+                    var form=GTLib.DOM.createEl('form',{'name':'testform', 'id':'testform'});                    
+                    ta.appendChild(form);
+
+                                        
+                    // add text
+                    var itext=GTLib.DOM.createEl('input', {'name':'testitext', 'type':'text'});
+                    itext.value='test input text';                    
+                    this.additemwithbr(form,itext);                    
+                                        
+                    // add text area
+                    var itextarea=GTLib.DOM.createEl('textarea', {'name':'testitextarea'});
+                    itextarea.innerHTML='test input text area';
+                    this.additemwithbr(form,itextarea);
+                    
+                    // add radio button
+                    var rb1=GTLib.DOM.createEl('input', {name:'testiradio', value:'yes', type:'radio'});
+                    var rb2=GTLib.DOM.createEl('input', {name:'testiradio', value:'no', type:'radio'});
+                    var rbline=GTLib.DOM.createEl('div');
+                    rbline.innerHTML=' Yes ';
+                    this.additemwithbr(form, rbline);
+                    rbline.appendChild(rb1);
+                    var tn=document.createTextNode(' No ');
+                    rbline.appendChild(tn);
+                    rbline.appendChild(rb2);
+                    rb2.checked='checked'; // we have to set this as checked here for IE7, it must be in the DOM before you can set it (CRAP!!!)
+                    
+                    // add checkbox button
+                    var cb1=GTLib.DOM.createEl('input', {name:'testicheckbox', value:'coffee', type:'checkbox'});
+                    var cb2=GTLib.DOM.createEl('input', {name:'testicheckbox', value:'toast', type:'checkbox'});
+                    var cbline=GTLib.DOM.createEl('div');
+                    cbline.innerHTML=' Coffee ';
+                    this.additemwithbr(form, cbline);
+                    cbline.appendChild(cb1);
+                    var tn=document.createTextNode(' Toast ');
+                    cbline.appendChild(tn);
+                    cbline.appendChild(cb2);                    
+                    cb1.checked='checked';
+                    cb2.checked='checked';                    
+                    
+                    // add select box
+                    var iselect=GTLib.DOM.createEl('select', {'id':'testiselect',name:'testiselect'});
+                    var opts={'green':'green','blue':'blue','red':'red'};
+                    // use dom method for adding options in IE
+                    if(document.all) {
+                        var opt=document.createElement('option');
+                        for (o in opts){
+                            opt=document.createElement('option');
+                            opt.text=opts[o];
+                            opt.value=o;
+                            iselect.options.add(opt);
+                        }                        
+                    } else {
+                        // use inner html method for adding options in other browsers
+                        var optshtml='';
+                        for (o in opts){
+                            optshtml+='<option value="'+o+'">'+opts[o]+'</option>';
+                        }
+                        iselect.innerHTML=optshtml;
+                    }                    
+                    this.additemwithbr(form, iselect);
+                    
+                    itext.name='testitext';
+                    
+                    // test get text field val
+                    this.addtestitem('form_text_getfieldval', 'text - get field value');                    
+                    var result=GTLib.DOM.getFieldVal('testitext','','testform');   
+                    if (result=='test input text'){
+                        this.testitems['form_text_getfieldval'].setstatus(true);
+                    } else {
+                        this.testitems['form_text_getfieldval'].setstatus(false);
+                    } 
+                    
+                    // test get text area field val
+                    this.addtestitem('form_textarea_getfieldval', 'textarea - get field value');                    
+                    var result=GTLib.DOM.getFieldVal('testitextarea','','testform');                                        
+                    if (result=='test input text area'){
+                        this.testitems['form_textarea_getfieldval'].setstatus(true);
+                    } else {
+                        this.testitems['form_textarea_getfieldval'].setstatus(false);
+                    }     
+                    
+                    // test radio button get field val
+                    this.addtestitem('form_radio_getfieldval', 'radio - get field value');                    
+                    var result=GTLib.DOM.getFieldVal('testiradio','','testform'); 
+                    if (result=='no'){
+                        this.testitems['form_radio_getfieldval'].setstatus(true);
+                    } else {
+                        this.testitems['form_radio_getfieldval'].setstatus(false);
+                    }
+                    
+                    // test radio button set field val
+                    this.addtestitem('form_radio_setfieldval', 'radio - set field value');                    
+                    GTLib.DOM.setFieldVal('testiradio', 'yes', 'testform'); 
+                    var result=GTLib.DOM.getFieldVal('testiradio','','testform'); 
+                    if (result=='yes'){
+                        this.testitems['form_radio_setfieldval'].setstatus(true);
+                    } else {
+                        this.testitems['form_radio_setfieldval'].setstatus(false);
+                    }  
+                    
+                    // test checkbox button get field val
+                    this.addtestitem('form_checkbox_getfieldval', 'checkbox - get field value');                    
+                    var result=GTLib.DOM.getFieldVal('testicheckbox','|','testform'); 
+                    if (result=='coffee|toast'){
+                        this.testitems['form_checkbox_getfieldval'].setstatus(true);
+                    } else {
+                        this.testitems['form_checkbox_getfieldval'].setstatus(false);
+                    }                    
+                    
+                    
+                    // test get field value from select box
+                    this.addtestitem('form_select_getfieldval', 'select - get field value');                    
+                    var sval=GTLib.DOM.getFieldVal('testiselect', '', 'testform');                    
+                    if (sval){
+                        this.testitems['form_select_getfieldval'].setstatus(true, '('+sval+')');
+                    } else {
+                        this.testitems['form_select_getfieldval'].setstatus(fail);
+                    }
+                    
+                    // test set field value in select box
+                    this.addtestitem('form_select_setfieldval', 'select - set field value');                    
+                    GTLib.DOM.setFieldVal('testiselect','red','testform');                    
+                    var sval=GTLib.DOM.getFieldVal('testiselect', '', 'testform');                    
+                    if (sval=='red'){
+                        this.testitems['form_select_setfieldval'].setstatus(true, 'select value is now '+sval);
+                    } else {
+                        this.testitems['form_select_setfieldval'].setstatus(false);
+                    }
+                }
+            };
+            window.onload=function(){unittests.go()};
+        </script>
+    </head>
+    <body>
+        <h1>GTLib unit tests</h1>
+        <h2>Test results</h2>
+        <div id="test_results">
+            
+        </div>
+        <div id="test_area">
+            
+        </div>
+    </body>
+</html>

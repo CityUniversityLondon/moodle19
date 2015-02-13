@@ -1,0 +1,95 @@
+<?php
+
+global $USER;
+
+$tcourseids = '';
+
+if ($courses = get_user_capability_course('moodle/course:update')) {
+    foreach ($courses as $course) {
+            $tcourseids .= $course->id.',';
+    }
+}
+unset($courses);
+
+// CMDL-1109 fix for ORA-01795
+// quick fix by Mike to solve ORA-01795 issue where list exceeds 1000
+// convert list to array and count itmes
+$tc_array = explode(',',$tcourseids);
+$tc_count = count($tc_array);
+
+if (!empty($tcourseids)) {
+    $courses = array();
+    if ($tc_count < 1000) { // the usual way
+        $tcourseids = substr($tcourseids,0,-1); // removes final ','
+        $courses = get_records_list('course', 'id', $tcourseids, 'fullname','id,fullname,shortname');
+    } else { // must be > 1000 items therefore can't use get_records_list
+        // going to use the array of ID instead
+        foreach ($tc_array as $tc) {
+            if ($tc > 0) {
+                $temp = get_records_list('course', 'id', $tc, 'fullname','id,fullname,shortname'); // an array of objects
+                $courses[$tc] = $temp[$tc];
+            }
+        }
+    }
+}
+// end fix by mike
+// end CMDL-1109
+
+if ($courses) {
+    $n = 80; // max length of course name in dropdown block
+    foreach ($courses as $course) {
+        if (preg_match('/\d{4}-\d{2}/', $course->shortname, &$matches, 0, -7)) {
+            $years[$matches[0]][] = $course;
+        } else {
+            $years['other'][] = $course;
+        }
+    }
+    krsort(&$years, SORT_NUMERIC);
+
+    $options['All'][SITEID] = 'All courses';
+    foreach ($years as $year=>$courses) {
+        
+        foreach ($courses as $course) {
+            if ($course->id != SITEID) {
+                if (strlen($course->fullname) > $n) {
+                    $options[$year][$course->id] = substr($course->fullname,0,$n-3) . "...";
+                } else {
+                    $options[$year][$course->id] = $course->fullname;
+                }
+            }
+        }
+    }
+
+    if (!empty($this->config->courseid)) {
+        $selected = $this->config->courseid;
+    } else {
+        $this->config->courseid = SITEID;
+        $selected = SITEID;
+    }
+}
+?>
+
+<table cellpadding="9" cellspacing="0" class="blockconfigtable">
+
+<tr valign="top">
+<td align="right"><?php print_string("blockcourse","block_calendar_upcoming_extended"); ?>:</td>
+<td>
+    
+        <?php //echo $this->select ?>
+        <?php choose_from_menu_nested($options, 'courseid', $selected) ?>
+   
+</td>
+</tr>
+
+<tr valign="top">
+<td align="right"><?php print_string("blocktitle","block_calendar_upcoming_extended") ?>:</td>
+<td><input type="text" name="title" size="50" value="<?php p($this->config->title) ?>" /></td>
+</tr>
+
+
+<tr>
+    <td colspan="2" align="center"><input type="submit" value="<?php print_string('savechanges') ?>" /></td>
+</tr>
+
+</table>
+

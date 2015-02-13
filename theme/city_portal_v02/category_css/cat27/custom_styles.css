@@ -1,0 +1,66 @@
+/* Cass Module and Programme Specific Styles */
+/* edited by Leona*/
+
+/*Module header styles*/
+#header #bcbar .title .label {
+	background-color: #003366;
+}
+#header #bcbar .title {
+	border-bottom-color: #003366; 
+}
+
+/* Front page styles */
+.sideblock .header, .sideblock .header h2, .sideblock .header h3, .sideblock h2, .sideblock h3 {
+	color: #003366;
+}
+.sideblock .header {
+	border-bottom-color: #003366;
+}
+
+/* Heading styles */
+h1, h2.main, .book_chapter_title {
+	color: #003366; 
+	border-bottom: 1px solid #003366;
+}
+h2, #middle-column .label h1 {
+	color: #003366;
+}
+h3, #middle-column .label h2{
+	color: #003366;
+}
+h4, #middle-column .label h3, #middle-column .label h4{
+	color: #003366;
+}
+
+/* Intro section heading styles */
+#banner .background {
+	background: #003366;
+}
+
+/* Intro section heading custom styles */
+
+/* Programme banner height */
+/* table .topics #course-img { 
+	height: 150px; 
+}
+table .weeks #course-img { 
+	height: 150px; 
+}*/
+
+#course-img .cont {
+	background: #003366;
+}
+#course-img .cont p {
+	color: #9CF;
+}
+
+/* Links styles*/
+a:link {
+	color: #003C79;
+}
+a:hover {
+	color: #0066FF;
+}
+a:visited {
+	color: #003C79; 
+}

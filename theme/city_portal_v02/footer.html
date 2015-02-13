@@ -1,0 +1,42 @@
+<?php  print_container_end(); // content container     ?>
+
+
+<?php
+global $CFG, $COURSE; 
+if (function_exists('is_in_popup')) {
+    $inpopup = is_in_popup();
+} else {
+    $inpopup = false;
+}
+?>
+
+<?
+if (!$inpopup) { 
+    print_container_start(true, '', 'footer');
+?>
+<div id="footer-content">
+    <ul id="footer-links">
+
+        <li><a id="contact" href="http://www.city.ac.uk/contact/">Contact us</a></li>
+        <li><a title="legal" href="http://www.city.ac.uk/about/city-information/legal">Legal</a></li>
+        <li><a title="information" href="http://www.city.ac.uk/about/city-information">City Information</a></li>
+        <li><a id="accessibility" href="http://www.city.ac.uk/accessibility">Accessibility</a></li>
+        <li><a id="cookies" href="http://www.city.ac.uk/about/city-information/legal/cookies">Cookies</a></li>
+    </ul>
+    <div class="vcard" style="color:#333; padding: 5px 0 0 0;" >
+        City University London, Northampton Square, <span class="locality">London</span> <span class="postal-code">EC1V 0HB</span>, <span class="country-name">United Kingdom</span> | +44 (0)20 7040 5060
+    </div>
+</div>
+
+
+<?
+if (!empty($performanceinfo) && isloggedin() ) {
+    echo $performanceinfo;
+}    
+print_container_end(); // footer container
+} // end if inpopup
+
+?>
+<?php  print_container_end(); // page container     ?>
+</body>
+</html>

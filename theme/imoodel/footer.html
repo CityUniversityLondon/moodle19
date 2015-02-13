@@ -1,0 +1,69 @@
+<!--imoodel[en]: Delistavrou Constantinos' [MAI 09/07] UOM Dep/t of Applied Informatics MSc thesis (c) 2008.-->
+<!--imoodel[el]: Διπλωματική εργασία του Δελησταύρου Κωνσταντίνου [MAI 09/07] για το ΠΜΣ του Τμ. Εφαρμοσμένης Πληροφορικής του Πανεπιστημίου Μακεδονίας (c) 2008.-->
+
+<?php 
+
+    //imoodel[en]: System definitions inclusion.
+	//imoodel[el]: Συμπερίληψη των ορισμών συστήματος.
+    require_once("$CFG->dirroot/config.php");
+?>
+
+<?php
+
+    print_container_end(); // content container
+
+    print_container_start(false, '', 'footer');
+
+    echo '<p class="helplink">';
+    echo page_doc_link(get_string('moodledocslink'));
+    echo '</p>';
+
+
+    if ($navigation and false) { ?>
+    <div class="navbar clearfix">
+        <div class="breadcrumb"><?php print_navigation($navigation); ?></div>
+        <div class="menu"><?php echo $menu; ?></div>
+    </div>
+<?php }
+
+    echo $loggedinas;
+    echo $homelink;
+
+    if (!empty($performanceinfo)) {
+        echo $performanceinfo;
+    }
+
+    if (debugging()) { ?>
+        <div class="validators"><ul>
+          <li><a href="http://validator.w3.org/check?verbose=1&amp;ss=1&amp;uri=<?php echo urlencode(qualified_me()) ?>">Validate HTML</a></li>
+          <li><a href="http://www.contentquality.com/mynewtester/cynthia.exe?rptmode=-1&amp;url1=<?php echo urlencode(qualified_me()) ?>">Section 508 Check</a></li>
+          <li><a href="http://www.contentquality.com/mynewtester/cynthia.exe?rptmode=0&amp;warnp2n3e=1&amp;url1=<?php echo urlencode(qualified_me()) ?>">WCAG 1 (2,3) Check</a></li>
+        </ul></div>
+<?php }
+
+    print_container_end();
+?>
+
+</div>
+
+<?php
+
+    //imoodel[en]: If debug messages are set to be displayed, show some debug info on page bottom.
+	//imoodel[el]: Αν έχει επιλεγεί η προβολή μηνυμάτων αποσφαλμάτωσης, εμφάνισε σχετικές πληροφορίες στο κάτω μέρος της σελίδας.
+    if (debugging()) { ?>
+        <div class="imoodel" id="imddebug">
+            <?php 
+                echo 'Τρέχουσα ιστοσελίδα - current webpage: '.$_SERVER['PHP_SELF'].'<br/>';
+                echo 'IP διεύθυνση διακομιστή - server IP: '.$_SERVER['SERVER_ADDR'].'<br/>';
+                echo 'Κωδικός ταυτότητας χρήστη - user identity: '.$USER->id.'<br/>';
+                echo 'Όνομα χρήστη - user name: '.($USER->username ? $USER->username : 'δεν συνδέθηκε κάποιος χρήστης - no user logged in').'<br/>';
+                echo 'Κλειδί συνεδρίας - session key: '.sesskey().'<br/>';  
+                echo 'Κωδικός ταυτότητας διακομιστή: '.$CFG->mnet_localhost_id.'<br/>';
+            ?>
+        </div>
+<?php
+    }
+?>
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+<?php  print_container_end(); // content container     ?>
+
+<?php  print_container_end(); // page container     ?>
+
+<?php
+
+
+        // set help course ID
+        if ($_SERVER['SERVER_NAME'] == 'moodle.city.ac.uk') {
+          $helpID = '662';
+        } else {
+          $helpID = '564';
+        }
+
+  global $CFG, $COURSE;
+  if (function_exists('is_in_popup')) {
+    $inpopup = is_in_popup();
+  } else {
+    $inpopup = false;
+  }
+
+  if (!$inpopup) {
+
+    print_container_start(true, '', 'footer');
+
+    echo '
+  <table cellspacing="0">
+	<tbody>
+		<tr>
+			<th class="first">City Connections</th>
+			<th class="notfirst">Moodle Resources</th>
+			<th class="notfirst">Help</th>
+    </tr>
+		<tr>
+
+			<td class="first"><ul>
+				<li><a href="' . $CFG->wwwroot . '">CityMoodle</a></li>
+		    <li><a href="http://www.city.ac.uk/">City University Home</a></li>
+		    <li><a href="http://www.city.ac.uk/cityspace/">CitySpace</a></li>
+      </ul></td>
+
+			<td class="notfirst"><ul>
+
+        <li><a href="http://moodle.org/">Moodle Community</a></li>
+				<li><a href="http://docs.moodle.org/">Moodle Documentation</a></li>
+				<li><a href="http://docs.moodle.org/en/Moodle_Accessibility_Specification">Accessibility</a></li>
+
+			</ul></td>' . "\n";
+
+		echo '<td class="notfirst"><ul>' . "\n";
+    if (isloggedin()) {
+		  echo "<li><a href=\"" . $CFG->wwwroot . "/course/view.php?id=" . $helpID . "\" title=\"goto help pages\">Moodle Help Centre</a></li>\n";
+      if (strlen(page_doc_link('Help')) > 0) echo '<li>' . page_doc_link('Help with this page') . '</li>' . "\n";
+
+		}
+
+    //echo '<li><a href="mailto:moodle@city.ac.uk?subject=Moodle Enquiry">Email LDC with enquiry</a></li>' . "\n";
+    //echo '<li><a href="http://www.city.ac.uk/it-staff/getting_it_support/contacting_it_support.html">Response Centre</a></li>' . "\n";
+    echo '<li><a href="http://www.city.ac.uk/ic/index.html">Information Compliance</li>';
+    echo '
+			</ul></td>
+		</tr>
+	</tbody>
+</table>   ' . "\n";
+
+    if (!empty($performanceinfo) && isloggedin() ) {
+      echo $performanceinfo;
+    }
+
+    print_container_end();
+
+  } // end if inpopup
+
+?>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+    script.init();
+/* ]]> */
+</script>
+
+</body>
+</html>

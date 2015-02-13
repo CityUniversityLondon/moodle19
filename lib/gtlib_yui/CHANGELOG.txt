@@ -1,0 +1,80 @@
+Version 2011101700
+    * Fix issues with safari - working with form elements
+    * Improved GTLib.Browser to include details function for better details
+    * Improvements to DOM createEl for IE7
+
+Version 2011092300
+    * Fix issue with safari - buildSendStr
+
+Version 2011090100
+    * Minor css fixes to tree widget
+
+Version 2011082500
+    * Changed default for GTlib - now exports functions as default
+
+Version 2011042100
+    * Fixed getFieldVal when element cannot be recovered from form (IE fix)
+
+Version 2011020800
+    * Fixed getFieldVal when element recovered has empty innerHTML (IE fix)
+
+Version 2010091600
+    * Fixed getFieldVal issue - Nick Thompson UCLA
+
+Version 2010031200
+    * Fixed moodle language get_string issues (typeof used incorrectly)
+
+Version 2009122100
+    * Fixed javascript object compare issue where string would be treated as array
+
+Version 2009111700
+	* Fixed get field value issue affecting ie7 and below
+
+Version 2009111300
+	* Fixed dom create element issue with ie8
+
+Version 2008102300
+
+    * Added function for creating unlinked anchor element to dom.js
+    
+Version 2008100800
+
+    * Added safari to GTLib.browser
+
+Version 2008082600
+
+    * Improved ajaj tree widget - made root of tree selectable with 'rootSelectable' property
+                                - added new 'getSelectedNodes' function
+                                
+    * String trim function forces casts argument as string
+    
+
+Version 2008080800
+
+    * New grid pagination widget
+    * yahoo merge function added
+    * GTLib.Ajax - modified to cope with document unload (triggers ajax failure when it is not an actual failure
+    but simply the user nivigating to another location)
+
+Version 2008070800
+
+    * Dialog Opera fix - Dialogs were not dissappearing in Opera unless they were actually hidden first, weird!
+
+Version 2008062500
+
+    * Ajax tree bug fix - force string data type in tokenise function
+    * Ajax tree - improved coding (streamlined)
+
+Version 2008060400
+
+    * IE Fixes - Increased timeout for dialog resize and added error handling if it fails to resize (IE problem)
+               - Dialog lightboxing now works in ie6
+
+Version 2008051300
+
+    * Added applyFilterKeys function to lib.gt.form.js
+    * Added isArray function to lib.gt.array.js
+    
+Version 2008050100
+
+    * Code clean up

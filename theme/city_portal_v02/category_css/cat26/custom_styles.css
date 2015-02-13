@@ -1,0 +1,306 @@
+/* Cass Generic CSS Template */
+/* edited by Leona*/
+
+/* Print styles */
+#print-header{ display: none; }
+
+/* General course styles */
+#content {
+	font: normal 0.9em Arial, Helvetica, sans-serif;
+	line-height: 1.4em;
+}
+.breadcrumb ul {
+	padding: 0 0 5px 0;
+}
+.modified {
+	color: #666;
+	font-size: 0.95em;
+	padding-top: 10px;
+}
+.generalbox {
+	padding: 10px;
+}
+#intro.generalbox {
+	padding: 10px;
+	width: 930px;
+}
+.que .feedback {
+	padding: 5px;
+	border-color: #999;
+}
+
+/* Front page styles */
+#middle-column {
+	padding: 0;
+	margin: 0;
+}
+.headingblock, #maincontent {
+	display:none;
+}
+#course-view .topics .section td.left{
+	width: 19px;
+	min-width: 19px;
+	font-size: 0.7em;
+	padding: 0;
+    color: white;
+}
+#course-view .weeks .section td.left{
+	width: 14px;
+	min-width: 14px;
+	font-size: 0.7em;
+	padding: 0;
+    color: white;
+}
+#course-view .section td.right{
+	width: 0.5em;
+	padding: 0.4em 0.25em 0 0.2em;
+}
+#course-view .section td.content {
+	padding: 0.4em 0.2em 0.4em 0.2em;
+}
+#course-view .section.main .content {
+	padding: 0 0 0.4em 0;
+}
+.horizontal { /* Spacing for Add a resource and Add an activity */
+	padding: 10px 5px 5px 0;
+}
+.sideblock {
+width: 210px;
+}
+.sideblock h2 {
+	font-size: 1.3em;;
+}
+.sideblock h3 {
+	font-size: 1.1em;;
+}
+
+/* Paragraph styles */
+p {
+	padding: 0 0 0.8em;
+	margin: 0;
+}
+.generalbox p {
+	padding: 0 0 0.6em;
+	margin: 0;
+}
+
+/* Heading styles */
+h1, h2.main, .book_chapter_title {
+	font-size: 1.3em;
+	color: #076367; /* Generic colour */
+	line-height: 1.2em;
+	margin: 10px 0 0.4em 0;
+    padding: 0;
+	border-bottom: 1px solid;
+}
+h2, #middle-column .label h1 {
+	font-size: 1.15em;
+	color: #076367; /* Generic colour */
+	margin: 0.6em 0 0.4em 0;
+	padding: 0;
+	border: none;
+}
+h3, #middle-column .label h2{
+	font-size: 1.1em;
+	color: #076367; /* Generic colour */
+	margin: 0.6em 0 0.4em 0;
+	padding: 0;
+	border: none;
+}
+h4, #middle-column .label h3, #middle-column .label h4{
+	font-size: 1.0em;
+	color: #076367; /* Generic colour */
+	margin: 0.6em 0 0.4em 0;
+	padding: 0;
+    border: none;
+}
+
+/* Weekly heading styles */
+h3.weekdates {
+	padding: 10px 0 0 0;
+	margin: 0;
+	color: #666;
+	font-size: 1.1em;
+	text-align: left;
+}
+
+/* Other course styles */
+#course-view blockquote{
+	background-color: #D5F4FF;
+	font: normal 0.85em Arial, Helvetica, sans-serif;
+	padding: 15px 10px 15px 10px;
+	margin: 5px 0 15px 0;
+	/*border: dashed 1px #394a59;*/
+}
+#course-view .activityicon {
+	margin: 0;
+	padding: 2px 0 0 0;
+}
+hr {
+	border: none 0;
+	border-top: 1px dotted #666;/*the border*/
+	width: 100%;
+	height: 1px;/*whatever the total width of the border-top and border-bottom equal*/ 
+}
+.que {
+	border-color: #999;
+}
+.content table {
+	margin: 0 0 0.4em 0;
+}
+
+/* Intro section heading styles */
+table .topics #banner{ /* Banner for topics layout */
+	background: #fff url(img/Top_banner.png) no-repeat scroll left center;
+	-moz-background-clip: border; -moz-background-origin: padding;
+	-moz-background-inline-policy: continuous;
+	width: 525px;
+	margin: 0 -1.7em 10px -1.45em;
+	padding: 0 0 8px 0;
+	border: none;
+}
+table .weeks #banner{ /* Banner for weekly layout */
+	background: #fff url(img/Top_banner.png) no-repeat scroll left center;
+	-moz-background-clip: border; -moz-background-origin: padding;
+	-moz-background-inline-policy: continuous;
+	width: 525px;
+	margin: 0 -2em 10px -1.05em;
+	padding: 0 0 8px 0;
+	border: none;
+}
+#banner .modTitle {
+	margin: 0;
+	padding: 0;
+	color:fff;
+}
+#banner .background {
+	background: #076367; /* Generic colour */
+	padding: 2px 3px;
+}
+#banner .modTitle h1{
+	color: #FFF;
+	font-size: 1.15em;
+	text-transform:capitalize;
+	text-align: left;
+	border: none;
+	padding: 0;
+	margin: 0 5px 0 1.5em;
+}
+#banner .modTitle h2{
+	color: #fff;
+	font-size: 2.25em;
+	text-transform:uppercase;
+	margin: 0;
+	padding: 0 0.8em 0 0;
+	text-align: right;
+	border: none;
+}
+
+/* Intro section heading custom styles */
+table .topics #course-img { 
+	height: 130px; /* Generic size for all modules - Programme modules need to be changed to 150px*/
+	border: none; 
+	padding: 0 0 8px 0; 
+	margin: 0 -1.7em 10px -1.45em;
+}
+table .weeks #course-img { 
+	height: 130px; /* Generic size for all modules - Programme modules need to be changed to 150px*/
+	border: none; 
+	padding: 0 0 8px 0; 
+	margin: 0 -2em 10px -1.05em;
+}
+#course-img {
+	background: transparent url(img/header_image.jpg) no-repeat scroll left center; 
+	-moz-background-clip: 
+	border; -moz-background-origin: 
+	padding; -moz-background-inline-policy: 
+	continuous;
+}
+#course-img .cont {
+	margin: 0; 
+	padding: 15px 25px; 
+	background: #076367; 
+	filter:alpha(opacity=77); 
+	-moz-opacity:0.77; 
+	-khtml-opacity: 0.77; 
+	opacity: 0.77; 
+	width: 260px;
+}
+#course-img .cont h2 {
+	margin: 0px; 
+	padding: 0 0 6px 0; 
+	color: #fff; 
+	font: normal 30px Arial, Helvetica, sans-serif; 
+	letter-spacing: -0.6px; 
+	line-height: 28px;
+}
+#course-img .cont p {
+	margin:  0;
+	padding: 0;
+	color: #68EDF4;
+	font: normal 16px Arial, Helvetica, sans-serif;
+	line-height: 18px;
+}
+
+/*Flickr Block styles*/
+.yui-carousel-element li, .yui-carousel-element li img{
+        height: 60px;
+        width: 60px;
+}
+.carousel_container .yui-skin-sam select {
+        font-size: 10px;
+}
+.carousel_spotlight img {
+        max-width: 183px;
+}
+
+/*Course Contents block styling*/
+#course-view .block_course_contents .section-list .section-number {
+	padding: 2.5px 5px 2.5px 5px;
+	background-color:#663395;
+	color:#fff;
+	/*border:#FFF 2px solid;*/
+}
+#course-view .block_course_contents .section-list .section-title {
+	padding: 0 0 0 2.5px;
+}
+#course-view .block_course_contents .section-list a {
+	padding: 0.5px 0 0.5px 0;
+	line-height: 1.0em;
+	/*color:#00759b;*/
+}
+
+/* HTML block styling */
+#course-view .block_html .content li{
+	padding-left: 0;
+	text-indent: 0;
+	line-height:1.2em;
+}
+#course-view .block_html .content ul{
+	padding-left: 15px;
+	margin: 0;
+}
+#course-view .block_html .content p{
+	font-size: 0.95em;
+	padding: 0 0 0.8em 0;
+	margin: 0;
+}
+
+/* Book styles */
+.book_content h1, .book_chapter_title{
+	border-bottom: none;
+}
+.book_chapter_title {
+	font-weight: bold;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.book_toc_numbered li {
+	padding: 0 0 5px 0;
+	line-height: 1.2em;
+	margin: 0;
+}
+.book_toc_numbered li li {
+	padding: 0 0 5px 0;
+	line-height: 1.2em;
+	margin: 0;
+}

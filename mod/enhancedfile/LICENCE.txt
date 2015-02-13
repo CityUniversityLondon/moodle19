@@ -1,0 +1,5 @@
+(c) Guy Thomas 2010
+Licence - GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007
+Refer to http://www.gnu.org/licenses/gpl.html for full terms
+The author and any associated organisations accept no liability for any consequences resulting from the use of this software.
+*** USE THIS SOFTWARE AT YOUR OWN RISK. ***

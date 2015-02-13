@@ -1,0 +1,31 @@
+#header #navarea, #cityfooter {
+  display: none;
+}
+
+#header #bcbar .title {
+  border-bottom: 0px none transparent;
+  font-size: 1.5em;
+  color: #000;
+}
+
+#header #bcbar .title .label {
+  padding: 0;
+  margin: 0;
+}
+
+#left-column, #right-column {
+  display: none;
+}
+#middle-column {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+div#page {
+  margin: 0;
+  padding: 0;
+}
+
+#header #bcbar .breadcrumb  {
+
+}

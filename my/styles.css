@@ -1,0 +1,97 @@
+/* CSS Document */
+
+  .arrowlistmenu{
+    width: 100%; /*width of accordion menu*/
+  }
+  
+  .arrowlistmenu .menuheader { /*CSS class for menu headers in general (expanding or not!)*/
+    border: 1px solid #ddd;
+    color: #076367;
+    background: url(./images/switch_plus.gif) no-repeat center left;
+    background-position: 5px;
+    margin: 4px 0 0 0; /* spacing between header and rest of content*/
+    padding: 4px 0 4px 20px; /*header text is indented 10px*/
+    cursor: hand;
+    cursor: pointer;
+    font-size: 1.1em; 
+    background-color: #f7f7f7;
+  }
+  
+  .arrowlistmenu .hidden {
+    color: #777;
+  }
+  
+  .arrowlistmenu .sub_menuheader { 
+    padding: 0 2px 0 10px;
+    margin: 10px 0 0 0;
+    font-size: 1em;
+    border-left: 1px solid #ddd;
+  }
+  
+  .arrowlistmenu .openheader { /*CSS class to apply to expandable header when it's expanded*/   
+     background: url(./images/switch_minus.gif) no-repeat center left;
+     background-position: 5px;
+     background-color: #f7f7f7;
+     border-bottom: 1px solid #076367;
+  }
+  
+  .arrowlistmenu ul.categoryitems { /*CSS for UL of each sub menu*/
+    list-style-type: none;
+    margin: 0;
+    padding: 5px 0 10px 10px;
+    margin-bottom: 8px; /*bottom spacing between each UL and rest of content*/
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+  }
+  .arrowlistmenu ul.subcategoryitems { /*CSS for UL of each sub menu*/
+    list-style-type: none;
+    margin: 0 0 5px 0;
+    padding: 5px 0 0 10px;
+    margin-bottom: 0; /*bottom spacing between each UL and rest of content*/
+    border-left: 1px solid #ddd;  border-bottom: 1px solid #ddd;
+  }   
+  
+  .arrowlistmenu ul.subsubcategoryitems { /*CSS for UL of each sub menu*/
+    list-style-type: none;
+    margin: 0 0 5px 0;
+    padding: 5px 0 0 10px;
+    margin-bottom: 0; /*bottom spacing between each UL and rest of content*/
+    border-left: 1px solid #ddd;  border-bottom: 1px solid #ddd;
+  }
+  
+  .arrowlistmenu ul li {
+    padding-bottom: 2px; /*bottom spacing between menu items*/
+  }
+  
+  .arrowlistmenu ul li a.courselink {
+    background: url(./images/switch_arrow.gif) no-repeat center left; /*custom bullet list image*/
+    display: block;
+    padding: 0;
+    padding-left: 19px; /*link text is indented 19px*/
+    font-size: 1em; 
+    margin: 5px 0 0 0;
+    font-weight: bold;
+  }
+
+  .arrowlistmenu ul li a:hover { /*hover state CSS*/
+    text-decoration: underline;
+  }
+  
+  .arrowlistmenu ul li.teacherInfo {
+    font-size: 0.7em;
+    margin: 0;
+  }
+  
+  .smallText {
+    font-size: 0.8em;
+  }
+  
+  h4 {
+    border: 0 none transparent;
+  }
+  
+  a.hidden {
+    color: #777;
+    font-weight: normal;
+  }

@@ -1,0 +1,264 @@
+div.DHTMLTreeContainer{
+    display:block;
+    box-sizing: border-box;
+    -mox-box-sizing: border-box;
+}
+
+div.DHTMLTreeContainer ul, div.DHTMLTreeContainer li, div.DHTMLTreeContainer div{
+    display:block;
+    box-sizing: border-box;
+    -mox-box-sizing: border-box;
+}
+
+ul.DHTMLTree, ul.branchContainer{
+position:relative;
+clear:both;
+padding:0;
+list-style-type: none;
+}
+
+ul.DHTMLTree{
+margin: 0;
+}
+
+ul.branchContainer{
+margin-left:18px;
+}
+
+div.mainLoader{
+    position:relative;
+    margin-top:2em;
+    width:100%;
+    white-space:no-wrap;
+}
+
+div.imgLoader{
+width:18px; height:18px;
+background-repeat:no-repeat;
+background-position:center center;
+background-image:url(images/ajax_loading.gif);
+float:left;
+}
+
+div.imgLoaderBar{
+background-repeat:no-repeat;
+background-position:center center;
+background-image:url(images/progress_bar.gif);
+margin-top:10px;
+width:190px;
+height:14px;
+position:relative;
+}
+
+
+div.nodeTxt, div.nodeTxt_hover, div.nodeTxt_selected, div.ajax_loader_text{
+position:relative;
+float:left;
+font-family:arial, verdana, helvetica;
+font-size:11px;
+
+-moz-user-select:none;
+user-select:none;
+
+}
+
+a.button{
+-moz-user-select:none;
+user-select:none;
+}
+
+.disabled div.treenode, .disabled div.branch, .disabled div.nodeTxt, .disabled div.selected{
+	filter:alpha(opacity=25);-moz-opacity:.25;opacity:.25;
+}
+
+
+div.nodeTxt{
+padding:2px 2px 2px 2px;
+background-color:transparent;
+cursor:default;
+}
+div.nodeTxt_hover{
+padding:2px 2px 2px 2px;
+background-color:#eef;
+cursor:default;
+}
+
+div.nodeTxt_selected{
+padding:2px 2px 2px 2px;
+background-color:#0000ff;
+color:#ffffff;
+cursor:default;
+}
+
+li.nodeLi{
+position:relative;
+clear:both;
+min-height:15px;
+width:640px !important;
+width:240px; /* IE6 */
+overflow:hidden;
+/*border:1px solid red;*/
+padding:0;
+margin: 0;
+}
+
+.ddHover{
+background-color:#0000ff;
+color:#ffffff;
+}
+
+div.ajax_loader_text{
+color:#aaa;
+border:0px none transparent;
+}
+
+
+div.treenode, div.branch, div.pad{
+position:relative;
+border:0px none #000000;
+background-repeat:no-repeat;
+margin:0px 0px 0px 0px;
+float:left;
+height:18px;
+width:16px;
+}
+
+
+
+div.img_doc{
+background-image:url(images/doc.gif);
+}
+div.img_folder{
+background-image:url(images/folder.png);
+}
+div.img_folder_exp{
+background-image:url(images/folder-open.png);
+}
+div.img_folderlinked{
+background-image:url(images/folder-linked.png);
+}
+div.img_folderlinked_exp{
+background-image:url(images/folder-linked-open.png);
+}
+
+
+div.img_link{
+background-image:url(images/link.png);
+}
+div.img_file{
+background-image:url(images/file.png);
+}
+
+/**********************************/
+/* Root images                                          */
+/**********************************/
+div.root_def{
+background-image:url(images/tree.png) !important;
+}
+div.root_mycomp{
+background-image:url(images/mycomputer.png) ! important;
+}
+/**********************************/
+/* END OF Root images                      */
+/**********************************/
+
+
+
+/**********************************/
+/* custom file type images                      */
+/**********************************/
+
+div.ext_bat{
+background-image:url(images/file_bat.png) !important;
+}
+
+div.ext_bmp, div.ext_png, div.ext_gif, div.ext_jpg, div.ext_wmf {
+background-image:url(images/file_img.png) !important;
+}
+
+div.ext_ini, div.ext_cfg{
+background-image:url(images/file_ini.png) !important;
+}
+
+div.ext_htm, div.ext_html, div.ext_jsp{
+background-image:url(images/file_web.png) !important;
+}
+
+div.ext_php{
+background-image:url(images/file_php.png) !important;
+}
+
+div.ext_pdf{
+background-image:url(images/file_pdf.png) !important;
+}
+
+div.ext_avi, div.ext_wmv, div.ext_asf, div.ext_asx, div.ext_divx, div.ext_mpeg, div.ext_mpg4, div.ext_mpeg4, div.ext_mpg{
+background-image:url(images/file_vid.png) !important;
+}
+
+div.ext_mov, div.ext_qt {
+background-image:url(images/file_mov.png) !important;
+}
+
+div.ext_ra, div.ext_rm, div.ext_ram, div.ext_rmvb {
+background-image:url(images/file_rmn.png) !important;
+}
+
+div.ext_doc, div.ext_dot{
+background-image:url(images/file_doc.png) !important;
+}
+
+div.ext_exe{
+background-image:url(images/file_exe.png) !important;
+}
+
+div.ext_xls, div.ext_xlt{
+background-image:url(images/file_xls.png) !important;
+}
+
+div.ext_ppt, div.ext_pps, div.ext_pot{
+background-image:url(images/file_ppt.png) !important;
+}
+
+div.ext_zip, div.ext_7z, div.ext_tgz, div.ext_tar, div.ext_gz, div.ext_rar {
+background-image:url(images/file_zip.png) !important;
+}
+
+div.ext_txt{
+background-image:url(images/file_txt.png) !important;
+}
+/**********************************/
+/* END OF custom file type images */
+/**********************************/
+
+
+
+
+div.node_exp{
+background-image:url(images/node-exp.gif);
+}
+div.node_exp_end{
+background-image:url(images/node-exp-end.gif);
+}
+div.node{
+background-image:url(images/node-cls.gif);
+}
+div.node_end{
+background-image:url(images/node-cls-end.gif);
+}
+div.pipe{
+background-image:url(images/branch.gif);
+}
+div.leaf{
+background-image:none;
+}
+div.leaf_end{
+background-image:none;
+}
+div.branch{
+
+}
+
+.buttonClose{position:relative; float:right;background:url(images/close.gif) no-repeat; height:14px; width: 16px; z-index:5; margin-top:2px; margin-bottom:2px; margin-right:2px;cursor:default}
+
+.buttonConfirm{position:relative; float:right;background:url(images/confirm.gif) no-repeat; height:14px; width: 16px; z-index:5; margin-top:2px; margin-bottom:2px; margin-right:2px;cursor:default}

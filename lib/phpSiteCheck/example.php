@@ -1,0 +1,1 @@
+<?php include("./ad_sitecheck.php")?>

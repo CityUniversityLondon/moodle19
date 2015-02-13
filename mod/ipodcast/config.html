@@ -1,0 +1,166 @@
+<?php 
+/******************************************************************************\
+ *
+ * Filename:    config.html
+ *
+ *		This file provides the module setup page
+ *
+ *
+ * History:     01/03/06 Tom Dolsky     - Tested and added this copyright and info
+ *              02/04/06 Tom Dolsky     - Fixed text explaining that RSS feeds are disabled for whole site.
+ *              02/19/06 Tom Dolsky     - Added usemediafilter module setting.
+ *              10/20/06 Tom Dolsky     - changed darwin config name.
+ *              10/23/06 Tom Dolsky     - Added path configs for mpeg4ip executables.
+ *              10/23/06 Tom Dolsky     - Fixed bug when configs were empty.
+ *
+ * Copyright, Thomas E. Dolsky Cytek Media Systems, Inc.
+ * 					tomd@cytekmedia.com
+ *
+\******************************************************************************/
+
+
+    $yes = get_string("yes");
+    $no  = get_string("no");
+?>
+<form method="post" action="module.php" name="form">
+<input type="hidden" name="sesskey" value="<?php echo $USER->sesskey ?>">
+
+<table cellpadding=9 cellspacing=0 >
+<tr valign=top>
+    <td colspan = 3 align=center><strong><?php print_string("ipodcastleveldefaultsettings","ipodcast") ?></strong></td>
+</tr>
+<tr valign=top>
+        <td align=right>ipodcast_enablerssfeeds:</td>
+        <td>
+    <?php
+        if (!isset($CFG->enablerssfeeds) || $CFG->enablerssfeeds == 0) {
+            print_string("no");
+        } else {
+            unset($options);
+            $options[0] = get_string("no");
+            $options[1] = get_string("yes");
+
+            $ipodcast_enablerssfeeds = false;
+            if (isset($CFG->ipodcast_enablerssfeeds) && $CFG->ipodcast_enablerssfeeds == 1) {
+                $ipodcast_enablerssfeeds = true;
+            }
+
+            choose_from_menu ($options, "ipodcast_enablerssfeeds", $ipodcast_enablerssfeeds, "", "", "");
+        }
+    ?>
+    </td>
+    <td>
+    <?php
+        print_string("configenablerssfeeds","ipodcast");
+       if (!isset($CFG->enablerssfeeds) || $CFG->enablerssfeeds == 0) {
+            print_string("configenablerssfeedsdisabled","admin");
+        }
+	    ?>
+    </td>
+</tr>
+
+
+<tr valign=top>
+        <td align=right>ipodcast_enablerssitunes:</td>
+        <td>
+    <?php
+       unset($options);
+       $options[0] = get_string("no");
+       $options[1] = get_string("yes");
+
+       $ipodcast_enablerssitunes = false;
+       if (isset($CFG->ipodcast_enablerssitunes) && $CFG->ipodcast_enablerssitunes == 1) {
+           $ipodcast_enablerssitunes = true;
+       }
+       choose_from_menu ($options, "ipodcast_enablerssitunes", $ipodcast_enablerssitunes, "", "", "");
+    ?>
+    </td>
+    <td>
+    <?php
+        print_string("configenablerssitunes","ipodcast");
+    ?>
+    </td>
+</tr>
+
+<tr valign=top>
+        <td align=right>ipodcast_usemediafilter:</td>
+        <td>
+    <?php
+       unset($options);
+       $options[0] = get_string("no");
+       $options[1] = get_string("yes");
+
+       $ipodcast_usemediafilter = false;
+       if (isset($CFG->ipodcast_usemediafilter) && $CFG->ipodcast_usemediafilter == 1) {
+           $ipodcast_usemediafilter = true;
+       }
+       choose_from_menu ($options, "ipodcast_usemediafilter", $ipodcast_usemediafilter, "", "", "");
+    ?>
+    </td>
+    <td>
+    <?php
+        print_string("configusemediafilter","ipodcast");
+    ?>
+    </td>
+</tr>
+
+<tr valign="top">
+  <td align="right">Darwin base URL:</td>
+  <td>
+<?php
+if(!isset($CFG->ipodcast_darwinurl)) {
+	$form->ipodcast_darwinurl = "";
+} else {
+	$form->ipodcast_darwinurl = $CFG->ipodcast_darwinurl;
+}
+?>
+    <input name="ipodcast_darwinurl" type="text" size="40" value="<?php p($form->ipodcast_darwinurl) ?>" />
+    </td>
+    <td>
+    <?php print_string("configdarwinurl", "ipodcast") ?>
+    </td>
+</tr>
+
+<tr valign="top">
+  <td align="right">Path to mp4creator:</td>
+  <td>
+<?php
+if(!isset($CFG->ipodcast_mp4creatorpath)) {
+	$form->ipodcast_mp4creatorpath = "";
+} else {
+	$form->ipodcast_mp4creatorpath = $CFG->ipodcast_mp4creatorpath;
+}
+?>
+    <input name="ipodcast_mp4creatorpath" type="text" size="40" value="<?php p($form->ipodcast_mp4creatorpath) ?>" />
+    </td>
+    <td>
+    <?php print_string("configmp4creatorpath", "ipodcast") ?>
+    </td>
+</tr>
+<tr valign="top">
+  <td align="right">Path to mp4info:</td>
+  <td>
+<?php
+if(!isset($CFG->ipodcast_mp4infopath)) {
+	$form->ipodcast_mp4infopath = "";
+} else {
+	$form->ipodcast_mp4infopath = $CFG->ipodcast_mp4infopath;
+}
+?>
+    <input name="ipodcast_mp4infopath" type="text" size="40" value="<?php p($form->ipodcast_mp4infopath) ?>" />
+    </td>
+    <td>
+    <?php print_string("configmp4infopath", "ipodcast") ?>
+    </td>
+</tr>
+
+<tr valign="top">
+<td colspan="3">
+</tr>
+<tr>
+    <td colspan=3 align=center>
+        <input type="submit" value="<?php print_string("savechanges") ?>" /></td>
+</tr>
+</table>
+
+</form>

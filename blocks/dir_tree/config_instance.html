@@ -1,0 +1,91 @@
+<center>
+
+<table cellpadding="9" cellspacing="0">
+	<tr valign="top">
+	<td align="right">
+		<?php print_string('whatcall','block_dir_tree') ?> (default: <?php print_string('title','block_dir_tree') ?>)
+    </td>
+	<td>
+        <input name="conf_blocklabel" type="text" value="<?= $this->config->conf_blocklabel ?>" />
+	</td>
+ 	</tr>
+</table>
+
+<p><?php print_string('whichfolder','block_dir_tree') ?></p>
+<table cellpadding="9" cellspacing="0">
+	<tr valign="top"><td align="right">
+        <input name="conf_dirname" type="radio" value="" <?php if(!$this->config->conf_dirname) echo 'checked="checked"'; ?>  />
+	</td>
+	<td>
+	Main files directory
+    </td>
+ 	</tr>
+<?php
+
+global $COURSE;
+$dirList = list_directories($COURSE->id);
+
+foreach ($dirList as $thisDir) {
+?>
+	<tr valign="top"><td align="right">
+        <input name="conf_dirname" type="radio" value="<?= $thisDir ?>" <?php if($this->config->conf_dirname == $thisDir) echo 'checked="checked"'; ?>  />
+	</td>
+	<td>
+	<?= $thisDir ?>
+    </td>
+ 	</tr>
+
+<?
+}
+?>
+
+<table cellpadding="9" cellspacing="0">
+	<tr valign="top">
+		<td><?php print_string('levels','block_dir_tree') ?>?</td>
+		<td>
+			<select name="conf_maxdepth">
+	    		<option value="1" <?php if($this->config->conf_maxdepth == 1) echo 'selected="selected"'; ?>  /> top level only
+	    		<option value="2" <?php if($this->config->conf_maxdepth == 2) echo 'selected="selected"'; ?>  /> top two levels
+	    		<option value="3" <?php if($this->config->conf_maxdepth == 3 || ($this->config->conf_maxdepth != 1 && $this->config->conf_maxdepth != 2)) echo 'selected="selected"'; ?>  /> top three levels
+			</select>
+		</td>
+ 	</tr>
+
+<tr>
+    <td colspan="2" align="center">
+        <input type="submit" value="<?php print_string('savechanges') ?>" />
+    </td>
+</tr>
+</table>
+
+
+</center>
+
+<?php
+/**
+ * This function takes a relative resource folder path and returns a list of
+ * folders found within it, skipping folders like moddata and backupdata which
+ * we typically dont want to browse.
+ * @param string $dirPath - name of the capability (or debugcache or clearcache)
+ * @return array
+ */
+function list_directories($dirPath) {
+    global $USER;
+    global $CFG;
+    $dirItems=array();
+    $handle = opendir($CFG->dataroot.'/'.$dirPath);
+    while(false !== ($file = readdir($handle))) {
+        if($file != "." && $file != "..") {
+            $name=$CFG->dataroot.'/'.$dirPath.'/'.$file;
+            if( is_dir($name)) { 
+                // do a recursive crawl of a subdirectory
+                if (skip_folder($file)) {
+                    continue;  
+                }
+                array_push($dirItems,$file);
+            }
+        }
+    }
+    return $dirItems;
+}
+?>

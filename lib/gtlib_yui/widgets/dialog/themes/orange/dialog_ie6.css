@@ -1,0 +1,62 @@
+/* I HATE IE 6 */
+
+div.blackorange_DW .DialogToolbar{
+height:16px !important;
+margin-right:4px;
+}
+
+div.blackorange_DW .DialogToolbarTitle{
+height:16px !important;
+}
+
+div.blackorange_DW .DialogInner{
+/*overflow:scroll !important;*/
+}
+
+div.blackorange_DW .DialogPrompt{
+position:absolute !important;
+padding:0.5em 0.5em 0.5em 0.5em !important;
+margin:0 0 0 0 !important;
+}
+
+div.blackorange_DW .BotLeftCorner, div.blackorange_DW .TopLeftCorner{
+margin-left:1px;
+width:19px;
+}
+
+div.blackorange_DW .BotRightCorner, div.blackorange_DW .TopRightCorner{
+margin-right:1px;
+width:19px;
+}
+
+div.blackorange_DW .ButtonClose{
+background-position:center top;
+background-image:url(pix/dialog/button_close_ie6.png);
+}
+
+div.blackorange_DW .ButtonClose_hover{
+background-image:url(pix/dialog/button_close_hover_ie6.png);
+}
+
+div.blackorange_DW .ButtonMax{
+background-image:url(pix/dialog/button_maximise_ie6.png);
+}
+
+div.blackorange_DW .ButtonMax_hover{
+background-image:url(pix/dialog/button_maximise_hover_ie6.png);
+}
+
+div.blackorange_DW .ButtonRest{
+background-image:url(pix/dialog/button_restore_ie6.png);
+}
+
+div.blackorange_DW .ButtonRest_hover{
+background-image:url(pix/dialog/button_restore_hover_ie6.png);
+}
+
+
+div.blackorange_DW .DialogToolbarButton{
+position:relative; float:right;background-repeat: no-repeat; height:23px; width: 20px; z-index:5; margin-top:-1px; margin-bottom:2px; margin-right:-2px;cursor:default
+}
+
+

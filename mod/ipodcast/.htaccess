@@ -1,0 +1,14 @@
+<Files .htaccess>
+order allow,deny
+deny from all
+</Files>
+
+AddType application/x-httpd-php .pdf
+AddType application/x-httpd-php .jpg
+AddType application/x-httpd-php .png
+AddType application/x-httpd-php .mp3
+AddType application/x-httpd-php .mp4
+AddType application/x-httpd-php .m4v
+AddType application/x-httpd-php .m4a
+AddType application/x-httpd-php .m4b
+AddType application/x-httpd-php .mov

@@ -1,0 +1,14 @@
+<?PHP
+/******************************************************************************\
+ *
+ * Filename:    file.jpg
+ *
+ *				See file.php for description
+ *
+ * Copyright, Thomas E. Dolsky Cytek Media Systems, Inc.
+ * 					tomd@cytekmedia.com
+ *
+\******************************************************************************/
+    include_once('file.php');
+
+?>

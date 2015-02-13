@@ -1,0 +1,34 @@
+<table cellpadding="9" cellspacing="0" align="center">
+  <tr valign="top">
+    <td align="right">Block Title:</td>
+    <td><input type="text" name="title" size="30" value="<?php if (!empty($this->config->title)) { echo $this->config->title; } ?>" />
+    &nbsp;
+    <?php if (isset($this->config->showtitle)) { echo "<input type=\"checkbox\" name=\"showtitle\" checked=\"checked\" />"; } else { echo ("<input type=\"checkbox\" name=\"showtitle\" />"); } ?> Display Title?
+    </td>
+  </tr>
+  <tr valign="top">
+    <td align="right">Flickr User: </td>
+    <td>
+    <input type="text" name="userid" size="30" value="<?php if (!empty($this->config->userid)) { echo $this->config->userid; } ?>" /> | Type: <select name="useridtype" > 
+    <?php if (empty($this->config->useridtype) || ($this->config->useridtype == "1")) { echo ("<option value=\"1\" selected=\"selected\">Username</option>"); } else { echo ("<option value=\"1\">Username</option>"); } ?>
+    <?php if ($this->config->useridtype == "2") { echo ("<option value=\"2\" selected=\"selected\">Email Address</option>"); } else { echo ("<option value=\"2\">Email Address</option>"); } ?>
+    <?php if ($this->config->useridtype == "3") { echo ("<option value=\"3\" selected=\"selected\">Flickr User ID</option>"); } else { echo ("<option value=\"3\">Flickr User ID</option>"); } ?>
+    </select></td>
+  </tr>
+  <tr valign="top">
+    <td align="right">Set ID: </td>
+    <td><input type="text" name="setid" size="30" value="<?php if (!empty($this->config->setid)) { echo $this->config->setid; } ?>" /> (Optional)</td> 
+  </tr>
+  <tr valign="top">
+    <td align="right">Tag: </td>
+    <td><input type="text" name="tag" size="30" value="<?php if (!empty($this->config->tag)) { echo $this->config->tag; } ?>" /> (Optional)</td> 
+  </tr>
+  <tr valign="top">
+  <td align="center" colspan="2">
+  	<?php if (isset($this->config->clearcache)) { echo "<input type=\"checkbox\" name=\"clearcache\" checked=\"checked\" />"; } else { echo ("<input type=\"checkbox\" name=\"clearcache\" />"); } ?> Clear Cache? 
+  </td> 
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><input type="submit" value="<?php print_string('savechanges') ?>" /></td>
+  </tr>
+</table>

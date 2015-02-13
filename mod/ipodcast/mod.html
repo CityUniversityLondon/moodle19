@@ -1,0 +1,152 @@
+<?php
+/******************************************************************************\
+ *
+ * Filename:    mod.html
+ *
+ *				This is used to setup individual iPodcast entries
+ *
+ * History:     01/03/06 Tom Dolsky     - Tested and added this copyright and info
+ *              01/15/06 Tom Dolsky     - Added Javascript category menus
+ *				01/19/06 Tom Dolsky     - Add Tab form printing redirects to view.php
+ *				02/05/06 Tom Dolsky     - Fixed Edit button from course view causing error
+ *
+ * Copyright, Thomas E. Dolsky Cytek Media Systems, Inc.
+ * 					tomd@cytekmedia.com
+ *
+\******************************************************************************/
+
+    $id 	= optional_param('id'		, 0, PARAM_INT);           // Course ID
+    $update = optional_param('update'	, 0, PARAM_INT);           // update contains instance
+    $add 	= optional_param('add'		, 0, PARAM_ALPHA);         // $add contains "ipodcast" if its new
+
+	require_once("$CFG->dirroot/mod/ipodcast/lib.php");	
+    require_once($CFG->libdir.'/weblib.php');
+	global $USER;
+	
+	// this section doesnt seem right but it works.
+	// $id is set but zero on page reload that is the reason for this
+
+	$coursesetup = false;	
+	if(isset($id) && ($id != 0)) {
+	//Checking for ipodcast record
+		if(!$ipodcastcourse = get_record("ipodcast_courses", "course", $id)) {
+			$coursesetup = false;
+		} else {
+			$coursesetup = true;
+		}
+	} else {
+		$coursesetup = true;
+	}		
+	
+	if($coursesetup == false) {	
+		/* This course hasnt been setup with iPodcast yet.	*/
+		/* Redirect to iPodcast Setup Course page			*/			
+		redirect("$CFG->wwwroot/mod/ipodcast/setupcourse.php?id=$id&sesskey=$USER->sesskey");													
+	}
+			
+	if (!empty($add)) {
+	
+		if(!$ipodcastcourse = get_record("ipodcast_courses", "course", $id)) {
+			error("Invalid Course ID");
+		};	
+		
+		if(!$course = get_record("course", "id", $id)) {
+			error("Invalid Course ID");
+		}					
+							
+	} else 	if (isset($update)) {	
+		$update_url = "$CFG->wwwroot/mod/ipodcast/view.php?id=$update&tab=" . IPODCAST_EDIT_VIEW;
+		redirect($update_url);								
+	}		
+	
+	
+	if (!isset($form->name)) {
+		$form->name = stripslashes_safe($ipodcastcourse->name) . " for week " . $section;
+	}
+	if (!isset($form->summary)) {
+		$form->summary = stripslashes_safe($ipodcastcourse->summary);
+	}
+	if (!isset($form->subtitle)) {
+		$form->subtitle = stripslashes_safe($ipodcastcourse->subtitle);
+	}
+	if (!isset($form->keywords)) {
+		$form->keywords = stripslashes_safe($ipodcastcourse->keywords);
+	}
+	if (!isset($form->id)) {
+		$form->id = $id;
+	}			
+	if (!isset($form->notes)) {
+		$form->notes = "";
+	}
+	if (!isset($form->ipodcastcourseid)) {
+		$form->ipodcastcourseid = $ipodcastcourse->id;
+	}			
+	if (!isset($form->attachment)) {
+		$form->attachment = "";
+	}
+	if (!isset($form->topcategory)) {
+		$form->topcategory = $ipodcastcourse->topcategory;
+	}
+	if (!isset($form->nestedcategory)) {
+		$form->nestedcategory = $ipodcastcourse->nestedcategory;
+	}						
+	if (!isset($form->explicit)) {
+		$form->explicit = $ipodcastcourse->explicit;
+	}							
+	if (!isset($form->timefinish)) {
+		$form->timefinish = "";
+	}
+	if (!isset($form->timestart)) {
+		$form->timestart = "";
+	}						
+	if (!isset($form->visible)) {
+		$form->visible = 0;
+	}
+	if (!isset($form->teacherentry)) {
+		$form->teacherentry = ipodcast_is_teacher($ipodcastcourse,$USER->id);
+	}
+	?>
+	</p>
+	<form name="form" method="post" action="mod.php">
+	<center>
+	<table cellpadding="5">
+	
+	<tr>
+	  <td align="right" valign="top"><b><?php print_string("name") ?>:</b></td>
+	  <td align="left"><input type="text" name="name" size="100" value="<?php p($form->name) ?>" /></td>
+	</tr>
+	<tr>
+	  <td align="right" valign="top"><b><?php print_string("summary") ?>:</b></td>
+	  <td align="left"><?php print_textarea($usehtmleditor, 20, 50, 680, 400, "summary", $form->summary); ?></td>
+	</tr>
+	<tr>
+	  <td align="right" valign="top"><b><?php print_string("notes", "ipodcast") ?>:</b></td>
+	  <td align="left"><input type="text" name="notes" size="100" value="<?php p($form->notes) ?>" /></td>
+	</tr>		
+	</table>
+	
+	<?php if (isset($form->redirect)) { ?>
+	<input type="hidden" name="redirect"        value="<?php p($form->redirect) ?>" />
+	<input type="hidden" name="redirecturl"     value="<?php p($form->redirecturl) ?>" />
+	<?php } ?>
+	<input type="hidden" name="ipodcastcourseid"value="<?php p($form->ipodcastcourseid) ?>" />
+	<input type="hidden" name="visible"         value="<?php p($form->visible) ?>" />
+	<input type="hidden" name="teacherentry"    value="<?php p($form->teacherentry) ?>" />
+	<input type="hidden" name="topcategory"     value="<?php p($form->topcategory) ?>" />
+	<input type="hidden" name="nestedcategory"  value="<?php p($form->nestedcategory) ?>" />
+	<input type="hidden" name="explicit"        value="<?php p($form->explicit) ?>" />
+	<input type="hidden" name="subtitle"        value="<?php p($form->subtitle) ?>" />
+	<input type="hidden" name="keywords"        value="<?php p($form->keywords) ?>" />
+	<!-- These hidden variables are always the same -->
+	<input type="hidden" name="course"          value="<?php p($form->course) ?>" />
+	<input type="hidden" name="sesskey"         value="<?php p($form->sesskey) ?>" />
+	<input type="hidden" name="coursemodule"    value="<?php p($form->coursemodule) ?>" />
+	<input type="hidden" name="section"         value="<?php p($form->section) ?>" />
+	<input type="hidden" name="module"          value="<?php p($form->module) ?>" />
+	<input type="hidden" name="modulename"      value="<?php p($form->modulename) ?>" />
+	<input type="hidden" name="instance"        value="<?php p($form->instance) ?>" />
+	<input type="hidden" name="mode"            value="<?php p($form->mode) ?>" />
+	<input type="submit"                        value="<?php print_string('saveipodcast', "ipodcast") ?>" />
+	<input type="submit" name="cancel"          value="<?php print_string('cancel') ?>" />
+	</center>
+	</form>

@@ -1,0 +1,10 @@
+<form id="form" method="post" action="<?php echo "$CFG->wwwroot/mod/quiz/report.php?q=$form->instance&mode=regrade" ?>">
+
+<input type="hidden" name="mode"         value="regrade" />
+<input type="hidden" name="id" value="<?php p($form->id) ?>" />
+<input type="hidden" name="q"     value="<?php p($form->q) ?>" />
+<input type="hidden" name="regrade"     value="<?php p($form->regrade) ?>" />
+<input type="submit" value=" <?php print_string("yes")?> " />
+<input type="button" value=" <?php print_string("no")?> " onclick="javascript:history.go(-1);" />
+
+</form>

@@ -1,0 +1,78 @@
+.gtlib_gridpage{
+    position:relative;
+    margin-top:2px;
+    margin-bottom:2px;
+}
+
+table.grid_table{
+    width:98%;
+    border:outset 1;
+    background-color:#fff;
+}
+
+table.grid_table th{
+    border-right:1px solid #fff;
+}
+
+table.grid_table td, table.grid_table th{
+    border:inset 3;
+    padding:5px;    
+    text-align:left;
+}
+
+table.grid_table tr.rowalt0{
+    background-color:#fff;
+}
+table.grid_table tr.rowalt1{
+    background-color:#f4f4f4;
+}
+
+tr.grid_selectable{
+    cursor:pointer;
+}
+
+tr.grid_selectable:hover{
+    background-color:#0ae !important;
+    color:#fff;
+}
+
+.itempagination{
+position:relative;
+height:20px;
+width:100%;
+background-image:url('../pix/gradient.png');
+background-repeat:repeat-x;
+background-color:#E2E2E2;
+border:1px solid #ddd;
+}
+
+.itempaginationLeft, .itempaginationRight, .itempaginationLeftGreyed, .itempaginationRightGreyed{
+position:relative;
+display:block;
+height:16px;
+width:16px;
+margin:2px 2px 2px 2px;
+float:left;
+}
+
+.itempaginationLeft{
+background-image:url('../pix/back16.png');
+}
+
+.itempaginationLeftGreyed{
+background-image:url('../pix/backgreyed16.png');
+}
+
+.itempaginationRight{
+background-image:url('../pix/forward16.png');
+}
+
+.itempaginationRightGreyed{
+background-image:url('../pix/forwardgreyed16.png');
+}
+
+.itempaginationTextViewing, .itempaginationTextOfPages, .itempaginationSelect{
+float:left;
+margin:2px 2px 2px 2px;
+font-size:0.8em;
+}

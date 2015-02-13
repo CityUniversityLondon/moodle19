@@ -1,0 +1,16 @@
+Changelog
+======================
+1.2
+	- Changed code to meet Moodle Coding Guidelines
+	- Added search in Norwegian, Finish and Chinese (still need logos)
+
+1.1
+    - Added search in Rusish
+    - Added automatic search language selection based on the current interface language
+    - Added logo images of French, Greek, Italian, Dutch, Japanese, Polish, Portuguese, Rusish and Swedish
+    - Added "global $CFG;" to support the directive "register_globals = off"
+    - Removed the language files. Now it calculates the wikipedia logo filename with the language. (Convention over Configuration principle)
+
+1.0
+    - Added search in English, French, German, Greek, Italian, Dutch, Japanese, Polish, Portuguese, Spanish and Swedish
+    - Added logo images of English, German and Spanish

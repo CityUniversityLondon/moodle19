@@ -1,0 +1,39 @@
+<table cellpadding="9" cellspacing="0">
+<tr valign="top">
+    <td align="right">Flickr API Key:</td>
+    <td>
+    <input name="block" type="hidden" value="<?php echo intval($_REQUEST['block']); ?>" />
+    <input name="flickrAPIKey" type="text" size="32" value="<?php 
+        if(isset($CFG->flickrAPIKey)) {
+            echo ($CFG->flickrAPIKey);
+        } else {
+            echo "";
+        } ?>" />
+    </td>
+    <td>
+        Key used to validate Flickr requests - available from <a href="http://www.flickr.com/services/api/keys/">http://www.flickr.com/services/api/keys/</a>
+    </td>
+</tr>
+<!--
+<tr valign="top">
+    <td align="right">Flickr API Secret:</td>
+    <td>
+    <input name="block" type="hidden" value="<?php echo intval($_REQUEST['block']); ?>" />
+    <input name="flickrAPISecret" type="text" size="16" value="<?php 
+        if(isset($CFG->flickrAPISecret)) {
+            echo ($CFG->flickrAPISecret);
+        } else {
+            echo "";
+        } ?>" />
+    </td>
+    <td>
+        Secret used to validate Flickr requests - create along with the Key above.
+    </td>
+</tr> -->
+
+
+<tr>
+    <td colspan="3" align="center">
+    <input type="submit" value="<?php print_string('savechanges') ?>" /></td>
+</tr>
+</table>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin>
+	<title>Plugin title</title>
+	<filename>captions.swf</filename>
+	<version>1</version>
+	<compatibility>Compatible with 4.X</compatibility>
+	<author>Me</author>
+	<description>A short description of the plugin, in a few lines.</description>
+	<href>http://localhost/moodle/mod/mplayer/plugins/</href>
+	<flashvars>
+		<flashvar>
+			<name>file</name>
+			<default>plugin.config.xml</default>
+			<description>A flashvar for this plugin</description>
+		</flashvar>
+		<flashvar>
+			<name>image</name>
+			<default></default>
+			<description>Another flashvar, with no default value.</description>
+		</flashvar>
+	</flashvars>
+</plugin>
