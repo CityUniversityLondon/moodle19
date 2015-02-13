@@ -4,7 +4,7 @@
     require_once("lib.php");
     require_once('../../lib/uow-lib.php');
     require_once('verifyfile-form.php');
-    
+
     $id = required_param('id', PARAM_INT);  // Course Module ID
 
     if (! $cm = get_coursemodule_from_id('assignment', $id)) {
@@ -20,16 +20,16 @@
     }
 
     require_login($course, true, $cm);
-    
-    require_capability('mod/assignment:grade', get_context_instance(CONTEXT_MODULE, $cm->id));
+
+    require_capability('moodle/grade:viewall', get_context_instance(CONTEXT_MODULE, $cm->id));
 
     require ("$CFG->dirroot/mod/assignment/type/$assignment->assignmenttype/assignment.class.php");
     $assignmentclass = "assignment_$assignment->assignmenttype";
     $assignmentinstance = new $assignmentclass($cm->id, $assignment, $cm, $course);
     $assignmentinstance->view_header();
-    
+
     $mform = new assignment_verifyfile_form(null, array('id' => $id));
-    
+
     if ($mform->is_cancelled()) {
         redirect($CFG->wwwroot.'/mod/assignment/view.php?id='.$cm->id);
     } elseif ($data = $mform->get_data(false)) {

@@ -2,11 +2,11 @@
 
     require_once("../../config.php");
     require_once("lib.php");
- 
+
     $id  = required_param('id', PARAM_INT);
     $submissionid  = required_param('submission', PARAM_INT);   // Assignment Submission Id
     $delete = optional_param('delete', 0, PARAM_INT);
-    
+
     if (! $cm = get_coursemodule_from_id('assignment', $id)) {
         error("Course Module ID was incorrect");
     }
@@ -18,14 +18,14 @@
     if (! $course = get_record("course", "id", $assignment->course)) {
         error("Course is misconfigured");
     }
-    
+
     if (!$submission = get_record('assignment_submissions', 'id', $submissionid)) {
         error('Submission not found');
     }
 
     require_login($course, true, $cm);
-    
-    if ($submission->userid != $USER->id && !has_capability('mod/assignment:grade', get_context_instance(CONTEXT_MODULE, $cm->id))) {
+
+    if ($submission->userid != $USER->id && !has_capability('moodle/grade:viewall', get_context_instance(CONTEXT_MODULE, $cm->id))) {
         error('Permission Denied');
     }
 
@@ -47,6 +47,6 @@
     print_box_end();
     print_continue($CFG->wwwroot.'/mod/assignment/view.php?id='.$cm->id);
     $assignmentinstance->view_footer();
-    
+
     add_to_log($course->id, 'assignment', 'view receipt', 'receipt.php?id='.$cm->id.'&amp;submission='.$submission->id, $cm->instance, $cm->id);
 ?>

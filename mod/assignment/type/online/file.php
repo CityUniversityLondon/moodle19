@@ -3,7 +3,7 @@
     require("../../../../config.php");
     require("../../lib.php");
     require("assignment.class.php");
- 
+
     $id     = required_param('id', PARAM_INT);      // Course Module ID
     $userid = required_param('userid', PARAM_INT);  // User ID
 
@@ -25,7 +25,7 @@
 
     require_login($course->id, false, $cm);
 
-    if (($USER->id != $user->id) && !has_capability('mod/assignment:grade', get_context_instance(CONTEXT_MODULE, $cm->id))) {
+    if (($USER->id != $user->id) && !has_capability('moodle/grade:viewall', get_context_instance(CONTEXT_MODULE, $cm->id))) {
         error("You can not view this assignment");
     }
 

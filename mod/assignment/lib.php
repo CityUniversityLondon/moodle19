@@ -298,7 +298,7 @@ class assignment_base {
         $submitted = '';
 
         $context = get_context_instance(CONTEXT_MODULE,$this->cm->id);
-        if (has_capability('mod/assignment:grade', $context)) {
+        if (has_capability('moodle/grade:viewall', $context)) {
             if ($allgroups and has_capability('moodle/site:accessallgroups', $context)) {
                 $group = 0;
             } else {
@@ -504,6 +504,8 @@ class assignment_base {
         //make user global so we can use the id
         global $USER;
 
+        //require_capability('mod/assignment:grade', get_context_instance(CONTEXT_MODULE, $this->cm->id));
+
         $mailinfo = optional_param('mailinfo', null, PARAM_BOOL);
         if (is_null($mailinfo)) {
             $mailinfo = get_user_preferences('assignment_mailinfo', 0);
@@ -513,6 +515,7 @@ class assignment_base {
 
         switch ($mode) {
             case 'grade':                         // We are in a popup window grading
+                require_capability('mod/assignment:grade', get_context_instance(CONTEXT_MODULE, $this->cm->id));
                 if ($submission = $this->process_feedback()) {
                     //IE needs proper header with encoding
                     print_header(get_string('feedback', 'assignment').':'.format_string($this->assignment->name));
@@ -523,6 +526,7 @@ class assignment_base {
                 break;
 
             case 'single':                        // We are in a popup window displaying submission
+                require_capability('mod/assignment:grade', get_context_instance(CONTEXT_MODULE, $this->cm->id));
                 $this->display_submission();
                 break;
 
@@ -531,6 +535,7 @@ class assignment_base {
                 break;
 
             case 'fastgrade':
+                require_capability('mod/assignment:grade', get_context_instance(CONTEXT_MODULE, $this->cm->id));
                 ///do the fast grading stuff  - this process should work for all 3 subclasses
 
                 $grading    = false;
@@ -628,6 +633,7 @@ class assignment_base {
 
 
             case 'next':
+                require_capability('mod/assignment:grade', get_context_instance(CONTEXT_MODULE, $this->cm->id));
                 /// We are currently in pop up, but we want to skip to next one without saving.
                 ///    This turns out to be similar to a single case
                 /// The URL used is for the next submission.
@@ -636,6 +642,7 @@ class assignment_base {
                 break;
 
             case 'saveandnext':
+                require_capability('mod/assignment:grade', get_context_instance(CONTEXT_MODULE, $this->cm->id));
                 ///We are in pop up. save the current one and go to the next one.
                 //first we save the current changes
                 if ($submission = $this->process_feedback()) {
@@ -1640,8 +1647,8 @@ class assignment_base {
         // CMDL-1141 fix emails sent to roles above teacher
         global $CFG;
         // all potential graders
-        $allgraders = get_users_by_capability($this->context, 'mod/assignment:grade', '', '', '', '', '', '', false, false);
-        
+        $allgraders = get_users_by_capability($this->context, 'moodle/grade:viewall', '', '', '', '', '', '', false, false);
+
         // fix by Mike to stop emails going to all with category levels roles
         // OK, so we have a list of users who have capability but we need to drop those
         // who have this at category level, they don't want emails too
@@ -1654,7 +1661,7 @@ class assignment_base {
             }
         }
         // end CMDL-1141
-        
+
         $graders = array();
         if (groups_get_activity_groupmode($this->cm) == SEPARATEGROUPS) {   // Separate groups are being used
             if ($groups = groups_get_all_groups($this->course->id, $user->id)) {  // Try to find all groups
@@ -2004,7 +2011,7 @@ class assignment_base {
         return(false);
     }
     // end CMDL-1175
-    
+
     // CMDL-1108 add assignment receipt functionality
     /**
      * Gets data for the coversheet
@@ -2031,7 +2038,7 @@ class assignment_base {
         $fields['courseid'] = $this->course->fullname;
         $fields['assignmentname'] = $assignment->name;
         $fields['teachers'] = '';
-        
+
         foreach ($teachers as $teacher) {
             $fields['teachers'] .= $teacher->firstname.' '.$teacher->lastname.'<br />';
         }
@@ -2105,7 +2112,7 @@ class assignment_base {
             $rtfdata['#'.$key.'#'] = $value? $value: '';
         }
         unset($fields);
-       
+
         return(uow_generate_rtf($CFG->dirroot.'/mod/assignment/template.rtf', $rtfdata));
 
     }
@@ -2147,7 +2154,7 @@ class assignment_base {
         return($coversheet);
     }
     // end CMDL-1108
-    
+
 
 
 
@@ -3006,7 +3013,7 @@ function assignment_count_real_submissions($cm, $groupid=0) {
         $gradebookroles = '';
     }
     $users = get_role_users($gradebookroles, $context, true, '', 'u.lastname ASC', true, $groupid);
-    if ($users) { 
+    if ($users) {
         $users = array_keys($users);
         // if groupmembersonly used, remove users who are not in any group
         if (!empty($CFG->enablegroupings) and $cm->groupmembersonly) {
@@ -3245,7 +3252,7 @@ function assignment_print_overview($courses, &$htmlarray) {
             $str .= '<div class="info">'.$strduedateno.'</div>';
         }
         $context = get_context_instance(CONTEXT_MODULE, $assignment->coursemodule);
-        if (has_capability('mod/assignment:grade', $context)) {
+        if (has_capability('moodle/grade:viewall', $context)) {
 
             // count how many people can submit
             $submissions = 0; // init

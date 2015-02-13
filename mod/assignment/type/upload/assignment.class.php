@@ -25,7 +25,7 @@ class assignment_upload extends assignment_base {
         $this->view_header();
 
         if ($this->assignment->timeavailable > time()
-          and !has_capability('mod/assignment:grade', $this->context)      // grading user can see it anytime
+          and !has_capability('moodle/grade:viewall', $this->context)      // grading user can see it anytime
           and $this->assignment->var3) {                                   // force hiding before available date
             print_simple_box_start('center', '', '', 0, 'generalbox', 'intro');
             print_string('notavailableyet', 'assignment');
@@ -114,7 +114,7 @@ class assignment_upload extends assignment_base {
             return;
         }
         // end CMDL-1632
-        
+
         $graded_date = $grade->dategraded;
         $graded_by   = $grade->usermodified;
 
@@ -329,7 +329,7 @@ class assignment_upload extends assignment_base {
         $output .= helpbutton('bulkuploadfeedback', get_string('bulkuploadfeedback', 'assignment'), 'assignment', true, false, '', true);
         $output .= '</div>';
         $output .= '</form>';
-        
+
 
         if ($return) {
             return $output;
@@ -438,7 +438,7 @@ class assignment_upload extends assignment_base {
             }
         }
 
-        if ($this->drafts_tracked() and $this->isopen() and has_capability('mod/assignment:grade', $this->context) and $mode != '') { // we do not want it on view.php page
+        if ($this->drafts_tracked() and $this->isopen() and has_capability('moodle/grade:viewall', $this->context) and $mode != '') { // we do not want it on view.php page
             if ($this->can_unfinalize($submission)) {
                 $options = array ('id'=>$this->cm->id, 'userid'=>$userid, 'action'=>'unfinalize', 'mode'=>$mode, 'offset'=>$offset, 'sesskey'=>sesskey());
                 $output .= print_single_button('upload.php', $options, get_string('unfinalize', 'assignment'), 'post', '_self', true);
@@ -690,7 +690,7 @@ class assignment_upload extends assignment_base {
                     $this->view_header(get_string('upload'));
                     // CMDL-1731 Student assignment not in database (REQ0054386)
                     add_to_log($this->course->id, 'assignment', 'upload not registered', 'view.php?a='.$this->assignment->id, $new_filename);
-                    // end CMDL-1731   
+                    // end CMDL-1731
                     notify(get_string('uploadnotregistered', 'assignment', $new_filename));
                     print_continue($returnurl);
                     $this->view_footer();
@@ -700,7 +700,7 @@ class assignment_upload extends assignment_base {
                 // end CMDL-1108
             }
         // CMDL-1731 Student assignment not in database (REQ0054386)
-        } 
+        }
         // end CMDL-1731
 
         $this->view_header(get_string('upload'));
@@ -947,10 +947,10 @@ class assignment_upload extends assignment_base {
                 } else {
                     $updated->timemarked = time();
                     $updated->teacher = $USER->id;
-                }  
+                }
                 // end CMDL-1442
                 // CMDL-1108 add assignment receipt functionality
-                if (update_record('assignment_submissions', $updated)) { 
+                if (update_record('assignment_submissions', $updated)) {
                     add_to_log($this->course->id, 'assignment', 'delete', //TODO: add delete action to log
                             'view.php?a='.$this->assignment->id, $file, $this->cm->id);
                     $submission = $this->get_submission($userid);
@@ -999,7 +999,7 @@ class assignment_upload extends assignment_base {
     }
 
     function can_manage_responsefiles() {
-        if (has_capability('mod/assignment:grade', $this->context)) {
+        if (has_capability('moodle/grade:viewall', $this->context)) {
             return true;
         } else {
             return false;
@@ -1009,7 +1009,7 @@ class assignment_upload extends assignment_base {
     function can_delete_files($submission) {
         global $USER;
 
-        if (has_capability('mod/assignment:grade', $this->context)) {
+        if (has_capability('moodle/grade:viewall', $this->context)) {
             return true;
         }
 
@@ -1055,7 +1055,7 @@ class assignment_upload extends assignment_base {
         if (!$this->drafts_tracked()) {
             return false;
         }
-        if (has_capability('mod/assignment:grade', $this->context)
+        if (has_capability('moodle/grade:viewall', $this->context)
           and $this->isopen()
           and $this->is_finalized($submission)) {
             return true;
@@ -1074,7 +1074,7 @@ class assignment_upload extends assignment_base {
 		    return false;
 		}
 
-        if (has_capability('mod/assignment:grade', $this->context)) {
+        if (has_capability('moodle/grade:viewall', $this->context)) {
             return true;
 
         } else if (has_capability('mod/assignment:submit', $this->context)    // can submit
@@ -1181,24 +1181,24 @@ class assignment_upload extends assignment_base {
         // end CMDL-1629
         $mform->setHelpButton('emailteachers', array('emailteachers', get_string('emailteachers', 'assignment'), 'assignment'));
         $mform->setDefault('emailteachers', 0);
-        
+
         // CMDL-1141 fix emails sent to roles above teacher
         $mform->setAdvanced('emailteachers');
         // end CMDL-1141
 
         $mform->addElement('select', 'var4', get_string("trackdrafts", "assignment"), $ynoptions);
         $mform->setHelpButton('var4', array('trackdrafts', get_string('trackdrafts', 'assignment'), 'assignment'));
-        
+
         // CMDL-1592 Enable send for marking default as no (REQ0026604)
         $mform->setDefault('var4', $CFG->assignment_trackdrafts);
         // end CMDL-1592
-        // 
+        //
         // CMDL-1141 fix emails sent to roles above teacher
         $mform->setAdvanced('var4');
         // end CMDL-1141
 
     }
-    
+
     // CMDL-1175 add bulk upload of feedback
     function download_submissions() {
         global $CFG;
@@ -1211,7 +1211,7 @@ class assignment_upload extends assignment_base {
         $moddir = $courseshortnamecleaned.'_'.$modulenamecleaned.'_'.$this->cm->instance;
 
         // CMDL-1290 fix for bulk download with groups
-        if (!file_exists($desttemp.$moddir)) { //create temp dir if it doesn't already exist.        
+        if (!file_exists($desttemp.$moddir)) { //create temp dir if it doesn't already exist.
             mkdir($desttemp.$moddir, 0777, true);
         // end CMDL-1290
         }
@@ -1231,7 +1231,7 @@ class assignment_upload extends assignment_base {
         fclose($checkfile);
 
         $zipped = false;
-        
+
         // Zip files
         $fullzipfilename = $desttemp.$destfile;
         if (file_exists($desttemp)) {
@@ -1267,12 +1267,12 @@ class assignment_upload extends assignment_base {
         $courseshortnamecleaned  = clean_filename($this->course->shortname);
         $modulenamecleaned  = clean_filename($this->cm->name);
         $moddir = $courseshortnamecleaned.'_'.$modulenamecleaned.'_'.$this->cm->instance;
-        $checkmd5 = md5($this->course->shortname . $this->course->id . $this->cm->instance);        
+        $checkmd5 = md5($this->course->shortname . $this->course->id . $this->cm->instance);
 
         $returnurl = "submissions.php?id={$this->cm->id}&amp;mode=$mode&amp;offset=$offset";
 
         if (data_submitted('nomatch') and $this->can_manage_responsefiles() and confirm_sesskey()) {
-            $dir = $this->file_area_name('temp'); 
+            $dir = $this->file_area_name('temp');
             check_dir_exists($CFG->dataroot.'/'.$dir, true, true);
             require_once($CFG->dirroot.'/lib/uploadlib.php');
             $um = new upload_manager('newfile',false,true,$this->course,false,0,true);
@@ -1337,7 +1337,7 @@ class assignment_upload extends assignment_base {
             // loop through response files, if substring matches
             // get suffix
             // save the highest suffix
-            // add 1 to it 
+            // add 1 to it
             $suffix = 0;
             $rtfpath = $path.'/responses/';
             // Need to create response directory if it does not
@@ -1358,7 +1358,7 @@ class assignment_upload extends assignment_base {
                             $suffix = max($suffix, $i);
                         }
                     }
-                }                
+                }
             }
             //die;
             $suffix += 1;
@@ -1366,13 +1366,13 @@ class assignment_upload extends assignment_base {
             $rtfpath .= $user->username.$title[$delete].$suffix.'.rtf';
             // end CMDL-1251
             $fp = fopen($CFG->dataroot.'/'.$rtfpath, 'w');
-            fputs($fp, $rtf);            
+            fputs($fp, $rtf);
             fclose($fp);
 
             // CMDL-1251 add deletion titles to receipt
             email_to_user($user, $from, get_string($receiptsubject[$delete], 'assignment'), $bodytext, $bodyhtml, $rtfpath, 'confirmation.rtf');
             //unlink($CFG->dataroot.'/'.$rtfpath);
-            // end CMDL-1251 
+            // end CMDL-1251
         }
     }
     // end CMDL-1108
@@ -1388,7 +1388,7 @@ class assignment_upload extends assignment_base {
     function copy_submissions($destdir) {
         global $CFG;
         require_once($CFG->libdir.'/filelib.php');
-        
+
         // CMDL-1290 fix for bulk download with groups
         $groupmode = groups_get_activity_groupmode($this->cm);
         $groupid = 0;	// All user
@@ -1399,7 +1399,7 @@ class assignment_upload extends assignment_base {
         // CMDL-1405 Bulk uploading marks
         // create directory structure for students that have not submitted
         $users = get_users_by_capability($this->context, 'mod/assignment:submit', '', '', '', '', $groupid, '', false);
-  
+
         foreach ($users as $user) {
             $userdir = clean_filename($user->lastname . '_' . $user->firstname . '_' . $user->id);
             $desttemp = $destdir . '/' . $userdir . '/';
@@ -1411,7 +1411,7 @@ class assignment_upload extends assignment_base {
         // end CMDL-1405
 
         $submissions = assignment_get_all_submissions($this->assignment);
-        
+
         $count = 0;
 
         foreach ($submissions as $submission) {
