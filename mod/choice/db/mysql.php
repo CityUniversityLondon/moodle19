@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: mysql.php,v 1.26.6.1 2011/08/30 23:43:19 moodlerobot Exp $
 
 // THIS FILE IS DEPRECATED!  PLEASE DO NOT MAKE CHANGES TO IT!
 //

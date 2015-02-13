@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: user.php,v 1.109.2.4 2008/07/10 08:36:02 skodak Exp $
 
     require_once('../config.php');
     require_once($CFG->libdir.'/adminlib.php');
@@ -121,8 +121,10 @@
     $ufiltering = new user_filtering();
 
     // Carry on with the user listing
-
-    $columns = array("firstname", "lastname", "email", "city", "country", "lastaccess");
+    // CMDL-1414 add idnumber to user lists
+    //$columns = array("firstname", "lastname", "email", "city", "country", "lastaccess");
+    $columns = array("firstname", "lastname", "email", "username", "idnumber", "lastaccess");
+    // end CMDl-1414
 
     foreach ($columns as $column) {
         $string[$column] = get_string("$column");
@@ -213,10 +215,12 @@
         } else { // ($CFG->fullnamedisplay == 'language' and $fullnamelanguage == 'lastname firstname') 
             $fullnamedisplay = "$lastname / $firstname";
         }
-        $table->head = array ($fullnamedisplay, $email, $city, $country, $lastaccess, "", "", "");
-        $table->align = array ("left", "left", "left", "left", "left", "center", "center", "center");
+        // CMDL-1414 add idnumber to user lists
+        $table->head = array ($fullnamedisplay, $email, $username, $idnumber, $lastaccess, "", "", "");
+        $table->align = array ("left", "left", "left", "left", "left", "center", "center", "center","center");
+        // end CMDl-1414
         $table->width = "95%";
-        foreach ($users as $user) {
+        foreach ($users as $user) { 
             if ($user->username == 'guest') {
                 continue; // do not dispaly dummy new user and guest here
             }
@@ -277,14 +281,16 @@
             }
             $fullname = fullname($user, true);
 
-            $table->data[] = array ("<a href=\"../user/view.php?id=$user->id&amp;course=$site->id\">$fullname</a>",
+            // CMDL-1414 add idnumber to user lists
+            $table->data[] = array ("<a href=\"../user/view.php?id=$user->id&amp;course=$site->id\">".$fullname."</a>",
                                 "$user->email",
-                                "$user->city",
-                                "$user->country",
+                                "$user->username",
+				"$user->idnumber",
                                 $strlastaccess,
                                 $editbutton,
                                 $deletebutton,
                                 $confirmbutton);
+            // end CMDL-1414
         }
     }
 

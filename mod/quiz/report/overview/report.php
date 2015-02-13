@@ -2,7 +2,7 @@
 /**
  * This script lists student attempts
  *
- * @version $Id$
+ * @version $Id: report.php,v 1.98.2.61 2011/05/04 22:56:39 moodlerobot Exp $
  * @author Martin Dougiamas, Tim Hunt and others.
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package quiz
@@ -102,7 +102,9 @@ class quiz_report extends quiz_default_report {
             }
         }
         $nostudents = false;
-        if (!$students = get_users_by_capability($context, array('mod/quiz:reviewmyattempts', 'mod/quiz:attempt'),'u.id,1','','','','','',false)) {
+        // CMDL-1275 fix sort by time
+        if (!$students = get_users_by_capability($context, array('mod/quiz:reviewmyattempts', 'mod/quiz:attempt'),'u.id,1','','','','','',false)){
+        // end CMDL-1275
             if (!$download) {
                 notify(get_string('nostudentsyet'));
             }
@@ -172,7 +174,10 @@ class quiz_report extends quiz_default_report {
             // Define table columns
             $columns = array();
             $headers = array();
-
+            // CMDL-1275 fix fix sort by time
+            $nosort = array();
+            // end CMDL-1275
+    
             if (!$download && $candelete) {
                 $columns[]= 'checkbox';
                 $headers[]= NULL;
@@ -210,7 +215,9 @@ class quiz_report extends quiz_default_report {
                 $questions = quiz_report_load_questions($quiz);
                 foreach ($questions as $id => $question) {
                     // Ignore questions of zero length
-                    $columns[] = 'qsgrade'.$id;
+                    // CMDL-1275 fix sort by time
+                    $columns[] = $nosort[] = 'qsgrade'.$id;
+                    // end CMDL-1275
                     $headers[] = '#'.$question->number;
                     $question->formattedname = strip_tags(format_string($question->name));
                 }
@@ -238,11 +245,24 @@ class quiz_report extends quiz_default_report {
                 $table->column_suppress('idnumber');
 
                 $table->no_sorting('feedbacktext');
-
+                // CMDL-1275 fix sort by time
+                foreach ($nosort as $col) {
+                   $table->no_sorting($col);
+                }
+                // end CMDL-1275
+                
                 $table->column_class('picture', 'picture');
                 $table->column_class('fullname', 'bold');
                 $table->column_class('sumgrades', 'bold');
 
+                // CMDL-1275 fix sort by time
+                $table->column_type('idnumber', COLUMN_VAR_NUMBER);
+                $table->column_type('timestart', COLUMN_VAR_DATE);
+                $table->column_type('timestart', COLUMN_VAR_DATE);
+                $table->column_type('duration', COLUMN_VAR_NUMBER);
+                $table->column_type('sumgrades', COLUMN_VAR_NUMBER);
+                // end CMDL-1275
+    
                 $table->set_attribute('cellspacing', '0');
                 $table->set_attribute('id', 'attempts');
                 $table->set_attribute('class', 'generaltable generalbox');

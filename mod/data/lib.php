@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: lib.php,v 1.137.2.60 2012/05/19 11:04:51 moodlerobot Exp $
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
 // NOTICE OF COPYRIGHT                                                   //
@@ -956,7 +956,10 @@ function data_print_template($template, $records, $data, $search='', $page=0, $r
     // Replacing special tags (##Edit##, ##Delete##, ##More##)
         $patterns[]='##edit##';
         $patterns[]='##delete##';
-        if (has_capability('mod/data:manageentries', $context) or data_isowner($record->id)) {
+        // CMDL-1642 Moodle Database error with available and viewable dates
+        if (has_capability('mod/data:manageentries', $context) or (data_isowner($record->id) and !data_isviewable($data))) {
+        //if (has_capability('mod/data:manageentries', $context) or data_isowner($record->id)) {
+        // end CMDL-1642
             $replacement[] = '<a href="'.$CFG->wwwroot.'/mod/data/edit.php?d='
                              .$data->id.'&amp;rid='.$record->id.'&amp;sesskey='.sesskey().'"><img src="'.$CFG->pixpath.'/t/edit.gif" class="iconsmall" alt="'.get_string('edit').'" title="'.get_string('edit').'" /></a>';
             $replacement[] = '<a href="'.$CFG->wwwroot.'/mod/data/view.php?d='
@@ -1693,8 +1696,9 @@ function data_user_can_add_entry($data, $currentgroup, $groupmode) {
     }
 
     //if in the view only time window
-    $now = time();
-    if ($now>$data->timeviewfrom && $now<$data->timeviewto) {
+    //$now = time();
+    //if ($now>$data->timeviewfrom && $now<$data->timeviewto) {
+    if (data_isviewable($data)) {
         return false;
     }
 
@@ -2319,4 +2323,75 @@ function data_get_advanced_search_sql($sort, $data, $recordids, $selectdata, $so
     $nestfromsql = "$nestfromsql $selectdata";
     return "$nestselectsql $nestfromsql $sortorder";
 }
+
+
+
+// CMDL-Moodle Database error with available and viewable dates
+function data_isviewable($data) {
+    $time = time();
+
+    $isviewable = ($data->timeviewfrom || $data->timeviewto) &&
+                  (!$data->timeviewfrom || $data->timeviewfrom <= $time) &&
+                  (!$data->timeviewto || $data->timeviewto >= $time);
+
+    return $isviewable;
+}
+
+// TODO allow for disabled dates (0)
+// if from date is 0 or before today and to date is 0 or after today
+// and they are not both 0
+
+
+function data_isreadonly($data) {
+    $time = time();
+
+    $isreadonly = ($data->timeviewfrom || $data->timeviewto) &&
+                  (!$data->timeviewfrom || $data->timeviewfrom <= $time) &&
+                  (!$data->timeviewto || $data->timeviewto >= $time);
+
+    return $isreadonly;
+}
+
+/* database can be modified */
+function data_isavailable($data) {
+  $time = time();
+
+  $isavailable = (!$data->timeavailablefrom || $data->timeavailablefrom <= $time) &&
+                 (!$data->timeavailableto || $data->timeavailableto >= $time);
+
+  return $isavailable;
+}
+
+function data_show_viewable_dates ($data) {
+    print_simple_box_start('center', '', '', 0, 'generalbox', 'dates');
+    echo '<table>';
+    if ($data->timeviewfrom) {
+        echo '<tr><td class="c0">'.get_string('viewfromdate','data').':</td>';
+        echo '    <td class="c1">'.userdate($data->timeviewfrom).'</td></tr>';
+    }
+    if ($data->timeviewto) {
+        echo '<tr><td class="c0">'.get_string('viewtodate','data').':</td>';
+        echo '    <td class="c1">'.userdate($data->timeviewto).'</td></tr>';
+    }
+    echo '</table>';
+    print_simple_box_end();
+
+}
+
+function data_show_available_dates ($data) {
+    print_simple_box_start('center', '', '', 0, 'generalbox', 'dates');
+    echo '<table>';
+    if ($data->timeavailablefrom) {
+        echo '<tr><td class="c0">'.get_string('availablefromdate','data').':</td>';
+        echo '    <td class="c1">'.userdate($data->timeavailablefrom).'</td></tr>';
+    }
+    if ($data->timeavailableto) {
+        echo '<tr><td class="c0">'.get_string('availabletodate','data').':</td>';
+        echo '    <td class="c1">'.userdate($data->timeavailableto).'</td></tr>';
+    }
+    echo '</table>';
+    print_simple_box_end();
+
+}
+// end CMDL-1642
 ?>

@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: courserole.php,v 1.1.2.3 2008/02/08 12:14:39 poltawski Exp $
 
 require_once($CFG->dirroot .'/user/filters/lib.php');
 
@@ -99,7 +99,9 @@ class user_filter_courserole extends user_filter_type {
             $where .= " AND c.category=$categoryid";
         }
         if ($value) {
-            $where .= " AND c.shortname ".sql_ilike()." '$value'";
+            // CMDL-928 fix Oracle case sensitivity
+            $where .= " AND " . sql_olike('c.shortname', $value);
+            // end CMDL-928
         }
         return "id IN (SELECT userid
                          FROM {$CFG->prefix}role_assignments a

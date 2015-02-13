@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: lib.php,v 1.70.2.15 2009/06/09 05:12:02 samhemelryk Exp $
 
 define('RESOURCE_LOCALPATH', 'LOCALPATH');
 
@@ -529,7 +529,9 @@ function resource_get_types() {
 
     $types = array();
 
-    $standardresources = array('text','html','file','directory');
+    // CMDL-1414 changing resource/activity dropdown lists
+    $standardresources = array('file','text','html','directory');
+    // end CMDL-1414
     foreach ($standardresources as $resourcetype) {
         $type = new object();
         $type->modclass = MOD_CLASS_RESOURCE;

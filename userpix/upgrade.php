@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: upgrade.php,v 1.5.2.2 2008/07/10 09:48:49 scyrma Exp $
       // This script updates all users picturesi to remove black border.
 
 

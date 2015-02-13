@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: block_admin_bookmarks.php,v 1.20.2.3 2008/03/03 11:41:01 moodler Exp $
 
 // seems to work...
 // maybe I should add some pretty icons?

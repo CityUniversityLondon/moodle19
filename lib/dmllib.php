@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: dmllib.php,v 1.116.2.38 2011/12/01 12:25:16 moodlerobot Exp $
 
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
@@ -44,6 +44,13 @@ $rcache = new StdClass;      // Cache simple get_record results
 $rcache->data   = array();
 $rcache->hits   = 0;
 $rcache->misses = 0;
+
+
+// CMDL-928 fix Oracle case sensitivity
+/// CITY FUNCTIONS ////////////////////////////////////////////////////////////
+
+require_once("dmlib_append.php");
+// end CMDL-928
 
 /// FUNCTIONS FOR DATABASE HANDLING  ////////////////////////////////
 
@@ -1434,7 +1441,7 @@ function delete_records_select($table, $select='') {
  * @param string $table The database table to be checked against.
  * @param object $dataobject A data object with values for one or more fields in the record
  * @param bool $returnid Should the id of the newly created record entry be returned? If this option is not requested then true/false is returned.
- * @param string $primarykey (obsolete) This is now forced to be 'id'.
+ * @param string $primarykey (obsolete) This is now forced to be 'id'. 
  */
 function insert_record($table, $dataobject, $returnid=true, $primarykey='id') {
 
@@ -1471,7 +1478,6 @@ function insert_record($table, $dataobject, $returnid=true, $primarykey='id') {
 /// In Moodle we always use auto-numbering fields for the primary key
 /// so let's unset it now before it causes any trouble later
     unset($dataobject->{$primarykey});
-
 /// Extra protection against SQL injections
     foreach((array)$dataobject as $k=>$v) {
         $dataobject->$k = sql_magic_quotes_hack($v);

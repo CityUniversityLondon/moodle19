@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: restorelib.php,v 1.22.6.2 2008/03/17 21:33:59 skodak Exp $
     //This php script contains all the stuff to backup/restore
     //chat mods
 

@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: testclient.php,v 1.2.2.4 2010/04/01 17:10:58 skodak Exp $
 /**
  * A service browser for remote Moodles
  *

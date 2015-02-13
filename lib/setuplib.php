@@ -1,4 +1,4 @@
-<?php // $Id$ 
+<?php // $Id: setuplib.php,v 1.22.2.6 2009/05/08 21:30:31 skodak Exp $ 
       // These functions are required very early in the Moodle 
       // setup process, before any of the main libraries are 
       // loaded.
@@ -248,6 +248,11 @@ function setup_is_unicodedb() {
                     $unicodedb = true;
                 }
             }
+            // CMDL-928 fix Oracle case sensitivity
+            // Set the NLS_SORT and NLS_COMP variables
+            if (!empty ($CFG->nls_lang)) { $db->execute('ALTER SESSION SET NLS_LANG=' . $CFG->nls_lang); }
+            if (!empty ($CFG->nls_comp)) { $db->execute('ALTER SESSION SET NLS_COMP=' . $CFG->nls_comp); }
+            // end CMDL-928
             break;
     }
     return $unicodedb;
@@ -330,7 +335,9 @@ function preconfigure_dbconnection() {
             /// Row prefetching uses a bit of memory but saves a ton
             /// of network latency. With current AdoDB and PHP, only
             /// Oracle uses this setting.
-            define ('ADODB_PREFETCH_ROWS', 1000);
+            // CMDL-1414 fix for Oracle 1000+ records error
+            if (!defined('ADODB_PREFETCH_ROWS')) define('ADODB_PREFETCH_ROWS',1000);
+            // end CMDL-1414
             break;
         default:
             /// if we have to lowercase it, set to 0

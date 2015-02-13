@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: report.php,v 1.37.2.6 2009/12/04 03:51:20 dongsheng Exp $
 
 /// This page prints reports and info about chats
 

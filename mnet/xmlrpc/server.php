@@ -38,7 +38,7 @@ $MNET_REMOTE_CLIENT = new mnet_remote_client();
 
 // Peek at the message to see if it's an XML-ENC document. If it is, note that
 // the client connection was encrypted, and strip the xml-encryption and
-// xml-signature wrappers from the XML-RPC payload 
+// xml-signature wrappers from the XML-RPC payload
 if (strpos(substr($HTTP_RAW_POST_DATA, 0, 100), '<encryptedMessage>')) {
     $MNET_REMOTE_CLIENT->was_encrypted();
 // Extract the XML-RPC payload from the XML-ENC and XML-SIG wrappers.
@@ -47,9 +47,9 @@ if (strpos(substr($HTTP_RAW_POST_DATA, 0, 100), '<encryptedMessage>')) {
     $params = xmlrpc_decode_request($HTTP_RAW_POST_DATA, $method);
     if ($method == 'system.keyswap'      ||
         $method == 'system/keyswap') {
-        
+
         // OK
-        
+
     } elseif ($MNET_REMOTE_CLIENT->plaintext_is_ok() == false) {
         exit(mnet_server_fault(7021, 'forbidden-transport'));
     }
@@ -186,7 +186,7 @@ function mnet_server_strip_wrappers($HTTP_RAW_POST_DATA) {
         unset($payload);
 
         // if the peer used one of our public keys that have expired, we will
-        // return a signed/encrypted error message with our new public key 
+        // return a signed/encrypted error message with our new public key
         if($push_current_key) {
             // NOTE: Here, we use the 'mnet_server_fault_xml' to avoid
             // get_string being called on our public_key
@@ -304,7 +304,7 @@ function mnet_server_fault_xml($code, $text, $privatekey = null) {
  * Translate XML-RPC's strange function call syntax into a more straightforward
  * PHP-friendly alternative. This dummy function will be called by the
  * dispatcher, and can be used to call a method on an object, or just a function
- * 
+ *
  * The methodName argument (eg. mnet/testlib/mnet_concatenate_strings)
  * is ignored.
  *
@@ -317,7 +317,7 @@ function mnet_server_fault_xml($code, $text, $privatekey = null) {
  */
 function mnet_server_dummy_method($methodname, $argsarray, $functionname) {
     global $MNET_REMOTE_CLIENT;
-    
+
     if (!is_object($MNET_REMOTE_CLIENT->object_to_call)) {
         return @call_user_func_array($functionname, $argsarray);
     } else {
@@ -477,6 +477,7 @@ function mnet_server_dispatch($payload) {
 
     ////////////////////////////////////// STRICT MOD/*
     } elseif ($callstack[0] == 'mod' || 'dangerous' == $CFG->mnet_dispatcher_mode) {
+
         list($base, $module, $filename, $functionname) = $callstack;
 
     ////////////////////////////////////// STRICT MOD/*
@@ -498,20 +499,40 @@ function mnet_server_dispatch($payload) {
                     // Filename doesn't end in 'php'; possible attack?
                     // Generate error response - unable to locate function
                     exit(mnet_server_fault(7012, 'nosuchfunction'));
-                } 
+                }
 
                 // The call stack holds the path to any include file
                 $includefile = $CFG->dirroot.'/'.$filename;
 
                 $response = mnet_server_invoke_method($includefile, $functionname, $method, $payload);
                 echo $response;
+
             }
 
         } else {
             // Generate error response - unable to locate function
             exit(mnet_server_fault(7012, 'nosuchfunction'));
         }
+    //CUL CMDL-1777 START: CUL Archived Modules
+    } elseif ($callstack[0] == 'cularc') {
 
+        // Break out the callstack into its elements
+        list($base, $plugin, $filename, $methodname) = $callstack;
+
+        // We refuse to include anything that is not cularc.php
+        if ($filename == 'cularc.php') {
+            $authclass = 'cularc_service_' . $plugin;
+            $includefile = '/cularc/' . $plugin . '/cularc.php';
+            error_log(var_export(array($authclass, $includefile), true)); //TJGDEBUG
+            $response = mnet_server_invoke_method($includefile, $methodname, $method, $payload, $authclass);
+            $response = mnet_server_prepare_response($response);
+            echo $response;
+        } else {
+            // Generate error response - unable to locate function
+            exit(mnet_server_fault(702, 'nosuchfunction'));
+        }
+    //CUL CMDL-1777 END
+    ////////////////////////////////////// NO FUNCTION
     } else {
         // Generate error response - unable to locate function
         exit(mnet_server_fault(7012, 'nosuchfunction'));
@@ -551,7 +572,7 @@ function mnet_system($method, $params, $hostinfo) {
                     '.$CFG->prefix.'mnet_rpc rpc
                 WHERE
                     s2r.rpcid = rpc.id AND
-                    h2s.serviceid = s2r.serviceid AND 
+                    h2s.serviceid = s2r.serviceid AND
                     h2s.hostid in ('.$id_list .') AND
                     h2s.publish =\'1\'
                 ORDER BY
@@ -572,7 +593,7 @@ function mnet_system($method, $params, $hostinfo) {
                     '.$CFG->prefix.'mnet_rpc rpc
                 WHERE
                     s2r.rpcid = rpc.id AND
-                    h2s.serviceid = s2r.serviceid AND 
+                    h2s.serviceid = s2r.serviceid AND
                     h2s.hostid in ('.$id_list .') AND
                     h2s.publish =\'1\' AND
                     svc.id = h2s.serviceid AND
@@ -602,7 +623,7 @@ function mnet_system($method, $params, $hostinfo) {
             WHERE
                 rpc.xmlrpc_path = \''.$params[0].'\' AND
                 s2r.rpcid = rpc.id AND
-                h2s.serviceid = s2r.serviceid AND 
+                h2s.serviceid = s2r.serviceid AND
                 h2s.publish =\'1\' AND
                 h2s.hostid in ('.$id_list .')';
 
@@ -632,7 +653,7 @@ function mnet_system($method, $params, $hostinfo) {
                 rpc.xmlrpc_path = \''.$params[0].'\' AND
                 s2r.rpcid = rpc.id AND
                 h2s.publish =\'1\' AND
-                h2s.serviceid = s2r.serviceid AND 
+                h2s.serviceid = s2r.serviceid AND
                 h2s.hostid in ('.$id_list .')';
 
         $result = get_record_sql($query);
@@ -663,9 +684,9 @@ function mnet_system($method, $params, $hostinfo) {
 
         if (is_array($result)) {
             foreach($result as $service) {
-                $services[] = array('name' => $service->name, 
-                                    'apiversion' => $service->apiversion, 
-                                    'publish' => $service->publish, 
+                $services[] = array('name' => $service->name,
+                                    'apiversion' => $service->apiversion,
+                                    'publish' => $service->publish,
                                     'subscribe' => $service->subscribe);
             }
         }
@@ -676,7 +697,7 @@ function mnet_system($method, $params, $hostinfo) {
 }
 
 /**
- * Initialize the object (if necessary), execute the method or function, and 
+ * Initialize the object (if necessary), execute the method or function, and
  * return the response
  *
  * @param  string  $includefile    The file that contains the object definition
@@ -743,7 +764,7 @@ function mnet_server_invoke_method($includefile, $methodname, $method, $payload,
  * Accepts a public key from a new remote host and returns the public key for
  * this host. If 'register all hosts' is turned on, it will bootstrap a record
  * for the remote host in the mnet_host table (if it's not already there)
- * 
+ *
  * @param  string  $function      XML-RPC requires this but we don't... discard!
  * @param  array   $params        Array of parameters
  *                                $params[0] is the remote wwwroot

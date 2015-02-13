@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: resource.class.php,v 1.38.2.3 2008/05/02 08:17:27 scyrma Exp $
 
 class resource_directory extends resource_base {
 
@@ -36,6 +36,12 @@ function display() {
     $resource = $this->resource;
 
     require_once($CFG->libdir.'/filelib.php');
+    // CMDL-916 add enhanced file module
+    require_once($CFG->libdir.'/json/JSON.php');
+    require_once($CFG->dirroot.'/blocks/dir_tree/locallib.php');
+    echo require_js(array('yui_yahoo', 'yui_dom', 'yui_event', 'yui_treeview'));
+        // dont need: 'yui_container', 'yui_dom-event', , 'yui_utilities'
+    // end CMDL-916
 
     $subdir = optional_param('subdir','', PARAM_PATH);
     $resource->reference = clean_param($resource->reference, PARAM_PATH);
@@ -85,8 +91,36 @@ function display() {
         $update = $editfiles.$update;
     }
     $navigation = build_navigation($this->navlinks, $cm);
+
+    // CMDL-916 add enhanced file module
+    // grab a full directory listing including children so can render for client side YUI use
+    list ($jsonDirContent, $foundFileTypes) = crawl_directory($relativepath);
+    $json = new Services_JSON();
+    $jsonOutput = $json->encode($jsonDirContent);
+    
+    // CMDL-1340 strip out double // that json adds ... CMDL-1340
+    $jsonOutput = str_replace("\/\/","\/",$jsonOutput);
+    // end CMDL-1340
+
+    // echo out the JS and CSS required for YUI use
+    $dirTreeYUIName = 'dirTreeResourcesYUI';
+    $dirTreeStaticName = 'dirTreeResourcesStatic';
+    $metaPage = "<script type=\"text/javascript\" defer=\"defer\" src=\"".$CFG->wwwroot.'/blocks/dir_tree/dir_tree.js'."\"></script>\n";
+    $metaHead = "<script type=\"text/javascript\">\n" .
+            "//<![CDATA[\n" .
+            "var dirTreeYUIName = '" . $dirTreeYUIName . "';\n" .
+            "var dirTreeStaticName = '" . $dirTreeStaticName . "';\n" .
+            "var dirTreeWidth = 'wide';\n" .
+            "var treeJSONData = " . $jsonOutput . "\n" .
+            "//]]>\n" .
+            "</script>\n";
+    $metaPage .= "<link rel='stylesheet' href='" . $CFG->wwwroot . "/blocks/dir_tree/style.css' />\n";
+    // end CMDL-916
+
     print_header($pagetitle, $course->fullname, $navigation,
-            "", "", true, $update,
+            // CMDL-916 add enhanced file module
+            "", $metaHead, true, $update,
+            // end CMDL-916
             navmenu($course, $cm));
 
 
@@ -97,6 +131,9 @@ function display() {
 
     $files = get_directory_list("$CFG->dataroot/$relativepath", array($CFG->moddata, 'backupdata'), false, true, true);
 
+    // CMDL-916 add enhanced file module
+    echo $metaPage; // our local <style> and <script> content for YUI support
+    //end CMDL-916
 
     if (!$files) {
         print_heading(get_string("nofilesyet"));
@@ -112,6 +149,11 @@ function display() {
     $strmodified = get_string("modified");
     $strfolder = get_string("folder");
     $strfile = get_string("file");
+
+    // CMDL-916 add enhanced file module
+    echo "<div id='" . $dirTreeYUIName . "header'></div><div id='$dirTreeYUIName'></div>".
+         "<div id='$dirTreeStaticName'>";
+    // end CMDL-916
 
     echo '<table cellpadding="4" cellspacing="1" class="files" summary="">';
     echo "<tr><th class=\"header name\" scope=\"col\">$strname</th>".
@@ -150,7 +192,19 @@ function display() {
         echo '</td>';
         echo '</tr>';
     }
-    echo '</table>';
+    // CMDL-916 add enhanced file module
+    echo '</table></div>';
+
+    $strCSS = "\n<style>\n#dirTreeResourcesYUI ";
+    $firstFile = true;
+    foreach (array_keys($foundFileTypes) as $key) {
+        if(!$firstFile) { $strCSS .= ' ,'; }
+        $strCSS .= " td.icon-$key";
+        $firstFile = false;
+    }
+    $strCSS .= " { width: 400px; }\n</style>\n";
+    echo $strCSS;
+    // end CMDL-916
 
     print_simple_box_end();
 

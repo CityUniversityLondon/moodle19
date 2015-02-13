@@ -163,7 +163,8 @@ function grade_import_commit($courseid, $importcode, $importfeedback=true, $verb
 function get_unenrolled_users_in_import($importcode, $courseid) {
     global $CFG;
     $relatedctxcondition = get_related_contexts_string(get_context_instance(CONTEXT_COURSE, $courseid));
-    
+
+    // CMDL-1111 fix participant sorts to be case insensitive
     $sql = "SELECT giv.id, u.firstname, u.lastname, u.idnumber AS useridnumber, 
                 COALESCE(gi.idnumber, gin.itemname) AS gradeidnumber
             FROM
@@ -176,8 +177,8 @@ function get_unenrolled_users_in_import($importcode, $courseid) {
                     ra.contextid $relatedctxcondition)
                 WHERE giv.importcode = $importcode
                     AND ra.id IS NULL
-                ORDER BY gradeidnumber, u.lastname, u.firstname";
-
+                ORDER BY gradeidnumber, LOWER(u.lastname), LOWER(u.firstname)";
+    // end CMDL-1111
     return get_records_sql($sql);
 }
 

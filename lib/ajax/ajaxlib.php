@@ -12,6 +12,9 @@ function ajax_get_lib($libname) {
 
     global $CFG, $HTTPSPAGEREQUIRED;
     $libpath = '';
+    // CMDL-1414 allow use of external yui
+    $external_yui = false;
+    // end CMDL-1414
 
     $translatelist = array(
             'yui_yahoo' => '/lib/yui/yahoo/yahoo-min.js',
@@ -64,15 +67,32 @@ function ajax_get_lib($libname) {
     }
 
     if (array_key_exists($libname, $translatelist)) {
-        $libpath = $wwwroot . $translatelist[$libname];
+        // CMDL-1414 allow use of external yui
+        // If this is a YUI file and we are using external libraries.
+        if (substr($libname, 0, 3) == 'yui' && $CFG->use_external_yui === true) {
+            $external_yui = true;
+            $libpath = 'http://yui.yahooapis.com/2.3.0/build/'.substr($translatelist[$libname], 9);
+        } else {
+            // CMDL-1101 fix IE bugs on profile edit page
+            $libpath = $wwwroot . $translatelist[$libname];
+            // end CMDL-1101
+        }
+        // end CMDL-1414
     } else {
         $libpath = $libname;
     }
 
-    $testpath = str_replace($wwwroot, $CFG->dirroot, $libpath);
-    if (!file_exists($testpath)) {
-        error('require_js: '.$libpath.' - file not found.');
+    // CMDL-1414 allow use of external yui
+    // Make sure the file exists if it is local.
+    if ($external_yui === false) {
+        // CMDL-1101 fix IE bugs on profile edit page
+        $testpath = str_replace($wwwroot, $CFG->dirroot, $libpath);
+        // end CMDL-1101
+        if (!file_exists($testpath)) {
+            error('require_js: '.$libpath.' - file not found.');
+        }
     }
+    // end CMDL-1414
 
     return $libpath;
 }
@@ -180,6 +200,10 @@ class jsportal {
         $output .= "    main.portal.strings['groupsvisible']='".get_string('groupsvisible')."';\n";
         $output .= "    main.portal.strings['clicktochange']='".get_string('clicktochange')."';\n";
         $output .= "    main.portal.strings['deletecheck']='".get_string('deletecheck','','_var_')."';\n";
+        // CMDL-1447 changing alert message for activity deletion
+        $output .= "    main.portal.strings['deletecheckfull']='".get_string('deletecheckfull','','_var_')."';\n";        
+        $output .= "    main.portal.strings['deleteasscheckfull']='".get_string('deleteasscheckfull','','_var_')."';\n";
+        // end CMDL-1447
         $output .= "    main.portal.strings['resource']='".get_string('resource')."';\n";
         $output .= "    main.portal.strings['activity']='".get_string('activity')."';\n";
         $output .= "    main.portal.strings['sesskey']='".$USER->sesskey."';\n";

@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: block_activity_modules.php,v 1.15.2.4 2009/02/23 14:47:44 mjollnir_ Exp $
 
 class block_activity_modules extends block_list {
     function init() {

@@ -1,4 +1,4 @@
-<?PHP //$Id$
+<?PHP //$Id: block_recent_activity.php,v 1.10.2.1 2008/03/03 11:41:04 moodler Exp $
 
 class block_recent_activity extends block_base {
     function init() {

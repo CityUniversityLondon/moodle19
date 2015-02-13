@@ -106,8 +106,10 @@ class grade_report_user extends grade_report {
 
         $this->switch = grade_get_setting($this->courseid, 'aggregationposition', $CFG->grade_aggregationposition);
 
+        // CMDL-1148 add ability to hide category total
         // Grab the grade_tree for this course
-        $this->gtree = new grade_tree($this->courseid, false, $this->switch, false, !$CFG->enableoutcomes);
+        $this->gtree = new grade_tree($this->courseid, false, $this->switch, null, !$CFG->enableoutcomes);
+        // end CMDL-1148
 
         // Determine the number of rows and indentation
         $this->maxdepth = 1;
@@ -408,7 +410,12 @@ class grade_report_user extends grade_report {
             $html .= "</tr>\n";
         }
 
-        $html .= "</tbody></table>";
+        // CMDL-1414 remove course name from unenrol me link
+        $html .= "  <tr>\n
+                    <td colspan=\"6\" class=\"disclaimer\"><strong>In accordance with City University policy, any marks received are provisional, subject to consideration by the Assessment board and approval by Senate.</strong></td>\n
+                    </tbody>\n
+                    </table>\n";
+        // end CMDL-1414
 
         if ($return) {
             return $html;

@@ -34,6 +34,21 @@ function mnet_get_functions($type, $parentname) {
         if (function_exists($mnet_publishes)) {
             (array)$publishes = $mnet_publishes();
         }
+    //CUL CMDL-1777 START: CUL Archived Modules
+    } else if ('cularc' == $type) {
+        // cularc
+        $relname = '/'.$type.'/'.$parentname.'/'.$docname;
+        $filename = $CFG->dirroot.$relname;
+        if (file_exists($filename)) include_once $filename;
+        $class = $type.'_service_' . $parentname;
+
+        if (class_exists($class)) {
+            $object = new $class();
+            if (method_exists($object, 'mnet_publishes')) {
+                (array )$publishes = $object->mnet_publishes();
+            }
+        }
+    //CUL CMDL-1777 END
     } else {
         // auth or enrol
         $relname  = '/'.$type.'/'.$parentname.'/'.$docname;
@@ -178,5 +193,23 @@ function upgrade_RPC_functions($returnurl) {
             mnet_get_functions('enrol', $dir);
         }
     }
+
+    //CUL CMDL-1777 START: CUL Archived Modules
+    $basedir = $CFG->dirroot.'/cularc';
+    if (file_exists($basedir) && filetype($basedir) == 'dir') {
+        $dirhandle = opendir($basedir);
+        while (false !== ($dir = readdir($dirhandle))) {
+            $firstchar = substr($dir, 0, 1);
+            if ($firstchar == '.' or $dir == 'CVS' or $dir == '_vti_cnf') {
+                continue;
+            }
+            if (filetype($basedir .'/'. $dir) != 'dir') {
+                continue;
+            }
+
+            mnet_get_functions('cularc', $dir);
+        }
+    }
+    //CUL CMDL-1777 END
 }
 ?>

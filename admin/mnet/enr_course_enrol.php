@@ -1,4 +1,4 @@
-<?PHP  // $Id$
+<?PHP  // $Id: enr_course_enrol.php,v 1.8.4.4 2010/06/28 22:12:37 mudrd8mz Exp $
        // enrol_config.php - allows admin to edit all enrollment variables
        //                    Yes, enrol is correct English spelling.
 
@@ -234,8 +234,9 @@
     if ($searchtext !== '') {   // Search for a subset of remaining users
         $LIKE      = sql_ilike();
         $FULLNAME  = sql_fullname();
-
-        $select  .= " AND ($FULLNAME $LIKE '%$searchtext%' OR email $LIKE '%$searchtext%') ";
+        // CMDL-928 fix Oracle case sensitivity
+        $select  .= " AND (" . sql_olike($FULLNAME, $searchtext) . " OR " . sql_olike('email', $searchtext) . ")";
+        // end CMDL-928
     }
 
     $sql = ('SELECT id, firstname, lastname, email 

@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: tabs.php,v 1.7 2007/10/09 21:43:29 iarenaza Exp $
     if (!isset($sortorder)) {
         $sortorder = '';
     }    

@@ -1,4 +1,4 @@
-<?PHP // $Id$
+<?PHP // $Id: config.php,v 1.16 2007/01/26 02:16:31 mits Exp $
 
 ////////////////////////////////////////////////////////////////////////////////
 /// This file contains a few configuration variables that control 

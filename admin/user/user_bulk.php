@@ -1,4 +1,4 @@
-<?php  //$Id$
+<?php  //$Id: user_bulk.php,v 1.4.2.5 2009/11/16 17:11:31 arborrow Exp $
 
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');

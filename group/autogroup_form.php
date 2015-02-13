@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: autogroup_form.php,v 1.1.2.3 2007/12/20 16:10:03 poltawski Exp $
 
 require_once($CFG->dirroot.'/lib/formslib.php');
 

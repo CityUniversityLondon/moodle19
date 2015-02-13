@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: lib.php,v 1.538.2.83 2011/07/26 09:23:16 moodlerobot Exp $
    // Library of useful functions
 
 
@@ -1498,6 +1498,9 @@ function print_section_add_menus($course, $section, $modnames, $vertical=false, 
 
     static $resources = false;
     static $activities = false;
+    // CMDL-1414 changing resource/activity dropdown lists
+    static $link = false;
+    // end CMDL-1414
 
     if ($resources === false) {
         $resources = array();
@@ -1521,18 +1524,42 @@ function print_section_add_menus($course, $section, $modnames, $vertical=false, 
                         debugging('Incorrect activity type in '.$modname);
                         continue;
                     }
+
+                    // CMDL-1414 changing resource/activity dropdown lists
+                    // AD: Remove single file upload type from dropdown list
+                    if ($type->type == 'assignment&amp;type=uploadsingle') {       
+                        continue;
+                    }
+
+
                     if ($type->modclass == MOD_CLASS_RESOURCE) {
-                        $resources[$type->type] = $type->typestr;
+                        // AD: Move resource to top of the list
+                        if ($type->type == 'resource&amp;type=file') {
+                            $link = array();
+                            $link[$type->type] = $type->typestr;
+                        } else {
+                            $resources[$type->type] = $type->typestr;
+                        }
+
                     } else {
                         $activities[$type->type] = $type->typestr;
                     }
+                    
+                    if ($link) {                  
+                        $resources = $link + $resources;
+                    }
+                    // end CMDL-1414
                 }
             } else {
                 // all mods without type are considered activity
                 $activities[$modname] = $modnamestr;
             }
         }
+
+
     }
+
+
 
     $straddactivity = get_string('addactivity');
     $straddresource = get_string('addresource');
@@ -1981,19 +2008,37 @@ function print_courses($category) {
         $categories = get_child_categories(0);  // Parent = 0   ie top-level categories only
         if (is_array($categories) && count($categories) == 1) {
             $category   = array_shift($categories);
+            if (!empty($CFG->enrolmaxenabled)) { // ALAN add 'enrolmax'...
+                $courses    = get_courses_wmanagers($category->id,
+                                                'c.sortorder ASC',
+                                                array('password','summary','currency','enrolmax'));
+            } else { // OLD CODE...
             $courses    = get_courses_wmanagers($category->id,
                                                 'c.sortorder ASC',
                                                 array('password','summary','currency'));
+	        }
         } else {
+            if (!empty($CFG->enrolmaxenabled)) { // ALAN add 'enrolmax'...
+                $courses    = get_courses_wmanagers('all',
+                                                'c.sortorder ASC',
+                                                array('password','summary','currency','enrolmax'));
+            } else { // OLD CODE...
             $courses    = get_courses_wmanagers('all',
                                                 'c.sortorder ASC',
                                                 array('password','summary','currency'));
         }
+        }
         unset($categories);
     } else {
+        if (!empty($CFG->enrolmaxenabled)) { // ALAN add 'enrolmax'...
+            $courses    = get_courses_wmanagers($category->id,
+                                            'c.sortorder ASC',
+                                            array('password','summary','currency','enrolmax'));
+        } else { // OLD CODE...
         $courses    = get_courses_wmanagers($category->id,
                                             'c.sortorder ASC',
                                             array('password','summary','currency'));
+        }
     }
 
     if ($courses) {
@@ -2050,6 +2095,10 @@ function print_course($course, $highlightterms = '') {
         $managerroles = split(',', $CFG->coursemanager);
         $canseehidden = has_capability('moodle/role:viewhiddenassigns', $context);
         $namesarray = array();
+        // CMDL-1414 ????
+        $rolesarray = array();
+        $rolesarray_unique = array();
+        
         if (isset($course->managers)) {
             if (count($course->managers)) {
                 $rusers = $course->managers;
@@ -2059,18 +2108,31 @@ function print_course($course, $highlightterms = '') {
                 if (isset($context)) {
                     $aliasnames = get_records('role_names', 'contextid', $context->id,'','roleid,contextid,name');
                 }
-
-                // keep a note of users displayed to eliminate duplicates
-                $usersshown = array();
+                            
                 foreach ($rusers as $ra) {
-
-                    // if we've already displayed user don't again
-                    if (in_array($ra->user->id,$usersshown)) {
-                        continue;
-                    }
-                    $usersshown[] = $ra->user->id;
-
                     if ($ra->hidden == 0 || $canseehidden) {
+                        if (isset($aliasnames[$ra->roleid])) {
+                            $ra->rolename = $aliasnames[$ra->roleid]->name;
+                        }
+                        $rolesarray[] = $ra->rolename;
+                    }
+                }
+                
+                $rolesarray_unique = array_unique($rolesarray);
+                $tempnamesarray = array();
+                $usersshown = array();       
+
+
+                foreach ($rolesarray_unique as $role) {
+                    foreach ($rusers as $ra) {
+
+                      if (($ra->hidden == 0 || $canseehidden) && ($role == $ra->rolename)) {                        
+                        // if we've already displayed user don't again
+                        if (in_array($ra->user->id,$usersshown)) {
+                          continue;
+                        }
+                        $usersshown[] = $ra->user->id;
+                      
                         $fullname = fullname($ra->user, $canviewfullnames);
                         if ($ra->hidden == 1) {
                             $status = " <img src=\"{$CFG->pixpath}/t/show.gif\" title=\"".get_string('userhashiddenassignments', 'role')."\" alt=\"".get_string('hiddenassign')."\" class=\"hide-show-image\"/>";
@@ -2078,15 +2140,22 @@ function print_course($course, $highlightterms = '') {
                             $status = '';
                         }
 
-                        if (isset($aliasnames[$ra->roleid])) {
-                            $ra->rolename = $aliasnames[$ra->roleid]->name;
-                        }
-
-                        $namesarray[] = format_string($ra->rolename)
-                            . ': <a href="'.$CFG->wwwroot.'/user/view.php?id='.$ra->user->id.'&amp;course='.SITEID.'">'
+                        $tempnamesarray[] =  '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$ra->user->id.'&amp;course='.SITEID.'">'
                             . $fullname . '</a>' . $status;
+                   
+                     }
+                   }
+                    if (count($tempnamesarray) > 1) {
+                      $namesstring = format_string($role) . 's: ';                    
+                    } else {
+                      $namesstring = format_string($role) . ': ';  
                     }
+                    $namesstring = $namesstring . implode($tempnamesarray,', '); 
+                    $namesarray[] = $namesstring;  
+                    
                 }
+               
+                
             }
         } else {
             $rusers = get_role_users($managerroles, $context,
@@ -2098,8 +2167,42 @@ function print_course($course, $highlightterms = '') {
                 if (isset($context)) {
                     $aliasnames = get_records('role_names', 'contextid', $context->id,'','roleid,contextid,name');
                 }
-
+                        
                 foreach ($rusers as $teacher) {
+                    $fullname = fullname($teacher, $canviewfullnames);
+
+                    /// Apply role names
+                    if (isset($aliasnames[$teacher->roleid])) {
+                        $teacher->rolename = $aliasnames[$teacher->roleid]->name;
+                    }
+                    $rolesarray[] = $teacher->rolename;
+                }
+                
+                $rolesarray_unique = array_unique($rolesarray);
+                $tempnamesarray = array();
+                
+                foreach ($rolesarray_unique as $role) {
+                  foreach ($rusers as $teacher) {
+                    if ($teacher->rolename == $role) {
+                       $fullname = fullname($teacher, $canviewfullnames);
+                       $tempnamesarray[] =  '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$teacher->id.'&amp;course='.SITEID.'">'
+                        . $fullname . '</a>'; 
+                    }
+                  }
+                  if (count($tempnamesarray) > 1) {
+                    $namesstring = format_string($role) . 's: ';                    
+                  } else {
+                    $namesstring = format_string($role) . ': ';  
+                  }
+                  $namesstring = $namesstring . implode($tempnamesarray,', '); 
+                  $namesarray[] = $namesstring;
+                }
+                
+            }
+            
+            
+          /*  
+          foreach ($rusers as $teacher) {
                     $fullname = fullname($teacher, $canviewfullnames);
 
                     /// Apply role names
@@ -2109,16 +2212,38 @@ function print_course($course, $highlightterms = '') {
 
                     $namesarray[] = format_string($teacher->rolename)
                         . ': <a href="'.$CFG->wwwroot.'/user/view.php?id='.$teacher->id.'&amp;course='.SITEID.'">'
-                        . $fullname . '</a>';
-                }
-            }
+                        . $fullname . '</a>';    */
+                        
+                        
+
         }
+    // end CMDl-1414
 
         if (!empty($namesarray)) {
             echo "<ul class=\"teachers\">\n<li>";
             echo implode('</li><li>', $namesarray);
             echo "</li></ul>";
         }
+    }
+
+    /// ALAN Display number of places left on the course
+    if (!empty($course->enrolmax)) {
+        $availableenrolments = $course->enrolmax - count_course_students($course);
+        echo '<br />';
+        if ($availableenrolments > 0) {
+            print_string('availableenrolments');
+            echo ': ';
+            echo $availableenrolments;
+        }
+        else {
+            print_string('availableenrolmentsnone');
+        }
+    }
+	else { // BRUCE/ALAN
+		echo '<br />';
+		print_string('availableenrolments');
+		echo ': ';
+		print_string('availableenrolmentsunlimited');
     }
 
     require_once("$CFG->dirroot/enrol/enrol.class.php");
@@ -2144,7 +2269,11 @@ function print_my_moodle() {
         error("It shouldn't be possible to see My Moodle without being logged in.");
     }
 
+    if (!empty($CFG->enrolmaxenabled)) { // ALAN add 'enrolmax'...
+        $courses  = get_my_courses($USER->id, 'visible DESC,sortorder ASC', array('summary','enrolmax'));
+    } else { // OLD CODE...
     $courses  = get_my_courses($USER->id, 'visible DESC,sortorder ASC', array('summary'));
+    }
     $rhosts   = array();
     $rcourses = array();
     if (!empty($CFG->mnet_dispatcher_mode) && $CFG->mnet_dispatcher_mode==='strict') {
@@ -2414,6 +2543,16 @@ function set_coursemodule_visible($id, $visible, $prevstateoverrides=false) {
     }
     return set_field("course_modules", "visible", $visible, "id", $id);
 }
+
+// CMDL-1414 ????
+function get_coursemodule_visible($id) {
+    if (!$cm = get_record('course_modules', 'id', $id)) {
+        return false;
+    }
+    return get_field('course_modules', 'visibleold', 'id', $id);
+}
+// end CMDL-1414
+
 
 /*
  * Delete a course module and any associated data at the course level (events)

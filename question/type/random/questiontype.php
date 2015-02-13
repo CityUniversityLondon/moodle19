@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: questiontype.php,v 1.12.2.12 2011/05/04 22:56:39 moodlerobot Exp $
 /**
  * Class for the random question type.
  *
@@ -373,7 +373,11 @@ class random_qtype extends default_questiontype {
               echo 'Could not get qtype while recoding question random-'.$answerregs[1].'<br />';
               return($answer_field);
             }
-            $newstate = clone($state);
+
+            // CMDL-1269 fix missing session data
+            $randomid = $state->question;
+            // end CMDL-1269
+            $newstate = $state;
             $newstate->question = $wrapped->new_id;
             $newstate->answer = $answerregs[2];
             $answer_field = 'random'.$wrapped->new_id.'-';
@@ -389,6 +393,9 @@ class random_qtype extends default_questiontype {
             }
         }
 
+        // CMDL-1269 fix missing session data
+        $state->question = $randomid;
+        // end CMDL-1269
         return $answer_field;
     }
 

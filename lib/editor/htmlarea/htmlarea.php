@@ -30,10 +30,17 @@
     }
 
     if ($httpsrequired or (!empty($_SERVER['HTTPS']) and $_SERVER['HTTPS'] != 'off')) {
-        $url = preg_replace('|https?://[^/]+|', '', $CFG->wwwroot).'/lib/editor/htmlarea/';
+        // CMDL-1101 fix IE bugs on profile edit page
+        httpsrequired();
+        $wwwroot = $CFG->httpswwwroot;
     } else {
-        $url = $CFG->wwwroot.'/lib/editor/htmlarea/';
+        $wwwroot = $CFG->wwwroot;
+        // end CMDL-1101
     }
+
+    // CMDL-1101 fix IE bugs on profile edit page
+    $url = $wwwroot.'/lib/editor/htmlarea/';
+    // end CMDL-1101
 
     $strheading = get_string("heading", "editor");
     $strnormal = get_string("normal", "editor");
@@ -54,7 +61,7 @@
 // Version 3.0 developed by Mihai Bazon.
 //   http://dynarch.com/mishoo
 //
-// $Id$
+// $Id: htmlarea.php,v 1.24.2.9 2010/11/18 08:49:27 rwijaya Exp $
 
 if (typeof _editor_url == "string") {
     // Leave exactly one backslash at the end of _editor_url
@@ -173,7 +180,13 @@ HTMLArea.Config = function () {
           "insertorderedlist", "insertunorderedlist", "outdent", "indent", "separator",
           "forecolor", "hilitecolor", "separator",
           "inserthorizontalrule", "createanchor", "createlink", "unlink", "nolink", "separator",
-          "insertimage", "inserttable",
+
+        // CMDL-1201 Audio feedback
+        // Modified for NanoGong HTML editor and filter
+        // "insertimage", "inserttable",
+          "insertimage", "insertsound", "inserttable",
+        // end CMDl-1201
+
           "insertsmile", "insertchar", "search_replace",
           <?php if (!empty($CFG->aspellpath) && file_exists($CFG->aspellpath) && !empty($CFG->editorspelling)) {
               echo '"separator","spellcheck",';
@@ -263,6 +276,12 @@ HTMLArea.Config = function () {
         unlink: [ "Remove Link", "ed_unlink.gif", false, function(e) {e.execCommand("unlink");} ],
         nolink: [ "No link", "ed_nolink.gif", false, function(e) {e.execCommand("nolink");} ],
         insertimage: [ "Insert/Modify Image", "ed_image.gif", false, function(e) {e.execCommand("insertimage");} ],
+
+        // CMDL-1201 Audio feedback
+        // Added for NanoGong HTML editor and filter
+        insertsound: [ "Insert/Modify Sound", "ed_sound.gif", false, function(e) {e.execCommand("insertsound");} ],
+        // end CMDL-1201
+
         inserttable: [ "Insert Table", "insert_table.gif", false, function(e) {e.execCommand("inserttable");} ],
         htmlmode: [ "Toggle HTML Source", "ed_html.gif", true, function(e) {e.execCommand("htmlmode");} ],
         popupeditor: [ "Enlarge Editor", "fullscreen_maximize.gif", true, function(e) {e.execCommand("popupeditor");} ],
@@ -744,6 +763,12 @@ HTMLArea.prototype.generate = function () {
         html += editor._textArea.value;
         html = html.replace(/<nolink>/gi, '<span class="nolink">').
                     replace(/<\/nolink>/gi, '</span>');
+
+        // CMDL-1201 Audio feedback
+        // Added for NanoGong HTML editor and filter
+        html = editor.translateHTML(html, "textmode");
+        // end CMDl-1201
+
         html += "</body>\n";
         html += "</html>";
     } else {
@@ -1220,6 +1245,13 @@ HTMLArea.prototype.updateToolbar = function(noStatus) {
                     return false;
                 };
                 var txt = el.tagName.toLowerCase();
+
+                // CMDL-1201 Audio feedback
+                // Added for NanoGong HTML editor and filter
+                if (txt == "img" && el.getAttribute("url"))
+                    txt = "nanogong";
+                // end CMDL-1201
+
                 a.title = el.style.cssText;
                 if (el.id) {
                     txt += "#" + el.id;
@@ -1545,7 +1577,9 @@ HTMLArea.prototype._createLink = function(link) {
     var anchors = new Array();
     for(var i = 0; i < allinks.length; i++) {
         var attrname = allinks[i].getAttribute('name');
-        if((HTMLArea.is_ie ? attrname.length > 0 : attrname != null)) {
+        // CMDL-1437 fix bug in weblinks in IE
+        if((HTMLArea.is_ie && attrname ? attrname.length > 0 : attrname != null)) {
+        // end CMDL-1437
             anchors[i] = allinks[i].getAttribute('name');
         }
     }
@@ -1631,7 +1665,13 @@ HTMLArea.prototype._insertImage = function(image) {
     var outparam = null;
     if (typeof image == "undefined") {
         image = this.getParentElement();
-        if (image && !/^img$/i.test(image.tagName))
+
+        // CMDL-1201 Audio feedback
+        // Modified for NanoGong HTML editor and filter
+	// if (image && !/^img$/i.test(image.tagName))
+	if (image && (!/^img$/i.test(image.tagName) || image.getAttribute("url")))
+        // end CMDL-1201
+
             image = null;
     }
     if (image) outparam = {
@@ -1705,6 +1745,51 @@ HTMLArea.prototype._insertImage = function(image) {
         }
     }, outparam);
 };
+
+// CMDL-1201 Audio feedback
+// Added for NanoGong HTML editor and filter
+// Called when the user clicks on "InsertSound" button.  If a sound is already
+// there, it will just modify it's properties.
+HTMLArea.prototype._insertSound = function(sound) {
+
+    // Make sure that editor has focus
+    this.focusEditor();
+    var editor = this;  // for nested functions
+    var outparam = null;
+    if (typeof sound == "undefined") {
+        sound = this.getParentElement();
+        if (sound && !/^img/i.test(sound.tagName) && !sound.getAttribute("url"))
+            sound = null;
+    }
+    if (sound) outparam = {
+        f_caption   : sound.getAttribute("caption"),
+        f_sndurl    : sound.getAttribute("url")
+    };
+    this._popupDialog("insert_sound.php?id=<?php echo $id; ?>", function(param) {
+        if (!param) {   // user must have pressed Cancel
+            return false;
+        }
+        var snd = sound;
+        if (!snd) {
+            var sel = editor._getSelection();
+            var range = editor._createRange(sel);
+            var snd = editor._doc.createElement("img");
+            snd.setAttribute("src", editor.imgURL("images/ed_sound.gif"));
+            snd.setAttribute("alt", "Sound object: " + param.f_caption);
+            snd.setAttribute("caption", param.f_caption);
+            snd.setAttribute("url", param.f_sndurl);
+            if (HTMLArea.is_ie) {
+                range.pasteHTML(snd.outerHTML);
+            } else {
+                editor.insertNodeAtSelection(snd);
+            }
+        } else {
+            snd.setAttribute("caption", param.f_caption);
+            snd.setAttribute("url", param.f_sndurl);
+        }
+    }, outparam);
+};
+// end CMDL-1201
 
 // Called when the user clicks the Insert Table button
 HTMLArea.prototype._insertTable = function() {
@@ -2092,6 +2177,12 @@ HTMLArea.prototype.execCommand = function(cmdID, UI, param) {
         break;
         case "inserttable": this._insertTable(); break;
         case "insertimage": this._insertImage(); break;
+
+        // CMDL-1201 Audio feedback
+        // Added for NanoGong HTML editor and filter
+        case "insertsound": this._insertSound(); break;
+        // end CMDL-1201
+
         case "insertsmile": this._insertSmile(); break;
         case "insertchar": this._insertChar(); break;
         case "searchandreplace": this._searchReplace(); break;
@@ -2270,6 +2361,12 @@ HTMLArea.prototype._editorEvent = function(ev) {
                 case 'd': cmd = "unlink"; break;
                 case 'n': cmd = "nolink"; break;
                 case 'i': cmd = 'insertimage'; break;
+				
+                // CMDL-1201 Audio feedback
+                // Added for NanoGong HTML editor and filter
+                case 'g': cmd = 'insertsound'; break;
+                // end CMDL-1201
+
                 case 't': cmd = 'inserttable'; break;
                 case 's': cmd = 'insertsmile'; break;
                 case 'c': cmd = 'insertchar'; break;
@@ -2308,15 +2405,96 @@ HTMLArea.prototype._editorEvent = function(ev) {
 };
 
 
+// CMDL-1201 Audio feedback
+// Added for NanoGong HTML editor and filter
+// translate the html for special tags
+HTMLArea.prototype.translateHTML = function(html, mode) {
+    switch (mode) {
+    case "wysiwyg" :
+        var thtml = "";
+        var re = /\<img .*?\>/gi;
+        var result, tag;
+        var lastIndex = 0;
+        while ((result = re.exec(html)) != null) {
+            thtml += html.substring(lastIndex, result.index);
+            lastIndex = re.lastIndex;
+            tag = "" + result;
+            if (!/url=\"(.*?)\"/i.test(tag)) {
+                thtml += tag;
+                continue;
+            }
+            url = RegExp.$1;
+            if (/caption=\"(.*?)\"/i.test(tag))
+                caption = RegExp.$1;
+            else
+                caption = "";
+
+            if (caption == null || caption == "")
+                thtml += "<nanogong url=\"" + url + "\" />";
+            else
+                thtml += "<nanogong caption=\"" + caption + "\" url=\"" + url + "\" />";
+        }
+        thtml += html.substring(lastIndex, html.length);
+        return thtml;
+    case "textmode" :
+        var snd = this._doc.createElement("img");
+        snd.setAttribute("src", this.imgURL("images/ed_sound.gif"));
+        var container = this._doc.createElement("div");
+        container.appendChild(snd);
+
+        var thtml = "";
+        var re = /\<nanogong .*?\>/gi;
+        var result, tag;
+        var lastIndex = 0;
+        while ((result = re.exec(html)) != null) {
+            thtml += html.substring(lastIndex, result.index);
+            lastIndex = re.lastIndex;
+            tag = "" + result;
+            if (!/url=\"(.*?)\"/i.test(tag)) continue;
+            url = RegExp.$1;
+            if (/caption=\"(.*?)\"/i.test(tag))
+                caption = RegExp.$1;
+            else
+                caption = "";
+
+            if (caption == null || caption == "") {
+                snd.setAttribute("alt", "Sound object");
+                snd.setAttribute("caption", "");
+            }
+            else {
+                snd.setAttribute("alt", "Sound object: " + caption);
+                snd.setAttribute("caption", caption);
+            }
+            snd.setAttribute("url", url);
+            thtml += container.innerHTML;
+        }
+        thtml += html.substring(lastIndex, html.length);
+        return thtml;
+    }
+};
+// end CMDL-1201
+
 // retrieve the HTML
 HTMLArea.prototype.getHTML = function() {
     switch (this._editMode) {
         case "wysiwyg"  :
+
+        /* CMDL-1201 Audio feedback */
+        /* Modified for NanoGong HTML editor and filter
         if (!this.config.fullPage) {
             return HTMLArea.getHTML(this._doc.body, false, this);
         } else
             return this.doctype + "\n" + HTMLArea.getHTML(this._doc.documentElement, true, this);
         case "textmode" : return this._textArea.value;
+        */
+        if (!this.config.fullPage) {
+            return this.translateHTML(HTMLArea.getHTML(this._doc.body, false, this), "wysiwyg");
+        } else
+            return this.translateHTML(this.doctype + "\n" + HTMLArea.getHTML(this._doc.documentElement, true, this), "wysiwyg");
+        case "textmode" :
+        return this.translateHTML(this._textArea.value, "textmode");
+        /* end CMDL-1201 */
+
         default     : alert("Mode <" + mode + "> not defined!");
     }
     return false;
@@ -2409,12 +2587,18 @@ HTMLArea.checkSupportedBrowser = function() {
             return false;
         }
         if (navigator.productSub < 20030210) {
-            alert("Mozilla < 1.3 Beta is not supported!\n" +
-                  "I'll try, though, but it might not work.");
+            // CMDL-1104 html editor hack for safari and chrome
+            //alert("Mozilla < 1.3 Beta is not supported!\n" +
+            //      "I'll try, though, but it might not work.");
+            return 'HTMLArea.is_gecko';
+            // end CMDL-1104
         }
     }
     if(HTMLArea.is_safari) {
-        return false;
+        // CMDL-1104 html editor hack for safari and chrome
+        //return false;
+        return 'HTMLArea.is_gecko';
+        // end CMDL-1104
     }
     return HTMLArea.is_gecko || HTMLArea.is_ie;
 };
@@ -2555,7 +2739,13 @@ HTMLArea.isStandardTag = function (el) {
     return HTMLArea.RE_msietag.test(el.tagName);
 };
 HTMLArea.isSingleTag = function (el) {
-    var re = /^(br|hr|img|input|link|meta|param|embed|area)$/i;
+
+    // CMDL-1201 Audio feedback
+    // Modified for NanoGong HTML editor and filter
+    // var re = /^(br|hr|img|input|link|meta|param|embed|area)$/i;
+    var re = /^(br|hr|img|nanogong|input|link|meta|param|embed|area)$/i;
+    //end CMDL-1201
+
     return re.test(el.tagName.toLowerCase());
 };
 // Retrieves the HTML code from the given node.  This is a replacement for
@@ -2783,7 +2973,13 @@ HTMLArea.indent = function(s, sindentChar) {
     /*0*/  new RegExp().compile(/<\/?(div|p|h[1-6]|table|tr|td|th|ul|ol|li|blockquote|object|br|hr|img|embed|param|pre|script|html|head|body|meta|link|title|area)[^>]*>/g),
     /*1*/  new RegExp().compile(/<\/(div|p|h[1-6]|table|tr|td|th|ul|ol|li|blockquote|object|html|head|body|script)( [^>]*)?>/g),//blocklevel closing tag
     /*2*/  new RegExp().compile(/<(div|p|h[1-6]|table|tr|td|th|ul|ol|li|blockquote|object|html|head|body|script)( [^>]*)?>/g),//blocklevel opening tag
-    /*3*/  new RegExp().compile(/<(br|hr|img|embed|param|pre|meta|link|title|area)[^>]*>/g),//singlet tag
+
+    // CMDL-1201 Audio feedback
+    // Modified for NanoGong HTML editor and filter
+    //    /*3*/  new RegExp().compile(/<(br|hr|img|embed|param|pre|meta|link|title|area)[^>]*>/g),//singlet tag
+    /*3*/  new RegExp().compile(/<(br|hr|img|nanogong|embed|param|pre|meta|link|title|area)[^>]*>/g),//singlet tag
+    // end CMDL-1201
+
     /*4*/  new RegExp().compile(/(^|<\/(pre|script)>)(\s|[^\s])*?(<(pre|script)[^>]*>|$)/g),//find content NOT inside pre and script tags
     /*5*/  new RegExp().compile(/(<pre[^>]*>)(\s|[^\s])*?(<\/pre>)/g),//find content inside pre tags
     /*6*/  new RegExp().compile(/(^|<!--(\s|\S)*?-->)((\s|\S)*?)(?=<!--(\s|\S)*?-->|$)/g),//find content NOT inside comments

@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: view.php,v 1.70.2.37 2012/05/19 11:04:52 moodlerobot Exp $
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
 // NOTICE OF COPYRIGHT                                                   //
@@ -82,7 +82,9 @@
     }
 
     require_course_login($course, true, $cm);
-
+    // CMDL-1642 Moodle Database error with available and viewable dates
+    $readonly = data_isviewable($data);
+    // end CMDL-1642
     $context = get_context_instance(CONTEXT_MODULE, $cm->id);
     require_capability('mod/data:viewentry', $context);
 
@@ -131,7 +133,7 @@
         $search = '';
         $vals = array();
         $fields = get_records('data_fields', 'dataid', $data->id);
-        
+
         //Added to ammend paging error. This error would occur when attempting to go from one page of advanced
         //search results to another.  All fields were reset in the page transfer, and there was no way of determining
         //whether or not the user reset them.  This would cause a blank search to execute whenever the user attempted
@@ -142,7 +144,7 @@
         //execution falls through to the second condition below, allowing paging to be set to true.
         //Paging remains true and keeps getting passed though the URL until a new search is performed
         //(even if page 0 is revisited).
-        //A false $paging flag generates advanced search results based on the fields input by the user. 
+        //A false $paging flag generates advanced search results based on the fields input by the user.
         //A true $paging flag generates davanced search results from the $SESSION global.
 
         $paging = optional_param('paging', NULL, PARAM_BOOL);
@@ -581,11 +583,17 @@
             if ($record) {     // We need to just show one, so where is it in context?
                 $nowperpage = 1;
                 $mode = 'single';
+
+                // CMDL-1704 Database 'more' link linking to wrong record (INC0032019)
+                //$page = (int)array_search($record->id, $recordids);
+                //unset($recordids);
                 $page = 0;
                 if ($allrecordids = get_fieldset_sql($sqlselect)) {
                     $page = (int)array_search($record->id, $allrecordids);
                     unset($allrecordids);
                 }
+                //end CMDL-1704
+
             } else if ($mode == 'single') {  // We rely on ambient $page settings
                 $nowperpage = 1;
 

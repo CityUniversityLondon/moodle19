@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: frontpage.php,v 1.8.2.5 2009/01/14 04:47:22 dongsheng Exp $
 
 // This file defines everything related to frontpage
 

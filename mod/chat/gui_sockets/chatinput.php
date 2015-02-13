@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: chatinput.php,v 1.11.4.3 2008/10/08 06:41:55 dongsheng Exp $
 
     $nomoodlecookie = true;     // Session not needed!
 

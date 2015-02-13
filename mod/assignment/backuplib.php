@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: backuplib.php,v 1.12.8.4 2011/08/11 22:45:40 moodlerobot Exp $
     //This php script contains all the stuff to backup/restore
     //assignment mods
 
@@ -30,7 +30,7 @@
 
         //Iterate over assignment table
         $assignments = get_records ("assignment","course",$preferences->backup_course,"id");
-        if ($assignments) {
+        if ($assignments) { 
             foreach ($assignments as $assignment) {
                 if (backup_mod_selected($preferences,'assignment',$assignment->id)) {
                     $status = assignment_backup_one_mod($bf,$preferences,$assignment);
@@ -42,13 +42,10 @@
     }
 
     function assignment_backup_one_mod($bf,$preferences,$assignment) {
-        
         global $CFG;
-
         if ($assignment === 0) { //no active instances of assignment to be backed up - skip backup
             return false;
         }
-
         if (is_numeric($assignment)) {
             $assignment = get_record('assignment','id',$assignment);
         }
@@ -59,7 +56,7 @@
             // a moodle without this assignmenttype
             return false;
         }
-
+    
         $status = true;
 
         //Start mod

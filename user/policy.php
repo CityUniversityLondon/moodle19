@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: policy.php,v 1.13 2007/08/17 19:09:27 nicolasconnault Exp $
 
     require_once('../config.php');
     require_once($CFG->libdir.'/filelib.php');

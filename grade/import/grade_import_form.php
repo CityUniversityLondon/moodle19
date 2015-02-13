@@ -96,7 +96,9 @@ class grade_import_mapping_form extends moodleform {
         $mform->addElement('header', 'general', get_string('mappings', 'grades'));
 
         // add a comment option
-
+        // CMDL-1116 fix error importing grades
+        $comments = array();
+        // end CMDL-1116
         if ($gradeitems = $this->_customdata['gradeitems']) {
             $comments = array();
             foreach ($gradeitems as $itemid => $itemname) {

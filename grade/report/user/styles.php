@@ -101,6 +101,12 @@ table.user-grade td.baggb {
    border-bottom: 3px double black;
 }
 
+/* CMDL-1414 remove course name from unenrol me link */
+table.user-grade td.disclaimer {
+   border: 1px solid white; /* Quick and dirty fix to remove border*/
+}
+/* end CMDL-1414 */
+
 table.user-grade td.item {
    border-left: 1px solid gray;
    border-right: 1px solid gray;

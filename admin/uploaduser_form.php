@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: uploaduser_form.php,v 1.4.2.8 2010/05/13 01:40:36 moodler Exp $
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page

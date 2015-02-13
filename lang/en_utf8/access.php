@@ -1,4 +1,4 @@
-<?PHP // $Id$ 
+<?PHP // $Id: access.php,v 1.8.2.2 2007/12/18 17:26:00 nfreear Exp $ 
       // access.php - created with Moodle 1.7 beta + (2006101003)
       // Accessibility, usability and navigation language file.
 
@@ -24,6 +24,7 @@ $string['tabledata'] = 'Data table, $a';
 $string['tablelayout'] = 'Layout table, $a';
 $string['tocontent'] = 'Skip to main content';
 $string['tonavigation'] = 'Go to navigation';
-$string['youarehere'] = 'You are here';
-
+// CMDL-1692 Add Global Navigation to Moodle
+$string['youarehere'] = 'You are here:';
+// end CMDL-1692
 ?>

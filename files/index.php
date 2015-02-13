@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: index.php,v 1.121.2.13 2012/04/12 15:03:25 moodlerobot Exp $
 
 //  Manage all uploaded files in a course file area
 

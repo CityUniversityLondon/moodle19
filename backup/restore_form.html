@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: restore_form.html,v 1.60.2.23 2010/03/22 22:10:33 stronk7 Exp $
     //This page prints the restore form to select everything yo want
     //to restore. Form is dinamically buid, depending of "info" object
     //that contains the backup contents and depending of every mod
@@ -107,6 +107,12 @@
     if (!isset($restore_site_files)) {
         $restore_site_files = 1;
     }
+
+    // CMDL-1314 adding option to exclude section summaries
+    if (!isset($restore_sectionsummaries)) {
+        $restore_sectionsummaries = 1;
+    }
+    // end CMDL-1314
 
     if (!isset($restore_messages)) {
         $restore_messages = 1;
@@ -546,6 +552,25 @@ function selectItemInCheckboxByName(formId, checkName, checked ) {
             echo "<input type=\"hidden\" id=\"menurestore_site_files\" name=\"restore_site_files\" value=\"0\" />";
         }
         echo "</td></tr>";
+
+        // CMDL-1314 adding option to exclude section summaries
+        //Now print the Section summaries tr
+        echo "<tr>";
+        echo "<td align=\"right\" colspan=\"2\"><b>";
+        echo '<label for="menurestore_sectionsummaries">'.get_string ("sectionsummaries").'</label>';
+        echo "</b></td><td colspan=\"2\">";
+        //If sections are in the backup file, show menu, else fixed to no
+        if (!isset($info->backup_sectionsummaries) || (isset($info->backup_sectionsummaries) && $info->backup_sectionsummaries == "true")) {
+            $sectionsummaries_options = array();
+            $sectionsummaries_options[0] = get_string("no");
+            $sectionsummaries_options[1] = get_string("yes");
+            choose_from_menu($sectionsummaries_options, "restore_sectionsummaries", $restore_sectionsummaries, "");
+        } else {
+            echo get_string("no");
+            echo "<input type=\"hidden\" id=\"menurestore_sectionsummaries\" name=\"restore_sectionsummaries\" value=\"0\" />";
+        }
+        echo "</td></tr>";
+        // end CMDL-1314
 
         // do you want grade histories to be restored?
         if (empty($CFG->disablegradehistory) and $restoreuserinfo) {

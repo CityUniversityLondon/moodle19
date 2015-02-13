@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: refresh.php,v 1.11.4.2 2011/09/21 15:53:58 moodlerobot Exp $
 
     require('../config.php');
 
@@ -18,7 +18,6 @@
     $userid       = required_param('id', PARAM_INT);
     $userfullname = strip_tags(required_param('name', PARAM_RAW));
     $wait         = optional_param('wait', MESSAGE_DEFAULT_REFRESH, PARAM_INT);
-
     if ($wait < 1) {
         //this should not happen unless someone is manually constructing URLs
         //allowing a wait of 0 causes continuous GET requests

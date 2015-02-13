@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: restorelib.php,v 1.60.4.6 2011/02/23 20:23:53 moodlerobot Exp $
     //This php script contains all the stuff to backup/restore
     //forum mods
 

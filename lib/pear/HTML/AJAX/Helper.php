@@ -2,7 +2,7 @@
 /**
  * HTML/JavaScript Generation Helper
  *
- * SVN Rev: $Id$
+ * SVN Rev: $Id: Helper.php,v 1.1.2.1 2008/10/03 07:09:51 nicolasconnault Exp $
  *
  * @category   HTML
  * @package    AJAX

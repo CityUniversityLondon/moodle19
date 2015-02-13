@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: mod.php,v 1.127.2.3 2009/02/05 13:41:18 stronk7 Exp $
 
 //  Moves, adds, updates, duplicates or deletes modules in a course
 
@@ -493,6 +493,12 @@
 
         $strdeletecheck = get_string('deletecheck', '', $form->fullmodulename);
         $strdeletecheckfull = get_string('deletecheckfull', '', "$form->fullmodulename '$form->instancename'");
+        // CMDL-1447 changing alert message for activity deletion
+        if ($form->fullmodulename != 'Resource'){
+            $strdeletecheckfull .= "<br /><br />";
+            $strdeletecheckfull .= get_string('deleteasscheckfull', '');
+        }
+        // end CMDL-1447
 
         $CFG->pagepath = 'mod/'.$module->name.'/delete';
 

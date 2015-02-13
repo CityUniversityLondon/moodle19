@@ -98,9 +98,11 @@ if (!isset($CFG->block_search_softlock)){
             <b><?php print_string('usemoodleroot', 'block_search') ?>:</b>
         </td>
         <td valign="top" align="left">
-        <?php 
-            $usemoodleroot = (isset($CFG->block_search_usemoodleroot)) ? 'checked="checked"' : '' ; 
-            $notusemoodleroot = (!isset($CFG->block_search_usemoodleroot)) ? 'checked="checked"' : '' ; 
+        <?php
+            // CMDL-1414
+            $usemoodleroot = (isset($CFG->block_search_usemoodleroot) && $CFG->block_search_usemoodleroot) ? 'checked="checked"' : '' ;
+            $notusemoodleroot = (!isset($CFG->block_search_usemoodleroot) || !$CFG->block_search_usemoodleroot) ? 'checked="checked"' : '' ;
+            // end CMDL-1414
         ?>
           <input id="block_search_usemoodleroot" type="radio" name="block_search_usemoodleroot" <?php echo $usemoodleroot ?> value="1"/> <?php print_string('yes') ?> - 
           <input id="block_search_usemoodleroot" type="radio" name="block_search_usemoodleroot" <?php echo $notusemoodleroot ?> value="0"/> <?php print_string('no') ?> 

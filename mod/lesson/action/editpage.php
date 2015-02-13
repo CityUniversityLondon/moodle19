@@ -1,8 +1,8 @@
-<?php // $Id$
+<?php // $Id: editpage.php,v 1.24 2007/04/08 21:02:17 mark-nielsen Exp $
 /**
  *  Action for editing a page.  Prints an HTML form.
  *
- * @version $Id$
+ * @version $Id: editpage.php,v 1.24 2007/04/08 21:02:17 mark-nielsen Exp $
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package lesson
  **/

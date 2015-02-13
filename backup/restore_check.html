@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: restore_check.html,v 1.48.2.23 2010/03/22 22:10:33 stronk7 Exp $
 
     //This page receive all the restore_form data. Then, if existing course
     //has been selected, shows a list of courses to select one.
@@ -102,6 +102,10 @@
         $restore_course_files = required_param('restore_course_files', PARAM_INT);
         //restore_site_files
         $restore_site_files = required_param('restore_site_files', PARAM_INT);
+        // CMDL-1314 adding option to exclude section summaries
+        //restore_sectionsummaries
+        $restore_sectionsummaries = required_param('restore_sectionsummaries', PARAM_INT);
+        // end CMDL-1314
         //restore_gradebook_history
         $restore_gradebook_history = required_param('restore_gradebook_history', PARAM_INT);
         //restore_messages
@@ -143,6 +147,9 @@
         $restore->user_files=$restore_user_files;
         $restore->course_files=$restore_course_files;
         $restore->site_files=$restore_site_files;
+        // CMDL-1314 adding option to exclude section summaries
+        $restore->sectionsummaries=$restore_sectionsummaries;
+        // end CMDL-1314
         $restore->messages=$restore_messages;
         $restore->blogs=$restore_blogs;
         $restore->restore_gradebook_history=$restore_gradebook_history;
@@ -429,7 +436,29 @@
             $hidden["sesskey"]            =  sesskey();
             print_string('longtimewarning','admin');
 
-
+            // CMDL-1192 additional info on final restore screen
+            // Mike Hughes April 20th 2011
+            if ($course_header->course_id) {
+            	echo "<div style=\"padding: 10px;\">";
+            	echo "You are about to restore ". $course_header->course_shortname;
+            
+            	if ($_REQUEST['course_id']) {
+            		
+            		// get recipient course shortname
+            		$sn = get_record('course','id',$_REQUEST['course_id']);
+            		echo " into course <a href=\"/course/view.php?id={$sn->id}\">{$sn->shortname}</a>";
+            		if ($restore->restoreto == 4) echo ", adding data to it!";
+            		if ($restore->restoreto == 3) echo ", deleting data from it first!!";
+            	}
+            
+            	if ($restore->restoreto == 0) echo " to the current course, deleting data from it first!!";
+            	if ($restore->restoreto == 1) echo " to the current course, adding data to it!";
+            	if ($restore->restoreto == 2) echo " to a new course!";	
+            
+            	echo "</div>";
+            
+            }
+            // end CMDL-1192
         /// Restore button
             print_single_button("restore.php", $hidden, get_string("restorecoursenow"),"post");
         }

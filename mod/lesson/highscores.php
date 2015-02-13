@@ -1,8 +1,8 @@
-<?php  // $Id$
+<?php  // $Id: highscores.php,v 1.6.4.2 2008/12/10 06:30:25 dongsheng Exp $
 /**
  * Provides the interface for viewing and adding high scores
  *
- * @version $Id$
+ * @version $Id: highscores.php,v 1.6.4.2 2008/12/10 06:30:25 dongsheng Exp $
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package lesson
  **/

@@ -1,4 +1,4 @@
-<?PHP // $Id$ 
+<?PHP // $Id: exercise.php,v 1.4.8.1 2008/10/02 14:39:13 poltawski Exp $ 
       // exercise.php - created with Moodle 1.7 beta + (2006101003)
 
 

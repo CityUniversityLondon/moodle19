@@ -18,7 +18,7 @@
 // |          Alexey Borzov <avb@php.net>
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: hierselect.php,v 1.1 2006/09/24 17:04:55 jamiesensei Exp $
 
 require_once('HTML/QuickForm/group.php');
 require_once('HTML/QuickForm/select.php');

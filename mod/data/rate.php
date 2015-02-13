@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: rate.php,v 1.11.2.2 2010/01/13 16:47:42 stronk7 Exp $
     require_once('../../config.php');
     require_once('lib.php');
 

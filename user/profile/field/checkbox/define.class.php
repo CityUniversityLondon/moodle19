@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: define.class.php,v 1.1.2.3 2008/07/15 04:28:39 moodler Exp $
 
 class profile_define_checkbox extends profile_define_base {
 

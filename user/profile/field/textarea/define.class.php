@@ -1,4 +1,4 @@
-<?php  //$Id$
+<?php  //$Id: define.class.php,v 1.1 2007/04/28 03:07:43 ikawhero Exp $
 
 class profile_define_textarea extends profile_define_base {
 

@@ -71,7 +71,9 @@ class assignment_base {
             error('assignment ID was incorrect');
         }
 
-        $this->assignment->cmidnumber = $this->cm->idnumber; // compatibility with modedit assignment obj
+        // CMDL-1175 add bulk upload of feedback
+        $this->assignment->cmidnumber = $this->cm->id; // compatibility with modedit assignment obj
+        // end CMDL-1175
         $this->assignment->courseid   = $this->course->id; // compatibility with modedit assignment obj
 
         $this->strassignment = get_string('modulename', 'assignment');
@@ -314,9 +316,13 @@ class assignment_base {
                 if ($submission = $this->get_submission($USER->id)) {
                     if ($submission->timemodified) {
                         if ($submission->timemodified <= $this->assignment->timedue || empty($this->assignment->timedue)) {
-                            $submitted = '<span class="early">'.userdate($submission->timemodified).'</span>';
+                            // CMDL-1108 add assignment receipt functionality
+                            $submitted = '<span class="early">'.userdate($submission->timemodified).assignment_display_lateness($submission->timemodified, $this->assignment->timedue).'</span>';
+                            // end CMDL-1108
                         } else {
-                            $submitted = '<span class="late">'.userdate($submission->timemodified).'</span>';
+                            // CMDL-1108 add assignment receipt functionality
+                            $submitted = '<span class="late">'.userdate($submission->timemodified).assignment_display_lateness($submission->timemodified, $this->assignment->timedue).'</span>';
+                            // end CMDL-1108
                         }
                     }
                 }
@@ -841,7 +847,6 @@ class assignment_base {
                               s.timemodified, s.timemarked,
                               CASE WHEN s.timemarked > 0 AND s.timemarked >= s.timemodified THEN 1
                                    ELSE 0 END AS status ';
-
             $sql = 'FROM '.$CFG->prefix.'user u '.
                    'LEFT JOIN '.$CFG->prefix.'assignment_submissions s ON u.id = s.userid
                                                                       AND s.assignment = '.$this->assignment->id.' '.
@@ -952,7 +957,9 @@ class assignment_base {
             }
         }
 
-        $lastmailinfo = get_user_preferences('assignment_mailinfo', 1) ? 'checked="checked"' : '';
+        // CMDL-918 change default email setting
+        $lastmailinfo = get_user_preferences('assignment_mailinfo', 0) ? 'checked="checked"' : '';
+        // end CMDL-918
 
         ///Print Buttons in Single View
         echo '<input type="hidden" name="mailinfo" value="0" />';
@@ -1170,11 +1177,14 @@ class assignment_base {
                           s.timemodified, s.timemarked,
                           CASE WHEN s.timemarked > 0 AND s.timemarked >= s.timemodified THEN 1
                                ELSE 0 END AS status ';
-
         $sql = 'FROM '.$CFG->prefix.'user u '.
                'LEFT JOIN '.$CFG->prefix.'assignment_submissions s ON u.id = s.userid
                                                                   AND s.assignment = '.$this->assignment->id.' '.
-               'WHERE '.$where.'u.id IN ('.implode(',',$users).') ';
+
+                // CMDL-1723 Teacher and Admin cannot view assignments (INC0037439)
+                //'WHERE '.$where.'u.id IN ('.implode(',',$users).') ';
+                'WHERE '.$where.' '.split_query_in_list('u.id', 500, $users, true);
+                // end CMDL-1723
 
         $table->pagesize($perpage, count($users));
 
@@ -1207,8 +1217,12 @@ class assignment_base {
                 ///attach file or print link to student answer, depending on the type of the assignment.
                 ///Refer to print_student_answer in inherited classes.
                     if ($auser->timemodified > 0) {
+                        // CMDL-1414 add time difference to message
                         $studentmodified = '<div id="ts'.$auser->id.'">'.$this->print_student_answer($auser->id)
-                                         . userdate($auser->timemodified).'</div>';
+                                         // CMDL-1414 add time difference to message
+                                         . userdate($auser->timemodified).$this->display_lateness($auser->timemodified).'</div>';
+                                         // end CMDL-1414
+
                     } else {
                         $studentmodified = '<div id="ts'.$auser->id.'">&nbsp;</div>';
                     }
@@ -1326,6 +1340,12 @@ class assignment_base {
             }
         }
 
+        // CMDL-1108 add assignment receipt functionality
+        if ($this->can_bulk_download()) {
+            echo '<div style="text-align:right"><a href="'.$CFG->wwwroot.'/mod/assignment/verifyfile.php?id='.$this->cm->id.'">'.get_string('verifyfile', 'assignment').'</a></div>';
+        }
+        // end CMDL-1108
+
         /// Print quickgrade form around the table
         if ($quickgrade){
             echo '<form action="submissions.php" id="fastg" method="post">';
@@ -1353,6 +1373,13 @@ class assignment_base {
             echo '</form>';
         }
         /// End of fast grading form
+
+        // CMDL-1175 add bulk upload of feedback
+        // Add the bulk download and bulk upload buttons
+        if ($this->can_bulk_download()) {
+            include('download_upload_buttons.php');
+        }
+        // end CMDL-1175
 
         /// Mini form for setting user preference
         echo '<div class="qgprefs">';
@@ -1577,7 +1604,12 @@ class assignment_base {
         if (empty($this->assignment->emailteachers)) {          // No need to do anything
             return;
         }
-
+        // CMDL-1629 Additional option to send email confirmation for late assignment submissions (REQ0033173)
+        if ($this->assignment->emailteachers == 2               // We only email for late submissions
+                & $submission->timemodified <= $this->assignment->timedue) {
+            return;
+        }
+        // end CMDL-1629
         $user = get_record('user', 'id', $submission->userid);
 
         if ($teachers = $this->get_graders($user)) {
@@ -1605,9 +1637,24 @@ class assignment_base {
      * Returns a list of teachers that should be grading given submission
      */
     function get_graders($user) {
-        //potential graders
-        $potgraders = get_users_by_capability($this->context, 'mod/assignment:grade', '', '', '', '', '', '', false, false);
-
+        // CMDL-1141 fix emails sent to roles above teacher
+        global $CFG;
+        // all potential graders
+        $allgraders = get_users_by_capability($this->context, 'mod/assignment:grade', '', '', '', '', '', '', false, false);
+        
+        // fix by Mike to stop emails going to all with category levels roles
+        // OK, so we have a list of users who have capability but we need to drop those
+        // who have this at category level, they don't want emails too
+        $cc = get_context_instance(CONTEXT_COURSE, $this->course->id);
+        $potgraders = array();
+        foreach ($allgraders as $g) {
+            // check is user in graders subset has a role assignment in this course, and add to potgraders array
+            if (record_exists('role_assignments','userid', $g->id, 'contextid', $cc->id)) {
+              $potgraders[] = $g;
+            }
+        }
+        // end CMDL-1141
+        
         $graders = array();
         if (groups_get_activity_groupmode($this->cm) == SEPARATEGROUPS) {   // Separate groups are being used
             if ($groups = groups_get_all_groups($this->course->id, $user->id)) {  // Try to find all groups
@@ -1946,6 +1993,164 @@ class assignment_base {
         return $status;
     }
 
+
+    // CMDL-1175 add bulk upload of feedback
+    /**
+     * Can assessments be downloaded in bulk - override this method
+     *
+     * @return bool
+     */
+    function can_bulk_download() {
+        return(false);
+    }
+    // end CMDL-1175
+    
+    // CMDL-1108 add assignment receipt functionality
+    /**
+     * Gets data for the coversheet
+     *
+     * @param object $submission
+     * @return array
+     */
+    function get_coversheet_data($submission, $delete=0) {
+        global $CFG;
+
+        include_once($CFG->libdir.'/uow-lib.php');
+        $assignment = $this->assignment;
+        $user = get_record('user', 'id', $submission->userid);
+        // Get list of tutors
+        $managerroles = split(',', $CFG->coursemanager);
+        $teachers = get_role_users($managerroles, get_context_instance(CONTEXT_COURSE, $this->course->id),
+                                     true, '', 'r.sortorder ASC, u.lastname ASC', false);
+
+        $fields = array();
+        $fields['name'] = fullname($user);
+        $fields['studentid'] = $user->idnumber;
+        $fields['username'] = $user->username;
+
+        $fields['courseid'] = $this->course->fullname;
+        $fields['assignmentname'] = $assignment->name;
+        $fields['teachers'] = '';
+        
+        foreach ($teachers as $teacher) {
+            $fields['teachers'] .= $teacher->firstname.' '.$teacher->lastname.'<br />';
+        }
+        $fields['teachers'] = substr($fields['teachers'], 0, -6);
+
+        if ($this->assignment->timedue) {
+            $fields['duedate'] = userdate($this->assignment->timedue);
+        } else {
+            $fields['duedate'] = 'Not set';
+        }
+
+        if ($submission->timemodified) {
+            if ($submission->timemodified <= $this->assignment->timedue || empty($this->assignment->timedue)) {
+                $submitted = '<span class="early">'.userdate($submission->timemodified).assignment_display_lateness($submission->timemodified, $this->assignment->timedue).'</span>';
+            } else {
+                $submitted = '<span class="late">'.userdate($submission->timemodified).assignment_display_lateness($submission->timemodified, $this->assignment->timedue).'</span>';
+            }
+        }
+
+        if (!$delete) {
+            $fields['datesubmitted'] = $submitted;
+        } else {
+            $fields['datedeleted'] = $submitted;
+        }
+
+        $fields['notes'] = $submission->data1;
+
+
+        //$fields['table'] = "<table>\n<tr><th>File Name</th><th>Receipt</th></tr>";
+        $fields['table'] = "<table>\n";
+
+        $filearea = $this->file_area_name($submission->userid);
+        if ($basedir = $this->file_area($submission->userid)) {
+            if ($files = get_directory_list($basedir, array('receipts', 'responses'))) {
+                foreach ($files as $file) {
+                    //$fields['table'] .= '<tr><td>'.$file.'</td><td>'.uow_assignment_reciept($basedir.'/'.$file, $submission->timemodified).'</td></tr>';
+                    $fields['table'] .= '<tr><th>File:</th><td>'.$file.'</td></tr>';
+                    $fields['table'] .= '<tr><th>Receipt:</th><td>'.uow_assignment_reciept($basedir.'/'.$file, $submission->timemodified).'</td></tr>';
+                }
+            } else {
+                $fields['table'] .= '<tr><th>IMPORTANT!</th><td>YOU HAVE NO SUBMITTED FILES</td></tr>';
+            }
+        }
+        $fields['table'] .= '</table>';
+
+        return($fields);
+    }
+
+    /**
+     * Genrate an assignment coversheet in RTF format
+     *
+     * @param object $submission
+     * @return string coversheet
+     */
+    function get_coversheet_rtf($submission, $delete=0) {
+        global $CFG;
+
+        $action = array(0 => 'Submitted', 1 => 'Deleted'); // TODO: use get string? template is all in english anyway
+        // CMDL-1251 add deletion titles to receipt
+        $title = array(0 => 'Assignment Submission Confirmation', 1 => 'Assignment Deletion Confirmation');
+        // end CMDL-1251
+        $rtfdata['#action#'] = $action[$delete];
+        // CMDL-1251 add deletion titles to receipt
+        $rtfdata['#title#'] = $title[$delete];
+        // end CMDL-1251
+        include_once($CFG->libdir.'/uow-lib.php');
+        $fields = $this->get_coversheet_data($submission);
+
+        // Remap data to placeholder format used in RTF template
+        foreach ($fields as $key => $value) {
+            $rtfdata['#'.$key.'#'] = $value? $value: '';
+        }
+        unset($fields);
+       
+        return(uow_generate_rtf($CFG->dirroot.'/mod/assignment/template.rtf', $rtfdata));
+
+    }
+
+
+    /**
+     * Generate an assignment coversheet in HTML
+     *
+     * @param object $submission
+     * @return string
+     */
+    function get_coversheet_html($submission, $delete=0) {
+
+        $fields = $this->get_coversheet_data($submission, $delete);
+        $options->para=false;
+
+        $tr = array('<table>' => '<table class="flexible submissions">',
+                    '<th>'    => '<th class="header" scope="col" align=right>',
+                    '<td>'    => '<td class="cell">');
+
+        $coversheet = '<table cellpadding="3">';
+
+        foreach ($fields as $name => $value) {
+            if ($name == 'table') {
+                continue;
+            }
+            $coversheet .= '<tr>
+                              <td style="text-align: right;" valign="top"><b>'.get_string($name, 'assignment').':</b></td>
+                              <td>'.format_text($value, FORMAT_MOODLE, $options).'</td>
+                            </tr>
+                            ';
+        }
+
+        $coversheet .= '</table>
+                       <p>&nbsp;</p><h3>'.get_string('submittedfiles', 'assignment').':</h3>';
+
+        $coversheet .= strtr($fields['table'], $tr);
+
+        return($coversheet);
+    }
+    // end CMDL-1108
+    
+
+
+
     /**
      * base implementation for backing up subtype specific information
      * for one single module
@@ -2089,7 +2294,10 @@ function assignment_user_outline($course, $user, $mod, $assignment) {
     $assignmentclass = "assignment_$assignment->assignmenttype";
     $ass = new $assignmentclass($mod->id, $assignment, $mod, $course);
     $grades = grade_get_grades($course->id, 'mod', 'assignment', $assignment->id, $user->id);
-    if (!empty($grades->items[0]->grades)) {
+    // CMDL-1648 URGENT: Viewing results for NM3732/3734 - Sep 09 - Rotation 1 submitted 234/02/2
+    //if (!empty($grades->items[0]->grades)) {
+    if (!empty($grades->items[0]->grades) && !$grades->items[0]->grades[$user->id]->hidden) {
+    // end CMDL-1648
         return $ass->user_outline(reset($grades->items[0]->grades));
     } else {
         return null;
@@ -2798,7 +3006,7 @@ function assignment_count_real_submissions($cm, $groupid=0) {
         $gradebookroles = '';
     }
     $users = get_role_users($gradebookroles, $context, true, '', 'u.lastname ASC', true, $groupid);
-    if ($users) {
+    if ($users) { 
         $users = array_keys($users);
         // if groupmembersonly used, remove users who are not in any group
         if (!empty($CFG->enablegroupings) and $cm->groupmembersonly) {
@@ -2812,14 +3020,29 @@ function assignment_count_real_submissions($cm, $groupid=0) {
     if (empty($users)) {
         return 0;
     }
+//print_r($users);
+    $userlists = implode(',', $users); //print_r($userlists);
 
-    $userlists = implode(',', $users);
+    // CMDL-
+    //    return count_records_sql("SELECT COUNT('x')
+    //                                FROM {$CFG->prefix}assignment_submissions
+    //                               WHERE assignment = $cm->instance AND
+    //                                     timemodified > 0 AND
+    //                                     userid IN ($userlists)");
+
+
 
     return count_records_sql("SELECT COUNT('x')
                                 FROM {$CFG->prefix}assignment_submissions
                                WHERE assignment = $cm->instance AND
-                                     timemodified > 0 AND
-                                     userid IN ($userlists)");
+                                     timemodified > 0 AND "
+                                     .split_query_in_list('userid', 500, $userlists, true));
+
+
+    // end CMDL-
+
+
+
 }
 
 

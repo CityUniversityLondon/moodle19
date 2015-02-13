@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: lib.php,v 1.89.2.18 2009/11/09 13:05:37 mjollnir_ Exp $
     //This file contains all the general function needed (file manipulation...)
     //not directly part of the backup/restore utility plus some constants
 
@@ -703,7 +703,7 @@
             // it is within dataroot, so take it off the path for restore_precheck.
             $pathtofile = substr($pathtofile,strlen($CFG->dataroot.'/'));
         }
-
+        
         if (!backup_required_functions()) {
             mtrace($debuginfo.'Required function check failed (see backup_required_functions)');
             return false;
@@ -714,7 +714,7 @@
         } else {
             raise_memory_limit($CFG->extramemorylimit);
         }
-
+        
         if (!$backup_unique_code = restore_precheck($destinationcourse,$pathtofile,$errorstr,true)) {
             mtrace($debuginfo.'Failed restore_precheck (error was '.$errorstr.')');
             return false;
@@ -760,6 +760,9 @@
         $restore->blogs        = (isset($preferences['restore_blogs']) ? $preferences['restore_blogs'] : 0);
         $restore->course_files = (isset($preferences['restore_course_files']) ? $preferences['restore_course_files'] : 0);
         $restore->site_files   = (isset($preferences['restore_site_files']) ? $preferences['restore_site_files'] : 0);
+        // CMDL-1314 adding option to exclude section summaries
+        $restore->sectionsummaries = (isset($preferences['restore_sectionsummaries']) ? $preferences['restore_sectionsummaries'] : 1);
+        // end CMDL-1314
 
         $restore->backup_version   = $restore->info->backup_backup_version;
         $restore->original_wwwroot = $restore->info->original_wwwroot;
@@ -771,6 +774,9 @@
         // rename the things that are called differently 
         $SESSION->restore->restore_course_files = $restore->course_files;
         $SESSION->restore->restore_site_files   = $restore->site_files;
+        // CMDL-1314 adding option to exclude section summaries
+        $SESSION->restore->restore_sectionsummaries   = $restore->sectionsummaries;
+        // end CMDL-1314
         $SESSION->restore->backup_version       = $restore->info->backup_backup_version;
 
         restore_setup_for_check($restore, $backup_unique_code);
@@ -785,16 +791,20 @@
         if ($allmods = get_records("modules")) {
             foreach ($allmods as $mod) {
                 $modname = $mod->name;
-                //Now check that we have that module info in the backup file
-                if (isset($restore->info->mods[$modname]) && $restore->info->mods[$modname]->backup == "true") {
-                    $restore->mods[$modname]->restore = true;
-                    $restore->mods[$modname]->userinfo = $userdata;
+                // CMDl-1407 Remove Turnitin module from restore and import functions
+                if ($modname != 'turnitintool') {
+                  //Now check that we have that module info in the backup file
+                  if (isset($restore->info->mods[$modname]) && $restore->info->mods[$modname]->backup == "true") {
+                      $restore->mods[$modname]->restore = true;
+                      $restore->mods[$modname]->userinfo = $userdata;
+                  }
+                  else {
+                      // avoid warnings
+                      $restore->mods[$modname]->restore = false;
+                      $restore->mods[$modname]->userinfo = false;
+                  }
                 }
-                else {
-                    // avoid warnings
-                    $restore->mods[$modname]->restore = false;
-                    $restore->mods[$modname]->userinfo = false;
-                }
+                // end CMDL-1407
             }
         }
         if (!$status = restore_execute($restore,$restore->info,$restore->course_header,$errorstr)) {
@@ -808,7 +818,9 @@
             }
             return false;
         }
+        
         return true;
+
     }
 
     /**
@@ -848,6 +860,9 @@
             backup_user_files
             backup_course_files
             backup_site_files
+            CMDL-1314 adding option to exclude section summaries
+            backup_sectionsummaries
+            end CMDL-1314
             backup_messages
             userdata
     * and if not provided, they will not be included.
@@ -943,6 +958,9 @@
         $preferences->backup_user_files = (isset($prefs['backup_user_files']) ? $prefs['backup_user_files'] : 0);
         $preferences->backup_course_files = (isset($prefs['backup_course_files']) ? $prefs['backup_course_files'] : 0);
         $preferences->backup_site_files = (isset($prefs['backup_site_files']) ? $prefs['backup_site_files'] : 0);
+        // CMDL-1314 adding option to exclude section summaries
+        $preferences->backup_sectionsummaries = (isset($prefs['backup_sectionsummaries']) ? $prefs['backup_sectionsummaries'] : 1);
+        // end CMDL-1314
         $preferences->backup_messages = (isset($prefs['backup_messages']) ? $prefs['backup_messages'] : 0);
         $preferences->backup_gradebook_history = (isset($prefs['backup_gradebook_history']) ? $prefs['backup_gradebook_history'] : 0);
         $preferences->backup_blogs = (isset($prefs['backup_blogs']) ? $prefs['backup_blogs'] : 0);

@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: lib.php,v 1.282.2.29 2011/05/18 10:36:17 moodlerobot Exp $
 /**
 * Library of functions for the quiz module.
 *

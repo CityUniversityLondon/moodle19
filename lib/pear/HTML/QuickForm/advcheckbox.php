@@ -17,7 +17,7 @@
 // |          Bertrand Mansion <bmansion@mamasam.com>                     |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: advcheckbox.php,v 1.1 2006/09/24 17:04:54 jamiesensei Exp $
 
 require_once('HTML/QuickForm/checkbox.php');
 

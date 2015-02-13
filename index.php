@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: index.php,v 1.201.2.11 2011/01/12 09:57:31 moodlerobot Exp $
        // index.php - the front page.
 
 ///////////////////////////////////////////////////////////////////////////
@@ -113,6 +113,11 @@
                  '<meta name="description" content="'. strip_tags(format_text($SITE->summary, FORMAT_HTML)) .'" />',
                  true, '', user_login_string($SITE).$langmenu);
 
+    // CMDL-1414 ????
+    //HTTPS is potentially required in this page
+    httpsrequired();
+    // end CMDL-1414
+
 ?>
 
 
@@ -135,7 +140,10 @@
     echo '<td id="middle-column">'. skip_main_destination();
 
     print_container_start();
-
+    // CMDL-1085 Redesign Moodle Login Page
+    echo "<h2 class=\"main help\">Welcome to Moodle</h2>";
+    // end CMDL-1085
+    // 
 /// Print Section
     if ($SITE->numsections > 0) {
 
@@ -150,7 +158,9 @@
         }
 
         if (!empty($section->sequence) or !empty($section->summary) or $editing) {
-            print_box_start('generalbox sitetopic');
+            // CMDL-1085 Redesign Moodle Login Page
+            print_box_start('sitetopic');
+            // end CMDL-1085
 
             /// If currently moving a file then show the current clipboard
             if (ismoving($SITE->id)) {
@@ -171,21 +181,27 @@
                      " class=\"iconsmall\" alt=\"$streditsummary\" /></a><br /><br />";
             }
 
+            // CMDL-1085 Redesign Moodle Login Page
+            if (isloggedin() and !isguest() and isset($CFG->frontpageloggedin)) {
+                $frontpagelayout = $CFG->frontpageloggedin;
+            } else {
+                $frontpagelayout = $CFG->frontpage;
+                //include ("login/index_form.html");
+                echo "<br/><br/>";
+            }
+
             get_all_mods($SITE->id, $mods, $modnames, $modnamesplural, $modnamesused);
             print_section($SITE, $section, $mods, $modnamesused, true);
 
             if ($editing) {
                 print_section_add_menus($SITE, $section->section, $modnames);
             }
+            // end CMDL-1085
+
             print_box_end();
         }
-    }
-
-    if (isloggedin() and !isguest() and isset($CFG->frontpageloggedin)) {
-        $frontpagelayout = $CFG->frontpageloggedin;
-    } else {
-        $frontpagelayout = $CFG->frontpage;
-    }
+    }   
+    
 
     foreach (explode(',',$frontpagelayout) as $v) {
         switch ($v) {     /// Display the main part of the front page.
@@ -231,20 +247,26 @@
 
             case FRONTPAGECATEGORYNAMES:
 
+                // CMDL-879 move search box
+                print_course_search('', false, 'short');
                 print_heading_block(get_string('categories'));
                 print_box_start('generalbox categorybox');
                 print_whole_category_list(NULL, NULL, NULL, -1, false);
                 print_box_end();
-                print_course_search('', false, 'short');
+                //print_course_search('', false, 'short');
+                // end CMDL-879
             break;
 
             case FRONTPAGECATEGORYCOMBO:
 
+                // CMDL-879 move search box
+                print_course_search('', false);
                 print_heading_block(get_string('categories'));
                 print_box_start('generalbox categorybox');
                 print_whole_category_list(NULL, NULL, NULL, -1, true);
                 print_box_end();
-                print_course_search('', false, 'short');
+                //print_course_search('', false, 'short');
+                // end CMDL-879
             break;
 
             case FRONTPAGETOPICONLY:    // Do nothing!!  :-)

@@ -1,4 +1,4 @@
-<?PHP  //$Id$
+<?PHP  //$Id: postgres7.php,v 1.19 2006/10/26 22:46:03 stronk7 Exp $
 
 // THIS FILE IS DEPRECATED!  PLEASE DO NOT MAKE CHANGES TO IT!
 //

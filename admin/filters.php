@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: filters.php,v 1.38.4.2 2007/12/25 10:03:17 skodak Exp $
 
     require_once('../config.php');
 

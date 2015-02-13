@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: format.php,v 1.74.2.7 2010/09/24 05:19:38 rwijaya Exp $
       // Display the whole course as "weeks" made of of modules
       // Included from "view.php"
 

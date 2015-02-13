@@ -1,4 +1,4 @@
-<?PHP // $Id$
+<?PHP // $Id: index.php,v 1.194.2.24 2010/06/17 21:02:36 mudrd8mz Exp $
 
 //  Lists all the users within a given course
 
@@ -315,12 +315,12 @@
         $tablecolumns[] = 'lastaccess';
         $tableheaders[] = get_string('lastaccess');
     }
-
-    if ($course->enrolperiod) {
+    // CMDL-1359 removing dependancy on course enrollment setting
+    //if ($course->enrolperiod) {
         $tablecolumns[] = 'timeend';
         $tableheaders[] = get_string('enrolmentend');
-    }
-
+    //}
+    // end CMDL-1359
     if ($bulkoperations) {
         $tablecolumns[] = '';
         $tableheaders[] = get_string('select');
@@ -371,7 +371,11 @@
                       r.hidden,
                       ctx.id AS ctxid, ctx.path AS ctxpath,
                       ctx.depth AS ctxdepth, ctx.contextlevel AS ctxlevel ';
-        $select .= $course->enrolperiod?', r.timeend ':'';
+        // CMDL-1359 removing dependancy on course enrollment setting
+        //$select .= $course->enrolperiod?', r.timeend ':'';
+        $select .= ', r.timeend ';
+        //// end CMDL-1359
+        
     } else {
         if ($roleid >= 0) {
             $select = 'SELECT u.id, u.username, u.firstname, u.lastname,
@@ -445,8 +449,9 @@
     if (!empty($search)) {
         $LIKE = sql_ilike();
         $fullname  = sql_fullname('u.firstname','u.lastname');
-        $wheresearch .= ' AND ('. $fullname .' '. $LIKE .' \'%'. $search .'%\' OR email '. $LIKE .' \'%'. $search .'%\' OR idnumber '.$LIKE.' \'%'.$search.'%\') ';
-
+        // CMDL-928 fix Oracle case sensitivity
+        $wheresearch .= ' AND ('. sql_olike($fullname, $search) . ' OR ' . sql_olike('email', $search) . ' OR ' . sql_olike('idnumber', $search) . ') ';
+        // end CMDL-928
     }
 
     if ($currentgroup) {    // Displaying a group by choice
@@ -745,13 +750,15 @@
                 if (!isset($hiddenfields['lastaccess'])) {
                     $data[] = $lastaccess;
                 }
-                if ($course->enrolperiod) {
+                // CMDL-1359 removing dependancy on course enrollment setting
+                //if ($course->enrolperiod) {
                     if ($user->timeend) {
                         $data[] = userdate($user->timeend, $timeformat);
                     } else {
                         $data[] = get_string('unlimited');
                     }
-                }
+                //}
+                // end CMDL-1359
                 if ($bulkoperations) {
                     $data[] = '<input type="checkbox" name="user'.$user->id.'" />';
                 }

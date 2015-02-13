@@ -1,4 +1,4 @@
-<?PHP // $Id$
+<?PHP // $Id: change_password.php,v 1.62.2.4 2011/11/15 11:30:59 moodlerobot Exp $
 
     require_once('../config.php');
     require_once('change_password_form.php');
@@ -25,7 +25,6 @@
 
         redirect($returnto);
     }
-
     if (!$course = get_record('course', 'id', $id)) {
         error('No such course!');
     }

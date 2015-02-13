@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: jstimer.php,v 1.16.2.1 2007/11/02 16:19:56 tjhunt Exp $
 // QuizTimer main routines.
 // This will produce a floating timer that counts
 // how much time is left to answer the quiz.

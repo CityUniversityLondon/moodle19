@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: locallib.php,v 1.54.2.4 2008/09/27 00:40:00 ethem Exp $
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');

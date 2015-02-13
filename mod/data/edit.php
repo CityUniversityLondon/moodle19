@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: edit.php,v 1.32.2.11 2010/09/23 11:31:43 andreabix Exp $
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
 // NOTICE OF COPYRIGHT                                                   //
@@ -72,6 +72,15 @@
         print_header_simple(format_string($data->name), "", $navigation, "", "", true, '', navmenu($course, $cm));
         notice(get_string("activityiscurrentlyhidden"));
     }
+
+    // CMDL-1642 Moodle Database error with available and viewable dates
+    /// If it's not "available", don't allow editing
+    if ((!data_isavailable($data) or data_isviewable($data))and !has_capability('moodle/legacy:editingteacher', $context)) {
+        $navigation = build_navigation('', $cm);
+        print_header_simple(format_string($data->name), "", $navigation, "", "", true, '', navmenu($course, $cm));
+        notice(get_string("notavailable", "data"));
+    }
+    // end CMDL-1642
 
 /// Can't use this if there are no fields
     if (has_capability('mod/data:managetemplates', $context)) {

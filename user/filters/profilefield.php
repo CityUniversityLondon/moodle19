@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: profilefield.php,v 1.2.2.3 2007/12/11 13:01:13 nfreear Exp $
 
 require_once($CFG->dirroot.'/user/filters/lib.php');
 
@@ -117,27 +117,27 @@ class user_filter_profilefield extends user_filter_type {
 
         $where = "";
         $op = " IN ";
-        $ilike = sql_ilike();
+        // CMDL-928 fix Oracle case sensitivity
+        $olike = sql_olike('data', $value, $operator);
+        // end CMDL-928
 
         if ($operator < 5 and $value === '') {
             return '';
         }
 
         switch($operator) {
-            case 0: // contains
-                $where = "data $ilike '%$value%'"; break;
-            case 1: // does not contain
-                $where = "data NOT $ilike '%$value%'"; break;
-            case 2: // equal to
-                $where = "data $ilike '$value'"; break;
-            case 3: // starts with
-                $where = "data $ilike '$value%'"; break;
+            // CMDL-928 fix Oracle case sensitivity
+            case 0: // contains                
+            case 1: // does not contain                
+            case 2: // equal to               
+            case 3: // starts with               
             case 4: // ends with
-                $where = "data $ilike '%$value'"; break;
+                $where = "$olike"; break;
             case 5: // empty
                 $where = "data=''"; break;
             case 6: // is not defined
                 $op = " NOT IN "; break;
+            // end CMDL-928
             case 7: // is defined
                 break;
         }

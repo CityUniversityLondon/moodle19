@@ -92,8 +92,13 @@ define('REQUIREJS_AFTERHEADER',  2);
  * @global string $ALLOWED_TAGS
  */
 global $ALLOWED_TAGS;
-$ALLOWED_TAGS =
+// CMDL-1201 Audio feedback
+// $ALLOWED_TAGS =
 '<p><br><b><i><u><font><table><tbody><thead><tfoot><span><div><tr><td><th><ol><ul><dl><li><dt><dd><h1><h2><h3><h4><h5><h6><hr><img><a><strong><emphasis><em><sup><sub><address><cite><blockquote><pre><strike><param><acronym><nolink><lang><tex><algebra><math><mi><mn><mo><mtext><mspace><ms><mrow><mfrac><msqrt><mroot><mstyle><merror><mpadded><mphantom><mfenced><msub><msup><msubsup><munder><mover><munderover><mmultiscripts><mtable><mtr><mtd><maligngroup><malignmark><maction><cn><ci><apply><reln><fn><interval><inverse><sep><condition><declare><lambda><compose><ident><quotient><exp><factorial><divide><max><min><minus><plus><power><rem><times><root><gcd><and><or><xor><not><implies><forall><exists><abs><conjugate><eq><neq><gt><lt><geq><leq><ln><log><int><diff><partialdiff><lowlimit><uplimit><bvar><degree><set><list><union><intersect><in><notin><subset><prsubset><notsubset><notprsubset><setdiff><sum><product><limit><tendsto><mean><sdev><variance><median><mode><moment><vector><matrix><matrixrow><determinant><transpose><selector><annotation><semantics><annotation-xml><tt><code>';
+
+$ALLOWED_TAGS =
+'<p><br><b><i><u><font><table><tbody><thead><tfoot><span><div><tr><td><th><ol><ul><dl><li><dt><dd><h1><h2><h3><h4><h5><h6><hr><img><a><strong><emphasis><em><sup><sub><address><cite><blockquote><pre><strike><param><acronym><nolink><lang><tex><algebra><math><mi><mn><mo><mtext><mspace><ms><mrow><mfrac><msqrt><mroot><mstyle><merror><mpadded><mphantom><mfenced><msub><msup><msubsup><munder><mover><munderover><mmultiscripts><mtable><mtr><mtd><maligngroup><malignmark><maction><cn><ci><apply><reln><fn><interval><inverse><sep><condition><declare><lambda><compose><ident><quotient><exp><factorial><divide><max><min><minus><plus><power><rem><times><root><gcd><and><or><xor><not><implies><forall><exists><abs><conjugate><eq><neq><gt><lt><geq><leq><ln><log><int><diff><partialdiff><lowlimit><uplimit><bvar><degree><set><list><union><intersect><in><notin><subset><prsubset><notsubset><notprsubset><setdiff><sum><product><limit><tendsto><mean><sdev><variance><median><mode><moment><vector><matrix><matrixrow><determinant><transpose><selector><annotation><semantics><annotation-xml><tt><code><nanogong>';
+// end CMDL-1201
 
 /**
  * Allowed protocols - array of protocols that are safe to use in links and so on
@@ -2779,7 +2784,12 @@ function print_header ($title='', $heading='', $navigation='', $focus='',
 
     // Skip to main content, see skip_main_destination().
     if ($pageid=='course-view' or $pageid=='site-index' or $pageid=='course-index') {
-        $skiplink = '<a class="skip" href="#maincontent">'.get_string('tocontent', 'access').'</a>';
+        
+        // CMDL-1692 Add Global Navigation to Moodle
+        //$skiplink = '<a class="skip" href="#maincontent">'.get_string('tocontent', 'access').'</a>';
+        $skiplink = '<a class="skip" tabindex="1" href="#maincontent">'.get_string('tocontent', 'access').'</a>';
+        // end CMDL-1692
+        
         if (! preg_match('/(.*<div[^>]+id="page"[^>]*>)(.*)/s', $output, $matches)) {
             preg_match('/(.*<body.*?>)(.*)/s', $output, $matches);
         }
@@ -4530,7 +4540,10 @@ function print_user_picture($user, $courseid, $picture=NULL, $size=0, $return=fa
     if ($link) {
         $url = '/user/view.php?id='. $user->id .'&amp;course='. $courseid ;
         if ($target) {
-            $target='onclick="return openpopup(\''.$url.'\');"';
+            // CMDL-1556 Access profile via messages - screen not scrollable
+            //$target='onclick="return openpopup(\''.$url.'\');"';
+            $target='onclick="return openpopup(\''.$url.'\', \'\',  \'scrollbars\');"';
+            // end CMDL-1556
         }
         $output = '<a '.$target.' href="'. $CFG->wwwroot . $url .'">';
     } else {
@@ -5045,7 +5058,17 @@ function print_textarea($usehtmleditor, $rows, $cols, $width, $height, $name, $v
 
             }
             $str .= ($scriptcount < 1) ? '<script type="text/javascript" src="'.
+                    // CMDL-1101 fix IE bugs on profile edit page
                     $CFG->httpswwwroot .'/lib/editor/htmlarea/lang/en.php?id='.$courseid.'"></script>'."\n" : '';
+                    // end CMDL-1101
+                    
+            // CMDL-1414 add wiris
+            /**** start WIRIS plugin ****/
+            $str .= ($scriptcount < 1) ? '<script type="text/javascript" src="' . $CFG->httpswwwroot . '/filter/wiris/editor/wrs_plugin.js.php"></script>' . "\n" : '';
+
+            /**** end WIRIS Plugin ****/
+            // end CMDL-1414
+            
             $scriptcount++;
 
             if ($height) {    // Usually with legacy calls
@@ -5106,6 +5129,12 @@ function use_html_editor($name='', $editorhidebuttons='', $id='') {
     echo "var config = $editor.config;\n";
 
     echo print_editor_config($editorhidebuttons);
+    
+    // CMDL-1414 add wiris
+    /**** begin WIRIS Plugin ****/
+    echo "\nWiris.register(config);\n";
+    /**** end WIRIS Plugin ****/
+    // end CMDL-1414
 
     if (empty($THEME->htmleditorpostprocess)) {
         if (empty($name)) {
@@ -6205,26 +6234,26 @@ function redirect($url, $message='', $delay=-1) {
 
     // Technically, HTTP/1.1 requires Location: header to contain the absolute path.
     // (In practice browsers accept relative paths - but still, might as well do it properly.)
-    // This code turns relative into absolute.
-    if (!preg_match('|^[a-z]+:|', $url)) {
-        // Get host name http://www.wherever.com
-        $hostpart = preg_replace('|^(.*?[^:/])/.*$|', '$1', $CFG->wwwroot);
-        if (preg_match('|^/|', $url)) {
-            // URLs beginning with / are relative to web server root so we just add them in
-            $url = $hostpart.$url;
-        } else {
-            // URLs not beginning with / are relative to path of current script, so add that on.
-            $url = $hostpart.preg_replace('|\?.*$|','',me()).'/../'.$url;
-        }
-        // Replace all ..s
-        while (true) {
-            $newurl = preg_replace('|/(?!\.\.)[^/]*/\.\./|', '/', $url);
-            if ($newurl == $url) {
-                break;
+        // This code turns relative into absolute.
+        if (!preg_match('|^[a-z]+:|', $url)) {
+            // Get host name http://www.wherever.com
+            $hostpart = preg_replace('|^(.*?[^:/])/.*$|', '$1', $CFG->wwwroot);
+            if (preg_match('|^/|', $url)) {
+                // URLs beginning with / are relative to web server root so we just add them in
+                $url = $hostpart.$url;
+            } else {
+                // URLs not beginning with / are relative to path of current script, so add that on.
+                $url = $hostpart.preg_replace('|\?.*$|','',me()).'/../'.$url;
             }
-            $url = $newurl;
+            // Replace all ..s
+            while (true) {
+                $newurl = preg_replace('|/(?!\.\.)[^/]*/\.\./|', '/', $url);
+                if ($newurl == $url) {
+                    break;
+                }
+                $url = $newurl;
+            }
         }
-    }
 
     // Sanitise url - we can not rely on our URL cleaning
     // because it does not support all valid external URLs
@@ -6255,8 +6284,12 @@ function redirect($url, $message='', $delay=-1) {
     if (empty($message) and !defined('HEADER_PRINTED')) {
         $delay = 0;
         //try header redirection first
-        @header($_SERVER['SERVER_PROTOCOL'] . ' 303 See Other'); //302 might not work for POST requests, 303 is ignored by obsolete clients
-        @header('Location: '.$url);
+        
+        // CMDL-1355 to allow links to open direct from MS Word and PDF
+        //@header($_SERVER['SERVER_PROTOCOL'] . ' 303 See Other'); //302 might not work for POST requests, 303 is ignored by obsolete clients
+        //@header('Location: '.$url);
+        // end fix
+        
         //another way for older browsers and already sent headers (eg trailing whitespace in config.php)
         echo '<meta http-equiv="refresh" content="'. $delay .'; url='. $encodedurl .'" />';
         echo '<script type="text/javascript">'. "\n" .'//<![CDATA['. "\n". "location.replace('".addslashes_js($url)."');". "\n". '//]]>'. "\n". '</script>';   // To cope with Mozilla bug

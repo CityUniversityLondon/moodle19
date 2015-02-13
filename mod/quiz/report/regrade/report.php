@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: report.php,v 1.19.2.1 2007/11/02 16:20:37 tjhunt Exp $
 
 // This script regrades all attempts at this quiz
 require_once($CFG->libdir.'/tablelib.php');
@@ -7,6 +7,29 @@ class quiz_report extends quiz_default_report {
 
     function display($quiz, $cm, $course) {
         global $CFG;
+        // CMDL-1268 add prompt to regrade link
+        $regrade = optional_param('regrade', 0, PARAM_INT);
+
+        if (!$regrade) {
+            $fullmodulename = get_string("modulename", 'quiz');
+            $form->id = $cm->id;
+            $form->q = $form->regrade = $cm->instance;
+            $form->fullmodulename  = $fullmodulename;
+
+            $strregradecheck = get_string('regradecheck', 'quiz');
+            $strregradecheckfull = get_string('regradecheckfull', 'quiz');
+
+            print_header_simple($strregradecheck, '', build_navigation(array(array('name'=>$strregradecheck,'link'=>'','type'=>'misc'))));
+            print_simple_box_start('center', '60%', '#FFAAAA', 20, 'noticebox');
+            print_heading($strregradecheckfull);
+
+            include_once('mod_regrade.html');
+            print_simple_box_end();
+            print_footer($course);
+
+            exit;
+        }
+        // end CMDL-1268
 
         // Print header
         $this->print_header_and_tabs($cm, $course, $quiz, $reportmode="regrade");

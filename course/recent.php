@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: recent.php,v 1.34.2.3 2008/07/05 20:57:09 skodak Exp $
 
 //  Display all recent activity in a flexible way
 

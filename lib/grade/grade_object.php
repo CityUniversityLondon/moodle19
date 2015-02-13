@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: grade_object.php,v 1.27.2.7 2010/12/29 19:57:21 moodlerobot Exp $
 
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
@@ -32,7 +32,9 @@ class grade_object {
      * Array of required table fields, must start with 'id'.
      * @var array $required_fields
      */
-    var $required_fields = array('id', 'timecreated', 'timemodified');
+    // CMDL-1148 add ability to hide category total
+    public $required_fields = array('id', 'timecreated', 'timemodified', 'hidden');
+    // end CMDL-1148
 
     /**
      * Array of optional fields with default values - usually long text information that is not always needed.
@@ -58,6 +60,14 @@ class grade_object {
      * @var int $timemodified
      */
     var $timemodified;
+
+    // CMDL-1148 add ability to hide category total
+    /**
+     * 0 if visible, 1 always hidden or date not visible until
+     * @var int $hidden
+     */
+    var $hidden = 0;
+    // end CMDL-1148
 
     /**
      * Constructor. Optionally (and by default) attempts to fetch corresponding row from DB.
@@ -346,5 +356,36 @@ class grade_object {
             }
         }
     }
+
+    // CMDL-1148 add ability to hide category total
+    /**
+     * Returns the hidden state of this grade_item
+     * @return boolean hidden state
+     */
+    function is_hidden() {
+        return ($this->hidden == 1 or ($this->hidden != 0 and $this->hidden > time()));
+    }
+
+    /**
+     * Check grade hidden status. Uses data from both grade item and grade.
+     * @return boolean true if hiddenuntil, false if not
+     */
+    function is_hiddenuntil() {
+        return $this->hidden > 1;
+    }
+
+    /**
+     * Check grade item hidden status.
+     * @return int 0 means visible, 1 hidden always, timestamp hidden until
+     */
+    function get_hidden() {
+        return $this->hidden;
+    }
+
+    function set_hidden($hidden, $cascade=false) {
+        $this->hidden = $hidden;
+        $this->update();
+    }
+    // end CMDL-1148
 }
 ?>

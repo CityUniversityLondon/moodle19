@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: autogroup.php,v 1.1.2.4 2007/11/19 22:53:50 skodak Exp $
 /**
  * Create and allocate users go groups
  *

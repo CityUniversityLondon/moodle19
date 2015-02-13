@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: backuplib.php,v 1.62.2.6 2008/02/05 10:16:40 jamiesensei Exp $
     //This php script contains all the stuff to backup quizzes
 
 //This is the "graphical" structure of the quiz mod:
@@ -83,7 +83,7 @@
             //put the ids of the used questions from all these categories into the db.
             $status = $status && execute_sql("INSERT INTO {$CFG->prefix}backup_ids
                                        (backup_code, table_name, old_id, info)
-                                       SELECT DISTINCT $backup_unique_code, 'question', q.id, ''
+                                       SELECT DISTINCT $backup_unique_code, 'question', q.id, ' '
                                        FROM {$CFG->prefix}question q,
                                        $from
                                        {$CFG->prefix}question_categories qc,

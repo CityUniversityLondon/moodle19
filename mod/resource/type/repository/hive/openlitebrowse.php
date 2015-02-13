@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: openlitebrowse.php,v 1.2 2006/03/09 01:51:22 moodler Exp $
 
     require_once("../../../../../config.php");
 

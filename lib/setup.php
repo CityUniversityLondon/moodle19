@@ -5,7 +5,7 @@
  * Normally this is only called by the main config.php file
  * Normally this file does not need to be edited.
  * @author Martin Dougiamas
- * @version $Id$
+ * @version $Id: setup.php,v 1.212.2.30 2010/05/21 11:39:44 skodak Exp $
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package moodlecore
  */
@@ -408,21 +408,28 @@ global $HTTPSPAGEREQUIRED;
     if(empty($CFG->respectsessionsettings)) {
         if (empty($CFG->dbsessions)) {   /// File-based sessions
 
-            // Some distros disable GC by setting probability to 0
-            // overriding the PHP default of 1
-            // (gc_probability is divided by gc_divisor, which defaults to 1000)
-            if (ini_get('session.gc_probability') == 0) {
+            // CMDL-1414 ????
+	    if (!empty($CFG->sessiongcprobability)) { /// sessiongcprobability is defined
+                ini_set('session.gc_probability', $CFG->sessiongcprobability);
+            } else {
+            // end CMDL-1414
                 ini_set('session.gc_probability', 1);
-            }
+	    }
 
             if (!empty($CFG->sessiontimeout)) {
                 ini_set('session.gc_maxlifetime', $CFG->sessiontimeout);
             }
 
-            if (!file_exists($CFG->dataroot .'/sessions')) {
-                make_upload_directory('sessions');
-            }
-            ini_set('session.save_path', $CFG->dataroot .'/sessions');
+            // CMDL-1414 ????
+	    if (!empty($CFG->sessionsavepath)) { /// $CFG->sessionsavepath is defined
+		ini_set('session.save_path', $CFG->sessionsavepath);
+	    } else {
+            // end CMDL-1414
+            	if (!file_exists($CFG->dataroot .'/sessions')) {
+                    make_upload_directory('sessions');
+                }
+                ini_set('session.save_path', $CFG->dataroot .'/sessions');
+	    }
 
         } else {                         /// Database sessions
             ini_set('session.save_handler', 'user');

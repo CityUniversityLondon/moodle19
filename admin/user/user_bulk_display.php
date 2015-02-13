@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: user_bulk_display.php,v 1.1.2.1 2007/11/13 09:02:12 skodak Exp $
 
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
@@ -25,7 +25,9 @@ admin_externalpage_print_header();
 $countries = get_list_of_countries();
 
 foreach ($users as $key => $id) {
-    $user = get_record('user', 'id', $id, null, null, null, null, 'id, firstname, lastname, username, email, country, lastaccess, city');
+    // CMDL-1414 add idnumber to user lists
+    $user = get_record('user', 'id', $id, null, null, null, null, 'id, username, idnumber, firstname, lastname, email, lastaccess');
+    // end CMDL-1414
     $user->fullname = fullname($user, true);
     $user->country = @$countries[$user->country];
     unset($user->firstname);
@@ -47,7 +49,9 @@ function sort_compare($a, $b) {
 usort($users, 'sort_compare');
 
 $table->width = "95%";
-$columns = array('fullname', /*'username', */'email', 'city', 'country', 'lastaccess');
+// CMDL-1414 add idnumber to user lists
+$columns = array('fullname', /*'username', */'email', 'username', 'idnumber', 'lastaccess');
+// end CMDl-1414
 foreach ($columns as $column) {
     $strtitle = get_string($column);
     if ($sort != $column) {
@@ -66,8 +70,10 @@ foreach($users as $user) {
         '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$user->id.'&amp;course='.SITEID.'">'.$user->fullname.'</a>',
 //        $user->username,
         $user->email,
-        $user->city,
-        $user->country,
+        // CMDL-1414 add idnumber to user lists
+        $user->username,        
+	$user->idnumber,
+        // end CMDl-1414
         $user->lastaccess ? format_time(time() - $user->lastaccess) : $strnever
     );
 }

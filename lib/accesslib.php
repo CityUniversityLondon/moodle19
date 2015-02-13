@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: accesslib.php,v 1.421.2.111 2011/08/03 16:28:19 moodlerobot Exp $
 
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
@@ -129,6 +129,11 @@
  */
 
 require_once $CFG->dirroot.'/lib/blocklib.php';
+
+// CMDL-1089 ommitting hidden roles from user lists
+/// CITY FUNCTIONS ////////////////////////////////////////////////////////////
+require_once("accesslib_append.php");
+// end CMDL-1089
 
 // permission definitions
 define('CAP_INHERIT', 0);
@@ -4383,7 +4388,9 @@ function get_default_course_role($course) {
  */
 function get_users_by_capability($context, $capability, $fields='', $sort='',
         $limitfrom='', $limitnum='', $groups='', $exceptions='', $doanything=true,
-        $view=false, $useviewallgroups=false) {
+        // CMDL-1200 remove hidden participants from lists
+        $view=false, $useviewallgroups=false, $viewhidden=false) {
+        // end CMDL-1200
     global $CFG;
 
     $ctxids = substr($context->path, 1); // kill leading slash
@@ -4416,7 +4423,7 @@ function get_users_by_capability($context, $capability, $fields='', $sort='',
     } else {
         // This is an outer join against
         // admin-ish roleids. Any row that succeeds
-        // in JOINing here ends up removed from
+        // in JOINing here ends up removed from, $viewhidden=true
         // the resultset. This means we remove
         // rolecaps from roles that also have
         // 'doanything' capabilities.
@@ -4516,7 +4523,9 @@ function get_users_by_capability($context, $capability, $fields='', $sort='',
     }
 
     /// Set up hidden role-assignments sql
-    if ($view && !has_capability('moodle/role:viewhiddenassigns', $context)) {
+    // CMDL-1200 remove hidden participants from lists
+    if (($view && !has_capability('moodle/role:viewhiddenassigns', $context)) || !$viewhidden) {
+    // end CMDL-1200
         $condhiddenra = 'AND ra.hidden = 0 ';
         $sscondhiddenra = 'AND ssra.hidden = 0 ';
     } else {
@@ -5011,7 +5020,9 @@ function sort_by_roleassignment_authority($users, $context, $roles=array(), $sor
  * @param bool gethidden - whether to fetch hidden enrolments too
  * @return array()
  */
-function get_role_users($roleid, $context, $parent=false, $fields='', $sort='u.lastname ASC, u.firstname ASC', $gethidden=true, $group='', $limitfrom='', $limitnum='') {
+// CMDL-1111 fix participant sorts to be case insensitive
+function get_role_users($roleid, $context, $parent=false, $fields='', $sort='LOWER(u.lastname) ASC', $gethidden=true, $group='', $limitfrom='', $limitnum='') {
+// end CMDL-1111
     global $CFG;
 
     if (empty($fields)) {

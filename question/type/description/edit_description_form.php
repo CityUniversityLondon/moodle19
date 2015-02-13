@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: edit_description_form.php,v 1.3.2.2 2009/09/26 16:27:18 skodak Exp $
 /**
  * Defines the editing form for the description question type.
  *

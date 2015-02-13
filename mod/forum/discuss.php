@@ -65,7 +65,6 @@
         if ($forumto->type == 'single') {
             error('Cannot move discussion to a simple single discussion forum.', $return);
         }
-
         if (!$cmto = get_coursemodule_from_instance('forum', $forumto->id, $course->id)) {
             error('Target forum not found in this course.', $return);
         }

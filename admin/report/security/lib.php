@@ -1,4 +1,4 @@
-<?php  //$Id$
+<?php  //$Id: lib.php,v 1.3.2.23 2011/02/17 00:44:16 moodlerobot Exp $
 
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
@@ -1038,6 +1038,7 @@ function report_security_check_riskadmin($detailed=false) {
     $admins = get_records_sql($sql);
     $admincount = count($admins);
 
+    // CMDL-1111 fix participant sorts to be case insensitive
     $sqlunsup = "SELECT u.id, u.firstname, u.lastname, u.picture, u.imagealt, u.email, ra.contextid, ra.roleid
                   FROM (SELECT rcx.*
                         FROM {$CFG->prefix}role_capabilities rcx
@@ -1050,7 +1051,9 @@ function report_security_check_riskadmin($detailed=false) {
                      AND (sc.path = c.path OR sc.path LIKE ".sql_concat('c.path', "'/%'")." OR c.path LIKE ".sql_concat('sc.path', "'/%'").")
                      AND u.id = ra.userid AND u.deleted = 0
                      AND ra.contextid = sc.id AND ra.roleid = rc.roleid AND ra.contextid <> ".SYSCONTEXTID."
-            GROUP BY u.id, u.firstname, u.lastname, u.picture, u.imagealt, u.email, ra.contextid, ra.roleid";
+            GROUP BY u.id, u.firstname, u.lastname, u.picture, u.imagealt, u.email, ra.contextid, ra.roleid
+            ORDER BY LOWER(u.lastname), LOWER(u.firstname)";
+    // end CMDL-1111
 
     $unsupcount = count_records_sql("SELECT COUNT('x') FROM ($sqlunsup) unsup");
 
@@ -1182,8 +1185,10 @@ function report_security_check_riskbackup($detailed=false) {
         }
 
         // Get a list of affected users as well
+        // CMDL-1111 fix participant sorts to be case insensitive
         $rs = get_recordset_sql("SELECT DISTINCT u.id, u.firstname, u.lastname, u.picture, u.imagealt, u.email, ra.contextid, ra.roleid
-            $sqluserinfo ORDER BY u.lastname, u.firstname");
+            $sqluserinfo ORDER BY LOWER(u.lastname), LOWER(u.firstname)");
+        // end CMDL-1111
 
         $users = array();
         while ($user = rs_fetch_next_record($rs)) {

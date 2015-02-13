@@ -90,19 +90,25 @@ class graded_users_iterator {
         if (empty($this->sortfield1)) {
             // we must do some sorting even if not specified
             $ofields = ", u.id AS usrt";
-            $order   = "usrt ASC";
+            // CMDL-1111 fix participant sorts to be case insensitive
+            $order   = "LOWER(usrt) ASC";
+            // end CMDL-1111
 
         } else {
             $ofields = ", u.$this->sortfield1 AS usrt1";
             $order   = "usrt1 $this->sortorder1";
             if (!empty($this->sortfield2)) {
                 $ofields .= ", u.$this->sortfield2 AS usrt2";
-                $order   .= ", usrt2 $this->sortorder2";
+                // CMDL-1111 fix participant sorts to be case insensitive
+                $order   .= ", LOWER(usrt2) $this->sortorder2";
+                // end CMDL-1111
             }
             if ($this->sortfield1 != 'id' and $this->sortfield2 != 'id') {
                 // user order MUST be the same in both queries, must include the only unique user->id if not already present
                 $ofields .= ", u.id AS usrt";
-                $order   .= ", usrt ASC";
+                // CMDL-1111 fix participant sorts to be case insensitive
+                $order   .= ", LOWER(usrt) ASC";
+                // end CMDL-1111
             }
         }
 
@@ -1322,8 +1328,10 @@ class grade_structure {
      */
     function get_hiding_icon($element, $gpr) {
         global $CFG;
-
-        if (!has_capability('moodle/grade:manage', $this->context) and !has_capability('moodle/grade:hide', $this->context)) {
+        // CMDL-1148 add ability to hide category total
+        if (!has_capability('moodle/grade:manage', $this->context) and
+            !has_capability('moodle/grade:hide', $this->context)) {
+        // end CMDL-1148
             return '';
         }
 

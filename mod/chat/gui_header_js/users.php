@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: users.php,v 1.13.2.3 2008/06/18 03:13:40 dongsheng Exp $
 
     $nomoodlecookie = true;     // Session not needed!
 

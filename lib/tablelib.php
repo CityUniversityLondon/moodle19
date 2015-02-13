@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: tablelib.php,v 1.24.2.7 2010/04/26 15:47:55 tjhunt Exp $
 
 define('TABLE_VAR_SORT',   1);
 define('TABLE_VAR_HIDE',   2);
@@ -6,6 +6,12 @@ define('TABLE_VAR_SHOW',   3);
 define('TABLE_VAR_IFIRST', 4);
 define('TABLE_VAR_ILAST',  5);
 define('TABLE_VAR_PAGE',   6);
+
+// CMDL-928 fix Oracle case sensitivity
+define('COLUMN_VAR_STRING',   1);
+define('COLUMN_VAR_NUMBER',   2);
+define('COLUMN_VAR_DATE',   3);
+// end CMDL-928
 
 class flexible_table {
 
@@ -17,6 +23,9 @@ class flexible_table {
     var $column_class    = array();
     var $column_suppress = array();
     var $column_nosort   = array('userpic');
+    // CMDL-928 fix Oracle case sensitivity
+    var $column_type     = array();
+    // CMDL-928
     var $setup           = false;
     var $sess            = NULL;
     var $baseurl         = NULL;
@@ -192,6 +201,23 @@ class flexible_table {
         }
     }
 
+    // CMDL-928 fix Oracle case sensitivity
+    /**
+     * Added by AD to allow only strings to be case insensitive sorted
+     * Another Oracle inspired change
+     * 
+     * Sets the given $column index to the given $value in $this->column_type.
+     * @param integer $column
+     * @param mixed $value
+     * @return void
+     */
+    function column_type($column, $value=COLUMN_VAR_STRING) {
+        if(isset($this->column_type[$column])) {
+            $this->column_type[$column] = $value;
+        }
+    }
+    // end CMDl-928
+
     /**
      * Sets all columns of the given $property to the given $value in $this->column_style.
      * @param integer $property
@@ -233,6 +259,9 @@ class flexible_table {
             $this->column_style[$column]    = array();
             $this->column_class[$column]    = '';
             $this->column_suppress[$column] = false;
+            // CMDL-928 fix Oracle case sensitivity
+            $this->column_type[$column] = COLUMN_VAR_STRING;
+            // end CMDL-928
         }
     }
 
@@ -452,7 +481,16 @@ class flexible_table {
                 if(!empty($sortstring)) {
                     $sortstring .= ', ';
                 }
-                $sortstring .= $column.($order == SORT_ASC ? ' ASC' : ' DESC');
+                // CMDL-928 fix Oracle case sensitivity
+                if ($this->column_type[$column] == COLUMN_VAR_STRING) {
+                    // CMDL-1111 fix participant sorts to be case insensitive
+                    $sortstring .= 'LOWER('.$column.')';
+                    // end CMDL-1111
+                } else {
+                     $sortstring .= $column;
+                }
+                $sortstring .= ($order == SORT_ASC ? ' ASC' : ' DESC');
+                // end CMDL-928
             }
             return $sortstring;
         }
@@ -490,15 +528,20 @@ class flexible_table {
             return '';
         }
 
-        $LIKE = sql_ilike();
         if(!empty($this->sess->i_first) && !empty($this->sess->i_last)) {
-            return 'firstname '.$LIKE.' \''.$this->sess->i_first.'%\' AND lastname '.$LIKE.' \''.$this->sess->i_last.'%\'';
+            // CMDL-1224 fix search by firstname/lastname + // CMDL-928 fix Oracle case sensitivity
+            return sql_olike('firstname', $this->sess->i_first, 3) . ' AND ' . sql_olike('lastname', $this->sess->i_last, 3);
+            // end CMDL-1224 + CMDL-928
         }
         else if(!empty($this->sess->i_first)) {
-            return 'firstname '.$LIKE.' \''.$this->sess->i_first.'%\'';
+            // CMDL-1224 fix search by firstname/lastname + // CMDL-928 fix Oracle case sensitivity
+            return sql_olike('firstname', $this->sess->i_first, 3);
+            // end CMDL-1224 + CMDL-928
         }
         else if(!empty($this->sess->i_last)) {
-            return 'lastname '.$LIKE.' \''.$this->sess->i_last.'%\'';
+            // CMDL-1224 fix search by firstname/lastname + // CMDL-928 fix Oracle case sensitivity
+            return sql_olike('lastname', $this->sess->i_last, 3);
+            // end CMDL-1224 + CMDL-928
         }
 
         return '';

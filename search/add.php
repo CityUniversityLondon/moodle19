@@ -99,8 +99,10 @@
                                     doctype = '{$values[1]}'
                                     $itemtypes
                             ";
-                            $docIds = get_records_sql_menu($query, array($mod->name));
-                            $docIdList = ($docIds) ? implode("','", array_keys($docIds)) : '' ;
+                            // CMDL-1414 fix for Oracle 1000+ records error        
+                            $docIds = get_records_sql_menu($query);
+                            $docIdList = ($docIds) ? implode("','", array_keys($docIds)) : '' ;                            
+                            $docIdIn = $docIdList ? split_query_in_list('id', 300, "'{$docIdList}'", false) . ' AND ' : '';                            
                             
                             $query =  "
                                 SELECT id, 
@@ -108,10 +110,12 @@
                                 FROM 
                                     {$CFG->prefix}{$values[1]} 
                                 WHERE 
-                                    id NOT IN ('{$docIdList}') AND 
+                                    $docIdIn
                                     {$values[2]} > {$indexdate}
                                     $where
                             ";
+                            // CMDL-1414
+
                             $records = get_records_sql($query);
                             
                             // foreach record, build a module specific search document using the get_document function

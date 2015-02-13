@@ -29,7 +29,6 @@ class MoodleQuickForm_passwordunmask extends MoodleQuickForm_password {
                 }
             }
         }
-
         parent::MoodleQuickForm_password($elementName, $elementLabel, $attributes);
     }
 

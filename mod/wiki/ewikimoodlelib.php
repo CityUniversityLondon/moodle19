@@ -237,11 +237,13 @@ function ewiki_database_moodle($action, &$args, $sw1, $sw2) {
          $field = implode("", array_keys($args));
          $content = strtolower(implode("", $args));
          if ($field == "id") { $field = "pagename"; }
+         // CMDL-928 fix Oracle case sensitivity
          $sql= "SELECT pagename AS id, version, flags" .
              (EWIKI_DBQUERY_BUFFER && ($field!="pagename") ? ", $field" : "") .
              " FROM " . $CFG->prefix.EWIKI_DB_TABLE_NAME .
-             " WHERE $field " . sql_ilike() . " '%".anydb_escape_string($content)."%'  and wiki=".$wiki_entry->id .
+             " WHERE " . sql_olike($field, anydb_escape_string($content)) . " and wiki=".$wiki_entry->id .
              " ORDER BY id, version ASC";
+         // end CMDL-928
          $result=get_records_sql($sql);
 
          $r = new ewiki_dbquery_result(array("id","version",$field));

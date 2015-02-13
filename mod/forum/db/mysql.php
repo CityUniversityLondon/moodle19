@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: mysql.php,v 1.57.6.1 2011/08/30 23:43:19 moodlerobot Exp $
 
 // THIS FILE IS DEPRECATED!  PLEASE DO NOT MAKE CHANGES TO IT!
 //
@@ -279,9 +279,13 @@ function forum_upgrade($oldversion) {
 
   if ($oldversion < 2006082700) {
       $sql = "UPDATE {$CFG->prefix}forum_posts SET message = REPLACE(message, '".TRUSTTEXT."', '');";
-      $likecond = sql_ilike()." '%".TRUSTTEXT."%'";
+      // CMDL-928 fix Oracle case sensitivity
+      $likecond = sql_olike('message', TRUSTTEXT);
+      // end CMDL-928
       while (true) {
-          if (!count_records_select('forum_posts', "message $likecond")) {
+          // CMDL-928 fix Oracle case sensitivity
+          if (!count_records_select('forum_posts', $likecond)) {
+          // end CMDL-928
               break;
           }
           execute_sql($sql);

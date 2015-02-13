@@ -1,4 +1,4 @@
-<?PHP // $Id$
+<?PHP // $Id: view.php,v 1.168.2.31 2010/10/16 17:59:35 skodak Exp $
 
 //  Display profile for a particular user
 
@@ -336,7 +336,9 @@
 
 
     if (!isset($hiddenfields['mycourses'])) {
-        if ($mycourses = get_my_courses($user->id, 'visible DESC,sortorder ASC', null, false, 21)) {
+        // CMDL-1088 make number of courses editable
+        if ($mycourses = get_my_courses($user->id, 'visible DESC,sortorder ASC', null, false, $CFG->mycoursesperpage)) {
+        // end CMDL-1088
             $shown=0;
             $courselisting = '';
             foreach ($mycourses as $mycourse) {
@@ -357,7 +359,9 @@
                     }
                 }
                 $shown++;
-                if($shown==20) {
+                // CMDL-1088 make number of courses editable
+                if($shown==($CFG->mycoursesperpage - 1)) {
+                // end CMDL-1088
                     $courselisting.= "...";
                     break;
                 }

@@ -1,4 +1,4 @@
-<?PHP // $Id$ 
+<?PHP // $Id: message.php,v 1.7.2.1 2007/11/22 01:04:59 toyomoyo Exp $ 
       // message.php - created with Moodle 1.7 beta + (2006101003)
 
 

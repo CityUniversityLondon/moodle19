@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: manage.php,v 1.7.2.9 2009/11/21 20:41:08 skodak Exp $
 
 require_once('../config.php');
 require_once($CFG->libdir.'/tablelib.php');

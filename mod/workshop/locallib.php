@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: locallib.php,v 1.43.2.4 2010/02/18 18:39:12 mudrd8mz Exp $
 
 /// Library of extra functions and module workshop 
 

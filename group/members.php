@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: members.php,v 1.3.2.8 2008/07/24 11:39:05 skodak Exp $
 /**
  * Add/remove members from group.
  *
@@ -72,11 +72,15 @@ $groupmembersoptions = '';
 $groupmemberscount = 0;
 
 // Get members, organised by role, and display
-if ($groupmemberroles = groups_get_members_by_role($groupid,$courseid,'u.id,u.firstname,u.lastname')) {
+// CMDL-1414 add email and id number to display
+if ($groupmemberroles = groups_get_members_by_role($groupid,$courseid,'u.id,u.firstname,u.lastname,u.email,u.idnumber')) {
+// end CMDL-1414
     foreach($groupmemberroles as $roleid=>$roledata) {
         $groupmembersoptions .= '<optgroup label="'.htmlspecialchars($roledata->name).'">';
         foreach($roledata->users as $member) {
-            $groupmembersoptions .= '<option value="'.$member->id.'">'.fullname($member, true).'</option>';
+            // CMDL-1414 add email and id number to display
+            $groupmembersoptions .= '<option value="'.$member->id.'">'.fullname($member, true).', '.$member->email.', '.$member->idnumber.'</option>';
+            // end CMDL-1414
             $groupmemberscount ++;
         }
         $groupmembersoptions .= '</optgroup>';
@@ -120,9 +124,11 @@ if ($potentialmemberscount <=  MAX_USERS_PER_PAGE) {
             $potentialmembersoptions .= '<optgroup label="'.htmlspecialchars($roledata->name).'">';
             foreach($roledata->users as $member) {
                 $name=htmlspecialchars(fullname($member, true));
+                // CMDL-1414 add email and id number to display
                 $potentialmembersoptions .= '<option value="'.$member->id.
-                    '" title="'.$name.'">'.$name.
+                    '" title="'.$name.'">'.$name.', '.$member->email.', '.$member->idnumber.
                     ' ('.@count($usergroups[$member->id]).')</option>';
+                // end CMDL-1414
                 $potentialmembers[$member->id] = $member;
             }
             $potentialmembersoptions .= '</optgroup>';
@@ -211,7 +217,9 @@ function updateUserSummary() {
     <div>
     <input type="hidden" name="sesskey" value="<?php p(sesskey()); ?>" />
     <input type="hidden" name="group" value="<?php echo $groupid; ?>" />
-
+    <!-- CMDL-1188 add return key entry to group form -->
+    <input type="hidden" name="previoussearch" value="0" />
+    <!-- end CMDL-1188 -->
     <table cellpadding="6" class="generaltable generalbox groupmanagementtable boxaligncenter" summary="">
     <tr>
       <td valign="top">

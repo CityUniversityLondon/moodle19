@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: export.php,v 1.1.2.3 2012/02/17 01:52:08 moodlerobot Exp $
 
 require_once('../../config.php');
 require_once('lib.php');

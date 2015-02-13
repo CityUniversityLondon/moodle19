@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: live.php,v 1.8.2.2 2008/11/29 16:16:21 skodak Exp $
       //  Displays live view of recent logs
 
     require_once("../../../config.php");

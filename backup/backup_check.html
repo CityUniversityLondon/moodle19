@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: backup_check.html,v 1.35.2.8 2009/12/07 11:36:55 stronk7 Exp $
     //This page prints the backup todo list to see everything
 
     //Check login
@@ -266,6 +266,19 @@
             print_table($table);
             echo "</td></tr>";
         }
+
+        // CMDL-1314 adding option to exclude section summaries
+        //Now print the site Files tr conditionally
+        if ($backupprefs->backup_sectionsummaries) {
+            echo "<tr>";
+            echo "<td colspan=\"2\"><b>";
+            echo get_string("includesectionsummaries").'</b>';
+            //Print info
+            //$table->data = sections_check_backup($id,$backupprefs->backup_unique_code);
+            //print_table($table);
+            //echo "</td></tr>";
+        }
+        // end CMDL-1314
 
         //Now print the role assignments information conditionally
         if (!empty($backupprefs->backuproleassignments)) {

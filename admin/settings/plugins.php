@@ -1,4 +1,4 @@
-<?php  //$Id$
+<?php  //$Id: plugins.php,v 1.1.2.10 2009/02/07 22:24:26 skodak Exp $
 
 if ($hassiteconfig) {
 

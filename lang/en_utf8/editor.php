@@ -1,4 +1,4 @@
-<?PHP // $Id$ 
+<?PHP // $Id: editor.php,v 1.4 2006/12/08 04:41:19 vyshane Exp $ 
       // editor.php - created with Moodle 1.7 beta + (2006101003)
 
 
@@ -127,4 +127,15 @@ $string['width'] = 'Width';
 $string['wordclean'] = 'Clean Word HTML';
 $string['zip'] = 'Zip';
 
+// CMDL-1201 Audio feedback
+/* Added for NanoGong HTML editor and filter */
+$string['insertsound'] = 'Insert Sound';
+$string['caption'] = 'Caption';
+$string['soundrecorder'] = 'Sound Recorder';
+$string['mustentercaption'] = 'You must enter the caption!';
+$string['recordernotready'] = 'The sound recorder is not ready.\\\nPlease reload the page and try again.';
+$string['norecording'] = 'You must record something using the recorder!';
+$string['uploadfailure'] = 'The sound recorder failed to upload the recorded voice file.\\\nPlease try again.';
+$string['loadfailure'] = 'The sound recorder failed to read the recorded voice file.';
+// end CMDL-1201
 ?>

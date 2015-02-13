@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: tabs.php,v 1.43.2.8 2008/12/19 01:44:48 moodler Exp $
 /// This file to be included so we can assume config.php has already been included.
 /// We also assume that $user, $course, $currenttab have been set
 

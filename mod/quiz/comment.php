@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: comment.php,v 1.6.2.4 2008/12/10 07:06:18 tjhunt Exp $
 /**
  * This page prints a review of a particular question attempt
  *

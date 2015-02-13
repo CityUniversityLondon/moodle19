@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: lib.php,v 1.80.2.22 2012/03/29 14:17:54 moodlerobot Exp $
 
     /**
      * Library of functions and constants for blog
@@ -699,6 +699,7 @@
 
         return s(strip_querystring(qualified_me()) . $querystring. 'filtertype='.
                 $filtertype.'&filterselect='.$filterselect.'&', true);
+
     }
 
     /**

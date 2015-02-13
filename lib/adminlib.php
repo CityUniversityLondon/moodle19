@@ -4,7 +4,7 @@
  * adminlib.php - Contains functions that only administrators will ever need to use
  *
  * @author Martin Dougiamas and many others
- * @version  $Id$
+ * @version  $Id: adminlib.php,v 1.153.2.77 2011/08/26 16:22:55 moodlerobot Exp $
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package moodlecore
  */
@@ -4951,7 +4951,6 @@ function print_plugin_tables() {
     foreach($installed_blocks as $block) {
         $plugins_installed['blocks'][] = $block->name;
     }
-
     $plugins_installed['filter'] = array();
 
     $plugins_ondisk = array();

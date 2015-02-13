@@ -556,10 +556,8 @@ function SCORMapi1_2() {
             } else {
                 element = parent+'.'+property;
                 expression = new RegExp(CMIIndex,'g');
-
                 // get the generic name for this element (e.g. convert 'cmi.interactions.1.id' to 'cmi.interactions.n.id')
                 elementmodel = String(element).replace(expression,'.n.');
-
                 // ignore the session time element
                 if (element != "cmi.core.session_time") {
 
@@ -578,9 +576,7 @@ function SCORMapi1_2() {
 
                         // make sure this is not a read only element
                         if (eval('datamodel["'+element+'"].mod') != 'r') {
-
                             elementstring = '&'+underscore(element)+'='+encodeURIComponent(data[property]);
-
                             // check if the element has a default value
                             if ((typeof eval('datamodel["'+element+'"].defaultvalue')) != "undefined") {
 
@@ -590,7 +586,6 @@ function SCORMapi1_2() {
 
                                     // append the URI fragment to the string we plan to commit
                                     datastring += elementstring;
-
                                     // update the element default to reflect the current committed value
                                     eval('datamodel["'+element+'"].defaultvalue=data[property];');
                                 }

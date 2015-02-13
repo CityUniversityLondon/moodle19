@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: report.php,v 1.21 2007/06/03 16:17:39 skodak Exp $
 
 //  For a given post, shows a report of all the ratings it has
 

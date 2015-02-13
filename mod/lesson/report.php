@@ -1,8 +1,8 @@
-<?php  // $Id$
+<?php  // $Id: report.php,v 1.39.2.4 2011/02/17 00:44:15 moodlerobot Exp $
 /**
  * Displays the lesson statistics.
  *
- * @version $Id$
+ * @version $Id: report.php,v 1.39.2.4 2011/02/17 00:44:15 moodlerobot Exp $
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package lesson
  **/

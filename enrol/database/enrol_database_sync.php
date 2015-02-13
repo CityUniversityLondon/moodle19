@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: enrol_database_sync.php,v 1.6.2.1 2008/01/02 22:35:33 skodak Exp $
 
     if(!empty($_SERVER['GATEWAY_INTERFACE'])){
         error_log("should not be called from apache!");

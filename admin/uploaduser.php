@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: uploaduser.php,v 1.68.2.19 2011/07/13 14:27:08 moodlerobot Exp $
 
 /// Bulk user registration script from a comma separated file
 /// Returns list of users with their user ids
@@ -579,7 +579,9 @@ if ($formdata = $mform->is_cancelled()) {
 
             $shortname = $user->{'course'.$i};
             if (!array_key_exists($shortname, $ccache)) {
-                if (!$course = get_record('course', 'shortname', addslashes($shortname), '', '', '', '', 'id, shortname, defaultrole')) {
+                // CMDL-1105 add error message wehn manually enrolling on meta course
+                if (!$course = get_record('course', 'shortname', addslashes($shortname), '', '', '', '', 'id, shortname, defaultrole, metacourse')) {
+                // end CMDL-1105
                     $upt->track('enrolments', get_string('unknowncourse', 'error', $shortname), 'error');
                     continue;
                 }
@@ -588,6 +590,15 @@ if ($formdata = $mform->is_cancelled()) {
             }
             $courseid      = $ccache[$shortname]->id;
             $coursecontext = get_context_instance(CONTEXT_COURSE, $courseid);
+
+            // CMDL-1105 add error message wehn manually enrolling on meta course
+            // We should not be able to enrol users directly on metacourses. They should
+            // be enrolled on one of the component courses instead.
+            if (1 === (int)$ccache[$shortname]->metacourse) {
+            	$upt->track('enrolments', get_string('cantenrolonmetacourse', 'error', $shortname), 'error');
+            	continue;
+            }
+            // end CMDL-1105
 
             // find role
             $rid = false;

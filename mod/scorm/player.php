@@ -1,4 +1,4 @@
-<?PHP  // $Id$
+<?PHP  // $Id: player.php,v 1.34.2.18 2012/04/19 12:33:03 moodlerobot Exp $
 
 /// This page prints a particular instance of aicc/scorm package
 
@@ -309,7 +309,7 @@
                             if ((width==100) && (height==100)) {
                                 // Fullscreen
                                 windowobj.moveTo(0,0);
-                            }
+                            } 
                             windowobj.focus();
                             return windowobj;
                         }

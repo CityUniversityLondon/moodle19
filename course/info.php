@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: info.php,v 1.17.2.7 2008/09/01 09:30:07 mudrd8mz Exp $
 
 /// Displays external information about a course
 
@@ -55,6 +55,25 @@
 
     echo filter_text(text_to_html($course->summary),$course->id);
 
+    // ALAN Display number of places left on the course (Martin Mandausch suggested adding this here)
+    if (!empty($course->enrolmax)) {
+        $availableenrolments = $course->enrolmax - count_course_students($course);
+        if ($availableenrolments > 0) {
+            print_string('availableenrolments');
+            echo ': ';
+            echo $availableenrolments;
+        }
+        else {
+            print_string('availableenrolmentsnone');
+        }
+    }
+	else { // BRUCE/ALAN
+		print_string('availableenrolments');
+		echo ': ';
+		print_string('availableenrolmentsunlimited');
+	}
+	echo '<br />';
+	// END ALAN
     
     if ($managerroles = get_config('', 'coursemanager')) {
         $coursemanagerroles = split(',', $managerroles);
@@ -62,7 +81,9 @@
             $role = get_record('role','id',$roleid);
             $canseehidden = has_capability('moodle/role:viewhiddenassigns', $context);
             $roleid = (int) $roleid;
-            if ($users = get_role_users($roleid, $context, true, '', 'u.lastname ASC', $canseehidden)) {
+            // CMDL-1111 fix participant sorts to be case insensitive
+            if ($users = get_role_users($roleid, $context, true, '', 'LOWER(u.lastname) ASC', $canseehidden)) {
+            // end CMDL-1111
                 foreach ($users as $teacher) {
                     $fullname = fullname($teacher, has_capability('moodle/site:viewfullnames', $context)); 
                     $namesarray[] = format_string(role_get_name($role, $context)).': <a href="'.$CFG->wwwroot.'/user/view.php?id='.

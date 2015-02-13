@@ -140,4 +140,21 @@ $string['groupsgroupings'] = 'Groups &amp; groupings';
 $string['groupingsonly'] = 'Groupings only';
 $string['groupsonly'] = 'Groups only';
 
+// Group assignments
+$string['groupmaxuser'] = 'Maximum Group members allowed';
+$string['groupcountsingle'] = 'member is already in this group. Showing names is disabled by Teacher';
+$string['groupcountplural'] = 'members are already in this group. Showing names is disabled by Teacher';
+$string['groupisfull'] = 'This Group is full';
+$string['movemetothisgroup'] = 'Enrol me in this Group';
+$string['groupmy2'] = 'You are enroled in this Group <a href=\"$a\">Leave</a>';
+$string['groupenrolclose'] = 'Deadline for students to select their group';
+$string['maxgroupmembers'] = 'Maximum members allowed:';
+$string['timeclose'] = 'You can join or leave this group until:';
+$string['timelocked'] = 'This Group is locked';
+$string['input_enrolmentkey'] = 'Enrolment Key required:';
+$string['send_enrolmentkey'] = 'Enrol me';
+$string['wrong_key'] = 'Invalid enrolment key';
+//$string['typeuploadsinglegroup'] = 'Upload a group file';
+
+
 ?>

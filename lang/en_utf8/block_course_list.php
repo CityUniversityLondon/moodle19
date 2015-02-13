@@ -1,4 +1,4 @@
-<?PHP // $Id$ 
+<?PHP // $Id: block_course_list.php,v 1.3.4.1 2007/12/19 17:38:44 skodak Exp $ 
       // block_course_list.php - created with Moodle 1.7 beta + (2006101003)
 
 

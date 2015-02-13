@@ -1,4 +1,4 @@
-<?php  //$Id$
+<?php  //$Id: settings.php,v 1.1.2.2 2007/12/19 17:38:41 skodak Exp $
 
 $settings->add(new admin_setting_heading('chat_method_heading', get_string('generalconfig', 'chat'),
                    get_string('explaingeneralconfig', 'chat')));

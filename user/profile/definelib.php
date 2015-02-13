@@ -1,4 +1,4 @@
-<?php  //$Id$
+<?php  //$Id: definelib.php,v 1.7.2.5 2008/11/06 01:05:59 danmarsden Exp $
 
 class profile_define_base {
 

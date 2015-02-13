@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: backup_scheduled.php,v 1.38.2.5 2011/10/07 00:08:29 moodlerobot Exp $
     //This file contains all the code needed to execute scheduled backups
 
 //This function is executed via moodle cron
@@ -6,7 +6,7 @@
 function schedule_backup_cron() {
 
     global $CFG;
-
+backup_set_config("backup_sche_running","0");
     $status = true;
 
     $emailpending = false;
@@ -31,7 +31,11 @@ function schedule_backup_cron() {
         mtrace("RUNNING");
         //Now check if it's a really running task or something very old looking
         //for info in backup_logs to unlock status as necessary
-        $timetosee = 1800;   //Half an hour looking for activity
+        //// CMDL-1414 reducing search time
+        //$timetosee = 1800;   //Half an hour looking for activity
+	//GWaugh, 24/11/2010: Change this to 5 mins (300 seconds)
+        $timetosee = 300;   //Half an hour looking for activity
+        // end CMDL-1414
         $timeafter = time() - $timetosee;
         $numofrec = count_records_select ("backup_log","time > $timeafter");
         if (!$numofrec) {
@@ -109,10 +113,17 @@ function schedule_backup_cron() {
                             'l.course='. $course->id. ' AND l.time>'. ($now-31*24*60*60). " AND lower(l.action) not like '%view%'";
                     $logexists = record_exists_sql($sql);
                     if (!$logexists) {
-                        mtrace("            SKIPPING - hidden+unmodified");
-                        set_field("backup_courses", "laststatus", "3", "courseid", $backup_course->courseid);
-                        $skipped = true;
-                    }
+                    mtrace("            SKIPPING - hidden+unmodified");
+                    set_field("backup_courses","laststatus","3","courseid",$backup_course->courseid);
+                    $skipped = true;
+                }
+                // end CMDL-1165
+                
+                // CMDL-1367 new option to allow turning on/off of scheduled backup
+                // skip backup if the option is set to off in course settings
+		            if ($course->autobackup == 0) {
+		                $skipped = true;
+		            }
                 }
                 //Now we backup every non-skipped course
                 if (!$skipped) {
@@ -344,6 +355,11 @@ function schedule_backup_course_configure($course,$starttime = 0) {
         if (!isset($backup_config->backup_sche_sitefiles)) {
             $backup_config->backup_sche_sitefiles = 1;
         }
+        // CMDL-1314 adding option to exclude section summaries
+        if (!isset($backup_config->backup_sche_sectionsummaries)) {
+            $backup_config->backup_sche_sectionsummaries = 1;
+        }
+        // end CMDL-1314
         if (!isset($backup_config->backup_sche_gradebook_history)) {
             $backup_config->backup_sche_gradebook_history = 0;
         }
@@ -382,7 +398,7 @@ function schedule_backup_course_configure($course,$starttime = 0) {
                 $modname = $mod->name;
                 $modfile = "$CFG->dirroot/mod/$modname/backuplib.php";
                 $modbackup = $modname."_backup_mods";
-                $modcheckbackup = $modname."_check_backup_mods";
+                $modcheckbackup = $modname."_check_backup_mods"; 
                 if (file_exists($modfile)) {
                    include_once($modfile);
                    if (function_exists($modbackup) and function_exists($modcheckbackup)) {
@@ -449,6 +465,10 @@ function schedule_backup_course_configure($course,$starttime = 0) {
         $preferences->backup_user_files = $backup_config->backup_sche_userfiles;
         $preferences->backup_course_files = $backup_config->backup_sche_coursefiles;
         $preferences->backup_site_files = $backup_config->backup_sche_sitefiles;
+        // CMDL-1636 Automatic backups default to exclude section summaries.
+        $preferences->backup_sectionsummaries = $backup_config->backup_sche_sectionsummaries;
+        //$preferences->backup_sche_sectionsummaries = $backup_config->backup_sche_sectionsummaries;
+        // end CMDL-1636
         $preferences->backup_gradebook_history = $backup_config->backup_sche_gradebook_history;
         $preferences->backup_messages = $backup_config->backup_sche_messages;
         $preferences->backup_blogs = $backup_config->backup_sche_blogs;
@@ -656,10 +676,14 @@ function schedule_backup_course_execute($preferences,$starttime = 0) {
 
         //If we have selected to backup quizzes, backup categories and
         //questions structure (step 1). See notes on mod/quiz/backuplib.php
-        if ($status and $preferences->mods['quiz']->backup) {
-            schedule_backup_log($starttime,$preferences->backup_course,"      categories & questions");
-            $status = backup_question_categories($backup_file,$preferences);
+        // CMDL-1414
+        if (isset($preferences->mods['quiz'])){
+            if ($status and $preferences->mods['quiz']->backup) {
+                schedule_backup_log($starttime,$preferences->backup_course,"      categories & questions");
+                $status = backup_question_categories($backup_file,$preferences);
+            }
         }
+        // end CMDl-1414
 
         //Print logs if selected
         if ($status) {

@@ -5,7 +5,7 @@
  *
  * Helps an admin to clean up spam in Moodle
  *
- * @version $Id$
+ * @version $Id: index.php,v 1.1.2.6 2009/09/22 17:11:02 tjhunt Exp $
  * @authors Dongsheng Cai, Martin Dougiamas, Amr Hourani
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
@@ -153,13 +153,13 @@ function search_spammers($keywords) {
         $keywords = array($keywords);    // Make it into an array
     }
 
-    $like = sql_ilike();
-
     $keywordfull = array();
     foreach ($keywords as $keyword) {
         $keyword = addslashes($keyword);   // Just to be safe
-        $keywordfull[] = " description $like '%$keyword%' ";
-        $keywordfull2[] = " p.summary $like '%$keyword%' ";
+        // CMDL-928 fix Oracle case sensitivity
+        $keywordfull[] = sql_olike('description', $keyword);
+        $keywordfull2[] = sql_olike('p.summary', $keyword);
+        // end CMDL-928
     }
     $conditions = '( '.implode(' OR ', $keywordfull).' )';
     $conditions2 = '( '.implode(' OR ', $keywordfull2).' )';

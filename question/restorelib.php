@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: restorelib.php,v 1.30.2.7 2010/06/10 14:58:37 tjhunt Exp $
 /**
  * Question bank restore code.
  *
@@ -115,7 +115,9 @@
                     if ($nextcatid == 0){
                         break;
                     }
+                    // CMDL-1356 WIRIS plugin
                     $catid = $nextcatid;
+                    // end CMDL-1356
                     $catno--;
                 }
                 $tocontext = get_context_instance(CONTEXT_COURSECAT, $catid);
@@ -606,8 +608,14 @@
 
             //Get the answer from DB (by question and answer)
             $db_answer = get_record ("question_answers","question",$new_question_id,
-                                                    "answer",$answer->answer);
+            // CMDL-1379 fix failure on restore
+                                                    "fraction", $answer->fraction,
+                                                    sql_order_by_text('answer', $numchars=4000), substr($answer->answer, 0, 3999));
 
+
+
+
+            // end CMDL-1379
             //Do some output
             if (($i+1) % 50 == 0) {
                 if (!defined('RESTORE_SILENTLY')) {

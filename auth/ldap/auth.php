@@ -35,6 +35,14 @@ require_once($CFG->libdir.'/authlib.php');
  */
 class auth_plugin_ldap extends auth_plugin_base {
 
+    // CMDL-1414 ????
+    /**
+     * moodle custom fields to sync with
+     * @var array()
+     */
+    var $custom_fields = array();
+    // end CMDL-1414
+
     /**
      * Constructor with initialisation.
      */
@@ -88,6 +96,15 @@ class auth_plugin_ldap extends auth_plugin_base {
             // In this particular case we don't need to do anything,
             // so leave $this->config->objectclass as is.
         }
+        
+        // CMDL-1414 ????
+        if ($custom_fields = get_records('user_info_field', '', '', '', 'shortname')) {
+
+            foreach($custom_fields as $cf) {
+                $this->custom_fields[] = $cf->shortname;
+            }
+        }
+        // end CMDL-1414
 
     }
 
@@ -233,7 +250,12 @@ class auth_plugin_ldap extends auth_plugin_base {
                 } else {
                     $newval = $textlib->convert($user_entry[0][$value], $this->config->ldapencoding, 'utf-8');
                 }
-                if (!empty($newval)) { // favour ldap entries that are set
+
+                // CMDL-1414 ????
+                //if (!empty($newval)) { // favour ldap entries that are set
+                //need to allow for 0 or '0' will ldap ever return an empty string or will the array_key_exists catch such things?
+                if (isset($newval) || $newval !== '') { // favour ldap entries that are set
+                // end CMDL-1414
                     $ldapval = $newval;
                 }
             }
@@ -853,15 +875,14 @@ class auth_plugin_ldap extends auth_plugin_base {
                     if (!empty($this->config->forcechangepassword)) {
                         set_user_preference('auth_forcepasswordchange', 1, $userobj->id);
                     }
-
-                    // add course creators if needed
-                    if ($creatorrole !== false and $this->iscreator(stripslashes($user->username))) {
-                        role_assign($creatorrole->id, $id, 0, $sitecontext->id, 0, 0, 0, 'ldap');
-                    }
                 } else {
                     echo "\t"; print_string('auth_dbinsertusererror', 'auth', $user->username); echo "\n";
                 }
 
+                // add course creators if needed
+                if ($creatorrole !== false and $this->iscreator(stripslashes($user->username))) {
+                    role_assign($creatorrole->id, $user->id, 0, $sitecontext->id, 0, 0, 0, 'ldap');
+                }
             }
             commit_sql();
             unset($add_users); // free mem
@@ -1113,9 +1134,25 @@ class auth_plugin_ldap extends auth_plugin_base {
             foreach ($attrmap as $key => $ldapkeys) {
                 // only process if the moodle field ($key) has changed and we
                 // are set to update LDAP with it
-                if (isset($olduser->$key) and isset($newuser->$key)
-                  and $olduser->$key !== $newuser->$key
-                  and !empty($this->config->{'field_updateremote_'. $key})) {
+
+                // CMDL-1414 ????
+                //updating a custom field or a standard field/ 0 for none at all
+                $update_attr_type = 0;      
+
+                if(isset($olduser->$key) and isset($newuser->$key)
+                    and $olduser->$key !== $newuser->$key) {
+                        //updating a user profile field
+                    $update_attr_type = 2;
+                    $profile_field = $key;
+                } else if(isset($olduser->{'profile_field_' . $key}) and isset($newuser->{'profile_field_' . $key})
+                    and $olduser->{'profile_field_' . $key} !== $newuser->{'profile_field_' . $key}){
+                        //updating a custom profile field
+                    $update_attr_type = 1;
+                    $profile_field = 'profile_field_' . $key;
+                }
+
+                if (!empty($profile_field) and !empty($this->config->{'field_updateremote_'. $key})) {
+                // CMDL-1414                
                     // for ldap values that could be in more than one
                     // ldap key, we will do our best to match
                     // where they came from
@@ -1128,13 +1165,19 @@ class auth_plugin_ldap extends auth_plugin_base {
                         $ambiguous = false;
                     }
 
-                    $nuvalue = $textlib->convert($newuser->$key, 'utf-8', $this->config->ldapencoding);
+                    // CMDL-1414 ????
+                    //$nuvalue = $textlib->convert($newuser->$key, 'utf-8', $this->config->ldapencoding);
+                    $nuvalue = $textlib->convert($newuser->$profile_field, 'utf-8', $this->config->ldapencoding);
                     empty($nuvalue) ? $nuvalue = array() : $nuvalue;
-                    $ouvalue = $textlib->convert($olduser->$key, 'utf-8', $this->config->ldapencoding);
+                    //$ouvalue = $textlib->convert($olduser->$key, 'utf-8', $this->config->ldapencoding);
+                    $ouvalue = $textlib->convert($olduser->$profile_field, 'utf-8', $this->config->ldapencoding);
 
                     foreach ($ldapkeys as $ldapkey) {
                         $ldapkey   = $ldapkey;
-                        $ldapvalue = $user_entry[$ldapkey][0];
+                        //$ldapvalue = $user_entry[$ldapkey][0];
+                        $ldapvalue = empty($user_entry[$ldapkey][0])? null: $ldapvalue;
+                    // end CMDL-1414
+
                         if (!$ambiguous) {
                             // skip update if the values already match
                             if ($nuvalue !== $ldapvalue) {
@@ -1535,7 +1578,7 @@ class auth_plugin_ldap extends auth_plugin_base {
             // check cheaply if the user's DN sits in a subtree
             // of the "group" DN provided. Granted, this isn't
             // a proper LDAP group, but it's a popular usage.
-            if (strpos(strrev(strtolower($memberuser)), strrev(strtolower($group)))===0) {
+            if (strpos(strrev($memberuser), strrev($group))===0) {
                 $result = true;
                 break;
             }
@@ -1716,6 +1759,21 @@ class auth_plugin_ldap extends auth_plugin_base {
                 }
             }
         }
+        
+        // CMDL-1414 ????
+        //add custom fields
+        foreach($this->custom_fields as $field) {
+            if(!in_array($field, $this->userfields)) { //just in case so we don't overwrite any values in the user fields
+                if(!empty($this->config->{"field_map_$field"})) {
+                    $moodleattributes[$field] = $this->config->{"field_map_$field"};
+                    if (preg_match('/,/',$moodleattributes[$field])) {
+                        $moodleattributes[$field] = explode(',', $moodleattributes[$field]); // split ?
+                    }
+                }
+            }
+        }
+        // end CMDL-1414
+
         $moodleattributes['username'] = $this->config->user_attribute;
         return $moodleattributes;
     }
@@ -2019,7 +2077,10 @@ class auth_plugin_ldap extends auth_plugin_base {
      *
      * @param array $page An object containing all the data for this page.
      */
-    function config_form($config, $err, $user_fields) {
+    // CMDL-1414 ????
+    //function config_form($config, $err, $user_fields) {
+    function config_form($config, $err, $user_fields, $custom_fields=array()) {
+    // end CMDL-1414
         include 'config.html';
     }
 
@@ -2295,7 +2356,6 @@ class auth_plugin_ldap extends auth_plugin_base {
         // that value.
         return bcsub( bcdiv($pwdexpire, '10000000'), '11644473600');
     }
-
 }
 
-?>
+

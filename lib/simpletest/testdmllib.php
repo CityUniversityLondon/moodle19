@@ -356,7 +356,6 @@ class dmllib_test extends prefix_changing_test_case {
 
 
     }
-
     function test_magic_hack() {
         // test hacky sql injection protection - the resulting DB data is not really important,
         // we only want to prevent SQL injections/DB errors

@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: version.php,v 1.1 2006/03/10 06:53:01 toyomoyo Exp $
 
 /////////////////////////////////////////////////////////////////////////////////
 ///  Code fragment to define the version of the blog module

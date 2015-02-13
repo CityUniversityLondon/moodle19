@@ -494,6 +494,12 @@ border-width:0;
 text-align:left;
 }
 
+/* CMDL-1414 */
+.grade-report-grader div.gradeparent{
+overflow: scroll;
+}
+/* end CMDL-1414 */
+
 .grade-report-grader table tr.avg td.cell,.grade-report-grader table#user-grades td.controls,.grade-report-grader table tr.avg,.grade-report-grader table tr.avg td,.grade-report-grader table tr.avg th {
 background-color:#f3ead8;
 }

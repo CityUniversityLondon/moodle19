@@ -1,4 +1,4 @@
-<?PHP // $Id$
+<?PHP // $Id: grades.php,v 1.111.2.71 2010/08/12 01:32:56 andyjdavis Exp $
       // grades.php - created with Moodle 1.7 beta + (2006101003)
 
 
@@ -172,6 +172,9 @@ $string['encoding'] = 'Encoding';
 $string['errorgradevaluenonnumeric'] = 'Received non-numeric for low or high grade for';
 $string['errorcalculationnoequal'] = 'Formula must start with equal sign (=1+2)';
 $string['errorcalculationunknown'] = 'Invalid formula';
+// CMDL-1211 add useful message when a bad calculation is present
+$string['errorneedsupdate'] = 'There is an error in your grade calculations. This must be remedied before exporting.';
+// end CMDL-1211
 $string['errornocalculationallowed'] = 'Calculations are not allowed for this item';
 $string['errornocategorisedid'] = 'Could not get an uncategorised id!';
 $string['errornocourse'] = 'Could not get course information';

@@ -1,4 +1,4 @@
-<?php  //$Id$
+<?php  //$Id: upgrade.php,v 1.2 2007/07/31 17:05:51 stronk7 Exp $
 
 // This file keeps track of upgrades to 
 // the rss_client block

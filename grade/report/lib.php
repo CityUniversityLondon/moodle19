@@ -400,5 +400,80 @@ class grade_report {
 
         return $finalgrade;
     }
+
+    // CMDL-1274 fix hide/show in overview report
+    /**
+     * Optionally blank out course totals if they contain any hidden items - on overview report
+     * @param string $courseid the course id
+     * @param string $course_item an instance of grade_item
+     * @param string $finalgrade the grade for the course_item
+     * @return string The new final grade
+     */
+    function blank_hidden_overview_total($courseid, $course_item, $finalgrade) {
+        global $CFG;
+        static $hiding_affected = null;//array of items in this course affected by hiding
+
+        $showtotalsifcontainhidden = grade_get_setting($courseid, 'report_overview_showtotalsifcontainhidden', $CFG->grade_report_overview_showtotalsifcontainhidden);
+
+        if( $showtotalsifcontainhidden==GRADE_REPORT_SHOW_REAL_TOTAL_IF_CONTAINS_HIDDEN ) {
+            return $finalgrade;
+        }
+
+        $items = grade_item::fetch_all(array('courseid'=>$courseid));
+        $grades = array();
+        $sql = "SELECT g.*
+                  FROM {$CFG->prefix}grade_grades g
+                  JOIN {$CFG->prefix}grade_items gi ON gi.id = g.itemid
+                 WHERE g.userid = {$this->user->id} AND gi.courseid = {$courseid}";
+        if ($gradesrecords = get_records_sql($sql)) {
+            foreach ($gradesrecords as $grade) {
+                $grades[$grade->itemid] = new grade_grade($grade, false);
+            }
+            unset($gradesrecords);
+        }
+        foreach ($items as $itemid=>$unused) {
+            if (!isset($grades[$itemid])) {
+                $grade_grade = new grade_grade();
+                $grade_grade->userid = $this->user->id;
+                $grade_grade->itemid = $items[$itemid]->id;
+                $grades[$itemid] = $grade_grade;
+            }
+            $grades[$itemid]->grade_item =& $items[$itemid];
+        }
+        $hiding_affected = grade_grade::get_hiding_affected($grades, $items);
+
+        //if the item definitely depends on a hidden item
+        if (array_key_exists($course_item->id, $hiding_affected['altered'])) {
+            if( !$showtotalsifcontainhidden ) {
+                //hide the grade
+                $finalgrade = null;
+            }
+            else {
+                //use reprocessed marks that exclude hidden items
+                $finalgrade = $hiding_affected['altered'][$course_item->id];
+            }
+        } else if (!empty($hiding_affected['unknown'][$course_item->id])) {
+            //not sure whether or not this item depends on a hidden item
+            if( !$showtotalsifcontainhidden ) {
+                //hide the grade
+                $finalgrade = null;
+            }
+            else {
+                //use reprocessed marks that exclude hidden items
+                $finalgrade = $hiding_affected['unknown'][$course_item->id];
+            }
+        }
+
+        //unset($hiding_affected);
+        //unset($grades);
+        //unset($items);
+
+        return $finalgrade;
+    }
+    // end CMDL-1274
 }
+
+
+
+
 ?>

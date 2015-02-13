@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: lib.php,v 1.53.2.10 2011/12/23 02:38:07 moodlerobot Exp $
 
 /// Library of functions and constants for module wiki
 /// (replace wiki with the name of your module and delete this line)
@@ -1090,7 +1090,6 @@ function wiki_user_can_access_group_wiki(&$wiki, $groupid, &$course) {
 
     /// Get the groupmode. It's been added to the wiki object.
     $groupmode = groups_get_activity_groupmode($wiki);
-
     if ($usersgroup = groups_get_all_groups($course->id, $USER->id, $wiki->groupingid)) {
         $usersgroup = array_keys($usersgroup);
     } else {

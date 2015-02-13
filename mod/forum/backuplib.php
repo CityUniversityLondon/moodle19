@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: backuplib.php,v 1.21 2006/08/25 02:41:16 vyshane Exp $
     //This php script contains all the stuff to backup/restore
     //forum mods
 

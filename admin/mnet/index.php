@@ -1,4 +1,4 @@
-<?PHP // $Id$
+<?PHP // $Id: index.php,v 1.15 2007/08/02 05:27:06 donal72 Exp $
 
     // Allows the admin to configure mnet stuff
 

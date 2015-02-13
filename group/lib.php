@@ -395,15 +395,17 @@ function groups_delete_groupings($courseid, $showfeedback=false) {
  * @return array An array of role id or '*' => information about that role 
  *   including a list of users
  */
-function groups_get_users_not_in_group_by_role($courseid, $groupid, $searchtext='', $sort = 'u.lastname ASC') {
-
+// CMDL-1111 fix participant sorts to be case insensitive
+function groups_get_users_not_in_group_by_role($courseid, $groupid, $searchtext='', $sort = 'LOWER(u.lastname) ASC') {
+// end CMDL-1111
     global $CFG;
     $context = get_context_instance(CONTEXT_COURSE, $courseid);
     
     if ($searchtext !== '') {   // Search for a subset of remaining users
-        $LIKE      = sql_ilike();
         $FULLNAME  = sql_fullname();
-        $wheresearch = " AND u.id IN (SELECT id FROM {$CFG->prefix}user WHERE $FULLNAME $LIKE '%$searchtext%' OR email $LIKE '%$searchtext%' )";
+        // CMDL-928 fix Oracle case sensitivity
+        $wheresearch = " AND u.id IN (SELECT id FROM {$CFG->prefix}user WHERE " . sql_olike($FULLNAME, $searchtext) . " OR " . sql_olike('email', $searchtext) . ")";
+        // end CMDL-928
     } else {
         $wheresearch = '';
     }
@@ -415,8 +417,10 @@ function groups_get_users_not_in_group_by_role($courseid, $groupid, $searchtext=
     $roleids = '('.implode(',', $validroleids).')';
 
 /// Construct the main SQL
+    // CMDL-1414 add email and id number to display
     $select = " SELECT r.id AS roleid,r.shortname AS roleshortname,r.name AS rolename,
-                       u.id AS userid, u.firstname, u.lastname";
+                       u.id AS userid, u.firstname, u.lastname, u.email, u.idnumber";
+    // end CMDL-1414
     $from   = " FROM {$CFG->prefix}user u
                 INNER JOIN {$CFG->prefix}role_assignments ra ON ra.userid = u.id
                 INNER JOIN {$CFG->prefix}role r ON r.id = ra.roleid";
@@ -485,7 +489,9 @@ function groups_get_possible_roles($context) {
  * @param string $orderby The colum to sort users by
  * @return array An array of the users
  */
-function groups_get_potential_members($courseid, $roleid = null, $orderby = 'lastname,firstname') {
+// CMDL-1111 fix participant sorts to be case insensitive
+function groups_get_potential_members($courseid, $roleid = null, $orderby = 'LOWER(lastname),LOWER(firstname)') {
+// end CMDL-1111
 	global $CFG;
 
     $context = get_context_instance(CONTEXT_COURSE, $courseid);
@@ -610,7 +616,9 @@ function groups_unassign_grouping($groupingid, $groupid) {
  * @param string $sort SQL ORDER BY clause, default 'u.lastname ASC'
  * @return array Complex array as described above
  */
-function groups_get_members_by_role($groupid, $courseid, $fields='u.*', $sort='u.lastname ASC') {
+// CMDL-1111 fix participant sorts to be case insensitive
+function groups_get_members_by_role($groupid, $courseid, $fields='u.*', $sort='LOWER(u.lastname) ASC') {
+// end CMDL-1111
     global $CFG;
 
     // Retrieve information about all users and their roles on the course or

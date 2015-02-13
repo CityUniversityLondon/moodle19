@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: mod.php,v 1.9.2.5 2010/06/12 10:10:49 stronk7 Exp $
 
     if (!defined('MOODLE_INTERNAL')) {
         die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
@@ -20,20 +20,47 @@
 
     if ($teachers = get_user_capability_course('moodle/course:update')) {
         foreach ($teachers as $teacher) {
-            if ($teacher->id != $course->id && $teacher->id != SITEID){
+            // CMDL-1109 fix for ORA-01795
+            if ($teacher->id != $course->id && $teacher->id != SITEID && $teacher->id > 0){
+            // end CMDL-1109
                 $tcourseids .= $teacher->id.',';
             }
         }
     }
 
-    $taught_courses = array();
+    // CMDL-1109 fix for ORA-01795
+    // quick fix by Mike to solve ORA-01795 issue where list exceeds 1000 
+    // convert list to array and count itmes
+    $tc_array = explode(',',$tcourseids);
+    $tc_count = count($tc_array);
+    
     if (!empty($tcourseids)) {
-        $tcourseids = substr($tcourseids,0,-1);
-        $taught_courses = get_records_list('course', 'id', $tcourseids, 'sortorder', 'id, fullname');
+      $taught_courses = array();
+      if ($tc_count < 1000) { // the usual way
+        $tcourseids = substr($tcourseids,0,-1); // removes final ','
+        // CMDL-1491 Import from dropdown list is currently long and messy
+        $taught_courses = get_records_list('course', 'id', $tcourseids, 'fullname','id,fullname,shortname');
+        // end CMDL-1491
+      } else { // must be > 1000 items therefore can't use get_records_list
+        // going to use the array of ID instead
+        foreach ($tc_array as $tc) {
+          if ($tc > 0) {
+            // CMDL-1491 Import from dropdown list is currently long and messy
+            $temp = get_records_list('course', 'id', $tc, 'fullname','id,fullname,shortname'); // an array of objects
+            // end CMDL-1491
+            $taught_courses[$tc] = $temp[$tc];  
+          }
+        }        
+      }        
     }
 
+    // end fix by mike
+    // end CMDL-1109
+
     if (!empty($creator)) {
-        $cat_courses = get_courses($course->category, $sort="c.sortorder ASC", $fields="c.id, c.fullname");
+        // CMDL-1491 Import from dropdown list is currently long and messy
+        $cat_courses = get_courses($course->category, $sort="c.fullname ASC", $fields="c.id, c.fullname, c.shortname");
+        // end CMDL-1491
     } else {
         $cat_courses = array();
     }
@@ -42,11 +69,18 @@
 
     $options = array();
     foreach ($taught_courses as $tcourse) {
+    // CMDL-1491 Import from dropdown list is currently long and messy
         if ($tcourse->id != $course->id && $tcourse->id != SITEID){
-            $options[$tcourse->id] = format_string($tcourse->fullname);
+            if (preg_match('/\d{4}-\d{2}/', $tcourse->shortname, &$matches, 0, -7)) {
+            $options[$matches[0]][$tcourse->id] = format_string($tcourse->fullname);
+            } else {
+                $options['other'][$tcourse->id] = format_string($tcourse->fullname);
+            }
         }
     }
-
+    
+    krsort(&$options, SORT_NUMERIC);
+    // end CMDL-1491
     if (empty($options) && empty($creator)) {
         notify(get_string('courseimportnotaught'));
         return; // yay , this will pass control back to the file that included or required us.
@@ -62,10 +96,18 @@
     $options = array();
 
     foreach ($cat_courses as $ccourse) {
-        if ($ccourse->id != $course->id && $ccourse->id != SITEID) {
-            $options[$ccourse->id] = format_string($ccourse->fullname);
+    // CMDL-1491 Import from dropdown list is currently long and messy
+        if ($ccourse->id != $course->id && $ccourse->id != SITEID){
+            if (preg_match('/\d{4}-\d{2}/', $ccourse->shortname, &$matches, 0, -7)) {
+            $options[$matches[0]][$ccourse->id] = format_string($ccourse->fullname);
+            } else {
+                $options['other'][$ccourse->id] = format_string($ccourse->fullname);
+            }
         }
     }
+
+    krsort(&$options, SORT_NUMERIC);
+    // end CMDl-1491
     $cat = get_record("course_categories","id",$course->category);
 
     if (count($options) > 0) {

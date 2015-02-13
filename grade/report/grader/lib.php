@@ -333,16 +333,15 @@ class grade_report_grader extends grade_report {
         } else {
             $sortjoin = '';
             switch($this->sortitemid) {
+                // CMDL-1111 fix participant sorts to be case insensitive
                 case 'lastname':
-                    $sort = "u.lastname $this->sortorder, u.firstname $this->sortorder";
-                    break;
+                    $sort = "LOWER(u.lastname) $this->sortorder, LOWER(u.firstname) $this->sortorder"; break;
                 case 'firstname':
-                    $sort = "u.firstname $this->sortorder, u.lastname $this->sortorder";
-                    break;
+                    $sort = "LOWER(u.firstname) $this->sortorder, LOWER(u.lastname) $this->sortorder"; break;
                 case 'idnumber':
                 default:
-                    $sort = "u.idnumber $this->sortorder";
-                    break;
+                    $sort = "LOWER(u.idnumber) $this->sortorder"; break;
+                // end CMDL-1111
             }
         }
 

@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: questionlib.php,v 1.119.2.31 2010/11/08 16:00:29 tjhunt Exp $
 /**
  * Code for handling and processing questions
  *
@@ -180,6 +180,13 @@ function question_type_menu() {
         foreach ($QTYPES as $name => $qtype) {
             $menuname = $qtype->menu_name();
             if ($menuname) {
+
+            // CMDL-1356 WIRIS plugin
+            /**** start WIRIS plugin ****/
+            if (array_key_exists($name . "wiris", $QTYPES)) continue;
+            /**** end WIRIS Plugin ****/
+            // end CMDL-1356
+
                 $menu_options[$name] = $menuname;
             }
         }

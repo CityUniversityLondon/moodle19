@@ -1,8 +1,8 @@
-<?php //$Id$
+<?php //$Id: backuplib.php,v 1.18 2006/09/30 19:49:40 mark-nielsen Exp $
 /**
  * Lesson's backup routine
  *
- * @version $Id$
+ * @version $Id: backuplib.php,v 1.18 2006/09/30 19:49:40 mark-nielsen Exp $
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package lesson
  **/

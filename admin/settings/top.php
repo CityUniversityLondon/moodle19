@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: top.php,v 1.15.2.8 2008/11/28 08:12:52 skodak Exp $
 
 // This is the first file read by the lib/adminlib.php script
 // We use it to create the categories in correct order,

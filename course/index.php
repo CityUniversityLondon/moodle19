@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: index.php,v 1.89.2.13 2009/04/20 05:59:17 tjhunt Exp $
       // For most people, just lists the course categories
       // Allows the admin to create, delete and rename course categories
 
@@ -57,11 +57,14 @@
             $navigation = build_navigation($navlinks);
             print_header("$site->shortname: $strcategories", $strcourses, $navigation, '', '', true, update_category_button());
             print_heading($strcategories);
+            // CMDL-879 move search box
+            print_course_search();
             echo skip_main_destination();
             print_box_start('categorybox');
             print_whole_category_list();
             print_box_end();
-            print_course_search();
+            //print_course_search();
+            // end CMDL-879
         } else {
             $strfulllistofcourses = get_string('fulllistofcourses');
             print_header("$site->shortname: $strfulllistofcourses", $strfulllistofcourses,

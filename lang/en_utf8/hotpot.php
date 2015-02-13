@@ -1,4 +1,4 @@
-<?PHP // $Id$ 
+<?PHP // $Id: hotpot.php,v 1.10.4.3 2009/02/28 03:59:28 gbateson Exp $ 
       // hotpot.php - created with Moodle 1.7 beta + (2006101003)
 
 

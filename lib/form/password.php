@@ -29,7 +29,6 @@ class MoodleQuickForm_password extends HTML_QuickForm_password{
                 }
             }
         }
-
         parent::HTML_QuickForm_password($elementName, $elementLabel, $attributes);
     }
     /**

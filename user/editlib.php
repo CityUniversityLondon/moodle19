@@ -1,4 +1,4 @@
-<?php  //$Id$
+<?php  //$Id: editlib.php,v 1.11.2.12 2009/10/06 19:04:04 skodak Exp $
 
 function cancel_email_update($userid) {
     unset_user_preference('newemail', $userid);
@@ -115,11 +115,21 @@ function useredit_shared_definition(&$mform) {
     $mform->addElement('select', 'maildisplay', get_string('emaildisplay'), $choices);
     $mform->setDefault('maildisplay', 2);
 
-    $choices = array();
-    $choices['0'] = get_string('emailenable');
-    $choices['1'] = get_string('emaildisable');
-    $mform->addElement('select', 'emailstop', get_string('emailactive'), $choices);
-    $mform->setDefault('emailenable', 1);
+    // CMDL-1090 remove option to disable email for students
+    $personalcontext = get_context_instance(CONTEXT_USER, $user->id);
+
+    // check access control
+    if ($user->id == $USER->id) {
+        //editing own profile - require_login() MUST NOT be used here, it would result in infinite loop!
+        if (has_capability('moodle/user:editprofile', $personalcontext)) {
+            $choices = array();
+            $choices['0'] = get_string('emailenable');
+            $choices['1'] = get_string('emaildisable');
+            $mform->addElement('select', 'emailstop', get_string('emailactive'), $choices);
+            $mform->setDefault('emailenable', 1);
+        }
+    }
+    // end CMDL-1090
 
     $choices = array();
     $choices['0'] = get_string('textformat');

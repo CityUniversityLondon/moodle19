@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: choosecoursefileorimsrepo.php,v 1.2.4.2 2009/05/29 04:16:11 samhemelryk Exp $
 global $CFG;
 require_once "$CFG->libdir/form/group.php";
 

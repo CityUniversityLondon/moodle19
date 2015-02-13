@@ -1,4 +1,4 @@
-<?php  //$Id$
+<?php  //$Id: grouplib.php,v 1.22.2.12 2010/11/12 10:03:10 skodak Exp $
 
 /**
  * Groups not used in course or activity
@@ -286,7 +286,7 @@ function groups_get_members($groupid, $fields='u.*', $sort='lastname ASC') {
 function groups_get_grouping_members($groupingid, $fields='u.*', $sort='lastname ASC') {
     global $CFG;
 
-    return get_records_sql("SELECT $fields
+    return get_records_sql("SELECT DISTINCT $fields
                               FROM {$CFG->prefix}user u
                                 INNER JOIN {$CFG->prefix}groups_members gm ON u.id = gm.userid
                                 INNER JOIN {$CFG->prefix}groupings_groups gg ON gm.groupid = gg.groupid
@@ -533,7 +533,12 @@ function groups_print_activity_menu($cm, $urlroot, $return=false, $hideallpartic
 function groups_get_course_group($course, $update=false) {
     global $CFG, $USER, $SESSION;
 
-    if (!$groupmode = $course->groupmode) {
+    // CMDL-951 fix group members link
+    // set new active group if requested
+    $changegroup = optional_param('group', -1, PARAM_INT);
+
+    if ((!$groupmode = $course->groupmode) && ($changegroup == -1)) {
+    // end CMDL-951
         // NOGROUPS used
         return false;
     }

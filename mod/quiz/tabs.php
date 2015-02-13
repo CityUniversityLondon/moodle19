@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: tabs.php,v 1.21.2.4 2008/04/22 15:19:48 tjhunt Exp $
 /**
  * Sets up the tabs used by the quiz pages based on the users capabilites.
  *

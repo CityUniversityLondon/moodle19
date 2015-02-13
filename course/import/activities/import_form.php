@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: import_form.php,v 1.5.2.1 2007/11/23 22:12:35 skodak Exp $
 
 require_once($CFG->libdir.'/formslib.php');
 
@@ -13,7 +13,9 @@ class course_import_activities_form_1 extends moodleform {
         $courseid = $this->_customdata['courseid'];
         $mform->addElement('header', 'general', '');//fill in the data depending on page params
         //later using set_data
-        $mform->addElement('select', 'fromcourse', $text, $options);
+        // CMDL-1491 Import from dropdown list is currently long and messy
+        $mform->addElement('selectgroups', 'fromcourse', $text, $options);
+        // end CMDl-1491
 
         // buttons
         $submit_string = get_string('usethiscourse');

@@ -1,4 +1,4 @@
-<?php  //$Id$
+<?php  //$Id: upgrade.php,v 1.1 2006/10/26 16:33:58 stronk7 Exp $
 
 // This file keeps track of upgrades to 
 // the participants block

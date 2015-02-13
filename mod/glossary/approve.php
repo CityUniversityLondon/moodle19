@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: approve.php,v 1.16.10.2 2009/11/22 12:43:10 skodak Exp $
 
     require_once("../../config.php");
     require_once("lib.php");

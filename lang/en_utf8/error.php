@@ -1,4 +1,4 @@
-<?PHP // $Id$
+<?PHP // $Id: error.php,v 1.26.2.26 2012/04/12 15:03:25 moodlerobot Exp $
       // error.php - created with Moodle 1.7 beta + (2006101003)
 
 
@@ -18,6 +18,9 @@ $string['cannotsavezipfile'] = 'Cannot save ZIP file';
 $string['cannotunzipfile'] = 'Cannot unzip file';
 $string['cannotupdaterecord'] = 'Could not update record ID $a';
 $string['cannotviewprofile'] = 'You cannot view the profile of this user';
+// CMDL-1105 add error message wehn manually enrolling on meta course
+$string['cantenrolonmetacourse'] = 'Cannot enrol directly on meta course \"$a\"';
+// end CMDL-1105
 $string['cantunenrollfrommetacourse'] = 'You cannot unenrol from this meta course';
 $string['cantunenrollinthisrole'] = 'You cannot unenrol from this course while you are in your current role';
 $string['cmunknown'] = 'Couldn\'t find this course module';

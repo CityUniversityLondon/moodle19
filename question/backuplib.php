@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: backuplib.php,v 1.13.2.8 2009/09/14 17:48:53 tjhunt Exp $
 /**
  * Question bank backup code.
  *
@@ -509,6 +509,15 @@
                 $url = clean_param($url, PARAM_PATH);
                 $inserturl->path = addslashes($url);
                 $status = $status && insert_record('backup_files', $inserturl);
+            // CMDL-1505 Problems importing quiz with images
+            } else if (file_exists($CFG->dataroot.'/'.$course.'/'.$url)){
+                  $inserturl = new object();
+                  $inserturl->backup_code = $backup_unique_code;
+                  $inserturl->file_type = 'course';
+                  $url = clean_param($url, PARAM_PATH);
+                  $inserturl->path = $course.'/'.addslashes($url);
+                  $status = $status && insert_record('backup_files', $inserturl);
+            // end CMDL-1505
             } else {
                 notify(get_string('linkedfiledoesntexist', 'question', $url));
             }

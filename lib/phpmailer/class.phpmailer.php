@@ -656,7 +656,7 @@ class PHPMailer
             $formatted = preg_replace('/[\r\n]+/', '', $addr[0]); // Moodle modification
         else
         {
-            $formatted = $this->EncodeHeader($addr[1], 'phrase') . " <" .
+            $formatted = $this->EncodeHeader($addr[1], 'phrase') . " <" . 
                          preg_replace('/[\r\n]+/', '', $addr[0]) . ">"; // Moodle modification
         }
 
@@ -1193,7 +1193,6 @@ class PHPMailer
     /// Start Moodle Hack - do our own multibyte-safe header encoding and cleanup
         $str = str_replace("\r", '', $str);
         $str = str_replace("\n", '', $str);
-
         $textlib = textlib_get_instance();
         $encoded = $textlib->encode_mimeheader($str, $this->CharSet);
         if ($encoded !== false) {

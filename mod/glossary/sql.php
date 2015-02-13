@@ -3,7 +3,7 @@
 /**
  * SQL.PHP
  *    This file is include from view.php and print.php
- * @version $Id$
+ * @version $Id: sql.php,v 1.43 2007/03/24 00:58:43 stronk7 Exp $
  * @copyright 2003 
  **/
 
@@ -134,9 +134,7 @@
 
         $where = '';
         $fullpivot = 0;
-        $LIKE = sql_ilike();
-        $NOTLIKE = 'NOT ' . $LIKE;
-
+ 
         switch ( $mode ) {
         case 'search': 
 
@@ -184,9 +182,11 @@
                     $aliassearch .= " al.alias $NOTREGEXP '(^|[^a-zA-Z0-9])$searchterm([^a-zA-Z0-9]|$)' ";
                     $definitionsearch .= " ge.definition $NOTREGEXP '(^|[^a-zA-Z0-9])$searchterm([^a-zA-Z0-9]|$)' ";
                 } else {
-                    $conceptsearch .= " ge.concept $LIKE '%$searchterm%' ";
-                    $aliassearch .= " al.alias $LIKE '%$searchterm%' ";
-                    $definitionsearch .= " ge.definition $LIKE '%$searchterm%' ";
+                    // CMDL-928 fix Oracle case sensitivity
+                    $conceptsearch .= sql_olike('ge.concept', $searchterm);
+                    $aliassearch .= sql_olike('al.alias', $searchterm);
+                    $definitionsearch .= sql_olike('ge.definition', $searchterm);
+                    // end CMDL-928
                 }
             }
      

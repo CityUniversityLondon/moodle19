@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: resource.class.php,v 1.40.2.3 2008/07/01 22:25:26 skodak Exp $
 
 class resource_html extends resource_base {
 

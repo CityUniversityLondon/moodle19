@@ -51,6 +51,9 @@ if ($frm = data_submitted() and confirm_sesskey()) {
 }
 
 $user_fields = $authplugin->userfields;
+// CMDL-1414 ????
+$custom_fields = $authplugin->custom_fields; // MH Patch
+//// end CMDL-1414
 //$user_fields = array("firstname", "lastname", "email", "phone1", "phone2", "institution", "department", "address", "city", "country", "description", "idnumber", "lang");
 
 /// Get the auth title (from core or own auth lang files)
@@ -74,7 +77,10 @@ print_simple_box_start('center', '80%', '', 5, 'informationbox');
 echo $authdescription;
 print_simple_box_end();
 echo "<hr />\n";
-$authplugin->config_form($frm, $err, $user_fields);
+// CMDL-1414 ????
+//$authplugin->config_form($frm, $err, $user_fields);   // MH Patch
+$authplugin->config_form($frm, $err, $user_fields, $custom_fields);     // MH Patch
+// end CMDL-1414
 print_simple_box_end();
 echo '<p style="text-align: center"><input type="submit" value="' . get_string("savechanges") . "\" /></p>\n";
 echo "</div>\n";
@@ -89,8 +95,11 @@ exit;
 // but some may want a custom one if they are offering
 // other options
 // Note: lockconfig_ fields have special handling.
-function print_auth_lock_options ($auth, $user_fields, $helptext, $retrieveopts, $updateopts) {
-
+//
+// // CMDL-1414 ????
+//function print_auth_lock_options ($auth, $user_fields, $helptext, $retrieveopts, $updateopts) {        // MH Patch
+function print_auth_lock_options ($auth, $user_fields, $helptext, $retrieveopts, $updateopts, $custom_fields = array()) {  // MH Patch
+// end CMDL-1414
     echo '<tr><td colspan="3">';
     if ($retrieveopts) {
         print_heading(get_string('auth_data_mapping', 'auth'));
@@ -176,6 +185,75 @@ function print_auth_lock_options ($auth, $user_fields, $helptext, $retrieveopts,
         }
         echo '</tr>';
     }
+
+    // CMDL-1414 ????
+    if (!empty($custom_fields)) {
+        echo '<tr><td colspan="3">';
+
+        print_heading('Custom Fields');
+
+        echo '</td></tr>';
+
+        foreach($custom_fields as $field) {
+
+            // Define some vars we'll work with
+            if (!isset($pluginconfig->{"field_map_$field"})) {
+                $pluginconfig->{"field_map_$field"} = '';
+            }
+            if (!isset($pluginconfig->{"field_updatelocal_$field"})) {
+                $pluginconfig->{"field_updatelocal_$field"} = '';
+            }
+            if (!isset($pluginconfig->{"field_updateremote_$field"})) {
+                $pluginconfig->{"field_updateremote_$field"} = '';
+            }
+            if (!isset($pluginconfig->{"field_lock_$field"})) {
+                $pluginconfig->{"field_lock_$field"} = '';
+            }
+    
+            // define the fieldname we display to the  user
+            $fieldname = $field;
+            if ($fieldname === 'lang') {
+                $fieldname = get_string('language');
+            } elseif (preg_match('/^(.+?)(\d+)$/', $fieldname, $matches)) {
+                $fieldname =  get_string($matches[1]) . ' ' . $matches[2];
+            } elseif ($fieldname == 'url') {
+                $fieldname = get_string('webpage');
+            } else {
+                $fieldname = get_field('user_info_field', 'name', 'shortname', $fieldname);
+            }
+            if ($retrieveopts) {
+                $varname = 'field_map_' . $field;
+    
+                echo '<tr valign="top"><td align="right">';
+                echo '<label for="lockconfig_'.$varname.'">'.$fieldname.'</label>';
+                echo '</td><td>';
+    
+                echo "<input id=\"lockconfig_{$varname}\" name=\"lockconfig_{$varname}\" type=\"text\" size=\"30\" value=\"{$pluginconfig->$varname}\" />";
+                echo '<div style="text-align: right">';
+                echo '<label for="menulockconfig_field_updatelocal_'.$field.'">'.get_string('auth_updatelocal', 'auth') . '</label>&nbsp;';
+                choose_from_menu($updatelocaloptions, "lockconfig_field_updatelocal_{$field}", $pluginconfig->{"field_updatelocal_$field"}, "");
+                echo '<br />';
+                if ($updateopts) {
+                    echo '<label for="menulockconfig_field_updateremote_'.$field.'">'.get_string('auth_updateremote', 'auth') . '</label>&nbsp;';
+                    choose_from_menu($updateextoptions, "lockconfig_field_updateremote_{$field}", $pluginconfig->{"field_updateremote_$field"}, "");
+                    echo '<br />';
+    
+    
+                }
+                echo '<label for="menulockconfig_field_lock_'.$field.'">'.get_string('auth_fieldlock', 'auth') . '</label>&nbsp;';
+                choose_from_menu($lockoptions, "lockconfig_field_lock_{$field}", $pluginconfig->{"field_lock_$field"}, "");
+                echo '</div>';
+            } else {
+                echo '<tr valign="top"><td align="right">';
+                echo '<label for="menulockconfig_field_lock_'.$field.'">'.$fieldname.'</label>';
+                echo '</td><td>';
+                choose_from_menu($lockoptions, "lockconfig_field_lock_{$field}", $pluginconfig->{"field_lock_$field"}, "");
+            }
+            echo '</td>';
+            echo '</tr>';
+        }
+    }
+    // end CMDL-1414
 }
 
 ?>

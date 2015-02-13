@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: assignment.class.php,v 1.46.2.10 2010/09/16 05:45:42 samhemelryk Exp $
 require_once($CFG->libdir.'/formslib.php');
 
 /**
@@ -256,6 +256,10 @@ class assignment_online extends assignment_base {
         $mform->addElement('select', 'emailteachers', get_string("emailteachers", "assignment"), $ynoptions);
         $mform->setHelpButton('emailteachers', array('emailteachers', get_string('emailteachers', 'assignment'), 'assignment'));
         $mform->setDefault('emailteachers', 0);
+        
+        // CMDL-1141 fix emails sent to roles above teacher
+        $mform->setAdvanced('emailteachers');
+        // end CMDL-1141
 
         $mform->addElement('select', 'var1', get_string("commentinline", "assignment"), $ynoptions);
         $mform->setHelpButton('var1', array('commentinline', get_string('commentinline', 'assignment'), 'assignment'));
@@ -263,6 +267,75 @@ class assignment_online extends assignment_base {
 
     }
 
+    // CMDL-1175 add bulk upload of feedback
+    function download_submissions() {
+ 	      global $CFG;
+ 		    $submit = $this->get_submissions('','');
+ 
+ 	      $filesforzipping = array();
+ 	      $filesnewname = array();
+ 	      $desttemp = "";
+        
+        //create zip filename
+ 	      $filename = "online_assignment.zip";
+ 
+ 	      //online assignment can use html
+ 	      $filenewname = clean_filename($this->assignment->name);
+ 	      $file = '_' . $filenewname . ".html";
+        $course     = $this->course;
+        $assignment = $this->assignment;
+        $cm         = $this->cm;
+        $context    = get_context_instance(CONTEXT_MODULE, $cm->id);
+ 	      $groupmode = groupmode($course,$cm);
+ 	      $groupid = 0;	// All users
+ 	      if($groupmode) $groupid = get_current_group($course->id, $full = false);
+ 	      $count = 0;
+ 
+      	foreach ($submit as $tp) {
+ 		      $a_userid = $tp->userid; //get userid
+ 		      if ( (groups_is_member( $groupid,$a_userid)or !$groupmode or !$groupid)) {
+ 		        $count = $count + 1;
+ 			      $a_assignid = $tp->assignment; //get name of this assignment for use in the file names.
+            $a_user = get_complete_user_data("id", $a_userid); //get user
+            $filearea = $this->file_area_name($a_userid);
+          	$submission = $tp->data1;      //fetched from mysql database
+            $desttemp = $CFG->dataroot . "/" . substr($filearea, 0, strripos($filearea, "/")). "/temp/";
+ 					  //get temp directory name
+ 
+ 			      if (!file_exists($desttemp)) { //create temp dir if it doesn't already exist.
+ 			        mkdir($desttemp,0777,true); 
+ 			      }
+ 
+ 	          require_once($CFG->libdir.'/filelib.php');
+ 
+ 	          //get file name.html
+ 	          $filesforzip = $desttemp . $a_user->firstname ."_". $a_user->lastname  . "_" . $a_user->username . $file;
+            $fd = fopen($filesforzip,'wb');   //create if not exist, write binary
+ 	          fwrite( $fd, $submission);
+ 	          fclose( $fd );
+            //save file name to array for zipping.
+ 	          $filesforzipping[] = $filesforzip;
+ 	        }    
+        }      //end of foreach
+ 
+ 	      //zip files
+        if ($count) zip_files($filesforzipping, $desttemp.$filename);  // check for no files
+ 
+ 	      //delete old temp files
+ 	      foreach ($filesforzipping as $filefor) {
+ 			    unlink($filefor);
+ 	       }
+ 
+ 	       //send file to user.
+ 	       if (file_exists($desttemp.$filename)) {
+ 	         header ("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+ 	         header ("Content-Type: application/octet-stream");
+ 	         header ("Content-Length: " . filesize($desttemp.$filename));
+ 	         header ("Content-Disposition: attachment; filename=$filename");
+ 		       readfile($desttemp.$filename);
+ 	       }
+    }
+    // end CMDL-1175
 }
 
 class mod_assignment_online_edit_form extends moodleform {

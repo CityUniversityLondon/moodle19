@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: event.php,v 1.74.2.10 2012/04/12 15:03:24 moodlerobot Exp $
 
 /////////////////////////////////////////////////////////////////////////////
 //                                                                         //
@@ -130,7 +130,9 @@
             }
 
             if($form = data_submitted() and confirm_sesskey()) {
+
                 // validate form and set error if any.
+
                 validate_form($form, $err);
 
                 if (count($err) == 0) {
@@ -179,13 +181,14 @@
             $title = get_string('newevent', 'calendar');
             $form = data_submitted();
             if(!empty($form) && !empty($form->name) && confirm_sesskey()) {
+
                 // validate form and set error if any.
                 validate_form($form, $err);
 
                 if (count($err) == 0) {
-                    if (!calendar_add_event_allowed($form)) {
-                        error('You are not authorized to do this');
-                    }
+                if(!calendar_add_event_allowed($form)) {
+                    error('You are not authorized to do this');
+                }
                     $form->timemodified = time();
 
                     /// Get the event id for the log record.
@@ -539,6 +542,7 @@
 
 
 function validate_form(&$form, &$err) {
+
     $cleanform = new stdClass();
     //first clean the form values
     $cleanform->name = clean_param(strip_tags(trim($form->name), '<lang><span>'),PARAM_CLEAN);
@@ -576,7 +580,7 @@ function validate_form(&$form, &$err) {
     // set form with clean and valid values only.
     $form = $cleanform;
 
-    if (empty($form->name)) {
+    if(empty($form->name)) {
         $err['name'] = get_string('errornoeventname', 'calendar');
     }
 /* Allow events without a description
@@ -584,19 +588,18 @@ function validate_form(&$form, &$err) {
         $err['description'] = get_string('errornodescription', 'calendar');
     }
 */
-    if (!checkdate($form->startmon, $form->startday, $form->startyr)) {
+    if(!checkdate($form->startmon, $form->startday, $form->startyr)) {
         $err['timestart'] = get_string('errorinvaliddate', 'calendar');
     }
     if ($form->duration == 1 and !checkdate($form->endmon, $form->endday, $form->endyr)) {
         $err['timeduration'] = get_string('errorinvaliddate', 'calendar');
     }
-    if ($form->duration == 2 and !($form->minutes > 0 and $form->minutes < 1000)) {
+    if($form->duration == 2 and !($form->minutes > 0 and $form->minutes < 1000)) {
         $err['minutes'] = get_string('errorinvalidminutes', 'calendar');
     }
     if (!empty($form->repeat) and !($form->repeats > 1 and $form->repeats < 100)) {
         $err['repeats'] = get_string('errorinvalidrepeats', 'calendar');
     }
-
     // set start time and duration
     $form->timestart = make_timestamp($form->startyr, $form->startmon, $form->startday, $form->starthr, $form->startmin);
     if ($form->duration == 1) {
@@ -613,11 +616,10 @@ function validate_form(&$form, &$err) {
     else {
         $form->timeduration = 0;
     }
-
-    if (!empty($form->courseid)) {
+    if(!empty($form->courseid)) {
         // Timestamps must be >= course startdate
         $course = get_record('course', 'id', $form->courseid);
-        if ($course === false) {
+        if($course === false) {
             error('Event belongs to invalid course');
         }
         else if($form->timestart < $course->startdate) {

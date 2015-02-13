@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: submissions.php,v 1.43 2006/08/28 08:42:30 toyomoyo Exp $
 
     require_once("../../config.php");
     require_once("lib.php");
@@ -6,6 +6,10 @@
     $id   = optional_param('id', 0, PARAM_INT);          // Course module ID
     $a    = optional_param('a', 0, PARAM_INT);           // Assignment ID
     $mode = optional_param('mode', 'all', PARAM_ALPHA);  // What mode are we in?
+    // CMDL-1175 add bulk upload of feedback
+    $download = optional_param('download', 'none', PARAM_ALPHA); // ZIP download asked for?
+    $upload = optional_param('upload', 'none', PARAM_ALPHA); // ZIP upload asked for?
+    // end CMDL-1175
 
     if ($id) {
         if (! $cm = get_coursemodule_from_id('assignment', $id)) {
@@ -40,6 +44,13 @@
     $assignmentclass = 'assignment_'.$assignment->assignmenttype;
     $assignmentinstance = new $assignmentclass($cm->id, $assignment, $cm, $course);
 
-    $assignmentinstance->submissions($mode);   // Display or process the submissions
-
+    // CMDL-1175 add bulk upload of feedback
+    if ($download == "zip") {
+        $assignmentinstance->download_submissions();
+    } else if ($upload == "zip") {
+        $assignmentinstance->upload_responses();
+    // end CMDL-1175
+    } else {
+        $assignmentinstance->submissions($mode);   // Display or process the submissions
+    }
 ?>

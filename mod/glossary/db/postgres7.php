@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: postgres7.php,v 1.23 2006/10/25 23:29:44 stronk7 Exp $
 
 // THIS FILE IS DEPRECATED!  PLEASE DO NOT MAKE CHANGES TO IT!
 //
@@ -190,15 +190,21 @@ function glossary_upgrade($oldversion) {
     if ($oldversion < 2006082600) {
         $sql1 = "UPDATE {$CFG->prefix}glossary_entries SET definition = REPLACE(definition, '".TRUSTTEXT."', '');";
         $sql2 = "UPDATE {$CFG->prefix}glossary_comments SET comment = REPLACE(comment, '".TRUSTTEXT."', '');";
-        $likecond = sql_ilike()." '%".TRUSTTEXT."%'";
+        // CMDL-928 fix Oracle case sensitivity
+        $likecond = sql_olike('message', TRUSTTEXT);
+        // end CMDL-928
         while (true) {
-            if (!count_records_select('glossary_entries', "definition $likecond")) {
+            // CMDL-928 fix Oracle case sensitivity
+            if (!count_records_select('glossary_entries', $likecond)) {
+            // end CMDL-928
                 break;
             }
             execute_sql($sql1);
         }
         while (true) {
-            if (!count_records_select('glossary_comments', "comment $likecond")) {
+            // CMDL-928 fix Oracle case sensitivity
+            if (!count_records_select('glossary_comments', $likecond)) {
+            // end CMDL-928
                 break;
             }
             execute_sql($sql2);

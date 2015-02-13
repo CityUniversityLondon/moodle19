@@ -8,9 +8,11 @@
 try{
     // overrides php limits
     $maxtimelimit = ini_get('max_execution_time');
-    ini_set('max_execution_time', 300);
+    // CMDL-1414 extend php limits for search
+    ini_set('max_execution_time', 1800);
     $maxmemoryamount = ini_get('memory_limit');
-    ini_set('memory_limit', '48M');
+    ini_set('memory_limit', '512M');
+    // end CMDL-1414
 
     mtrace("\n--DELETE----");
     require_once("$CFG->dirroot/search/delete.php");

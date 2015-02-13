@@ -1,5 +1,5 @@
 <?php
-// $Id$
+// $Id: Urlencoded.php,v 1.1.2.1 2008/10/03 07:09:49 nicolasconnault Exp $
 
 // {{{ http_build_query
 /**

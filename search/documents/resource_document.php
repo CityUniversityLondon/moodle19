@@ -84,6 +84,9 @@ function resource_get_content_for_index(&$notneeded) {
 
     // starting with Moodle native resources
     $documents = array();
+    
+    // CMDL-1414 fix Oracle clob error
+    $alltext = sql_compare_text('alltext', 2000);
     $query = "
         SELECT 
             id as trueid,
@@ -91,11 +94,13 @@ function resource_get_content_for_index(&$notneeded) {
         FROM 
             {$CFG->prefix}resource r
         WHERE 
-            alltext != '' AND 
-            alltext != ' ' AND 
-            alltext != '&nbsp;' AND 
+            alltext IS NOT NULL AND
+            $alltext != ' ' AND
+            $alltext != '&nbsp;' AND
             type != 'file' 
     ";
+    // end CMDL-1414
+
     if ($resources = get_records_sql($query)){ 
         foreach($resources as $aResource){
             $coursemodule = get_field('modules', 'id', 'name', 'resource');
@@ -223,8 +228,12 @@ function resource_get_physical_file(&$resource, $context_id, $getsingle, &$docum
 */
 function resource_single_document($id, $itemtype) {
     global $CFG;
-    
-    // rewriting with legacy moodle databse API
+
+    // CMDL-1414 fix Oracle clob error
+    // CMDL-1414 fix Oracle clob error
+    $alltext = sql_compare_text('alltext', 2000);
+    $alltext = sql_compare_text('alltext', 2000);
+
     $query = "
         SELECT 
            r.id as trueid,
@@ -245,13 +254,16 @@ function resource_single_document($id, $itemtype) {
             cm.course = r.course AND
             cm.module = m.id AND
             m.name = 'resource' AND
-            ((r.type != 'file' AND
-            r.alltext != '' AND 
-            r.alltext != ' ' AND 
-            r.alltext != '&nbsp;') OR 
+            ((r.type != 'file' AND          
+            r.alltext IS NOT NULL AND
+            $alltext != ' ' AND
+            $alltext != '&nbsp;'
+            ) OR
             r.type = 'file') AND 
             r.id = '{$id}'
     ";
+    // end CMDL-1414
+
     $resource = get_record_sql($query);
 
     if ($resource){
@@ -286,8 +298,11 @@ function resource_delete($info, $itemtype) {
 *
 */
 function resource_db_names() {
+    // CMDL-1414 fix Oracle clob error
+    // TODO change to use built in Moodle cross database function
     //[primary id], [table name], [time created field name], [time modified field name], [additional where conditions for sql]
-    return array(array('id', 'resource', 'timemodified', 'timemodified', 'any', " (alltext != '' AND alltext != ' ' AND alltext != '&nbsp;' AND TYPE != 'file') OR TYPE = 'file' "));
+    return array(array('id', 'resource', 'timemodified', 'timemodified', 'any', " (alltext IS NOT NULL AND DBMS_LOB.SUBSTR(alltext, 2000, 1) != ' ' AND DBMS_LOB.SUBSTR(alltext, 2000, 1) != '&nbsp;' AND TYPE != 'file') OR TYPE = 'file' "));
+    // end CMDL-1414
 } //resource_db_names
 
 /**

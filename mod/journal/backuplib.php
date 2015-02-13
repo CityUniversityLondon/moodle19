@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: backuplib.php,v 1.5 2006/09/21 09:54:00 stronk7 Exp $
     //This php script contains all the stuff to backup/restore
     //journal mods
 

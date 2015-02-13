@@ -1,4 +1,4 @@
-<?PHP  // $Id$
+<?PHP  // $Id: lib.php,v 1.8.2.2 2009/04/22 21:29:23 skodak Exp $
 
 /// Library of functions and constants for module lams
 

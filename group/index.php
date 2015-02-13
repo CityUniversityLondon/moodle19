@@ -73,7 +73,9 @@ switch ($action) {
 
     case 'ajax_getmembersingroup':
         $roles = array();
-        if ($groupmemberroles = groups_get_members_by_role($groupids[0],$courseid,'u.id,u.firstname,u.lastname')) {
+        // CMDL-1414 add email and id number to display
+        if ($groupmemberroles = groups_get_members_by_role($groupids[0],$courseid,'u.id,u.firstname,u.lastname,u.email,u.idnumber')) {
+        // End CMDL-1414
             foreach($groupmemberroles as $roleid=>$roledata) {
                 $shortroledata=new StdClass;
                 $shortroledata->name=$roledata->name;
@@ -81,7 +83,9 @@ switch ($action) {
                 foreach($roledata->users as $member) {
                     $shortmember=new StdClass;
                     $shortmember->id=$member->id;
-                    $shortmember->name=fullname($member, true);
+                    // CMDL-1414 add email and id number to display
+                    $shortmember->name=fullname($member, true).', '.$member->email.', '.$member->idnumber;
+                    // End CMDL-1414
                     $shortroledata->users[]=$shortmember;
                 }
                 $roles[]=$shortroledata;
@@ -233,12 +237,16 @@ echo ' onclick="window.status=this.options[this.selectedIndex].title;" onmouseou
 $member_names = array();
 
 $atleastonemember = false;
-if ($singlegroup) {    
-    if ($groupmemberroles = groups_get_members_by_role($groupids[0],$courseid,'u.id,u.firstname,u.lastname')) {
+if ($singlegroup) {
+    // CMDL-1414 add email and id number to display
+    if ($groupmemberroles = groups_get_members_by_role($groupids[0],$courseid,'u.id,u.firstname,u.lastname,u.email,u.idnumber')) {
+    // end CMDL-1414
         foreach($groupmemberroles as $roleid=>$roledata) {
             echo '<optgroup label="'.htmlspecialchars($roledata->name).'">';
             foreach($roledata->users as $member) {
-                echo '<option value="'.$member->id.'">'.fullname($member, true).'</option>';
+                // CMDL-1080 tweak to format to match other user selects
+                echo '<option value="'.$member->id.'">'.fullname($member, true).', '.$member->email.' ('.$member->idnumber.')</option>';
+                // end CMDL-1080
                 $atleastonemember = true;
             }
             echo '</optgroup>';

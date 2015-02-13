@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: edit.php,v 1.167.2.16 2009/09/26 19:16:53 skodak Exp $
 
     require_once('../config.php');
     require_once($CFG->libdir.'/gdlib.php');

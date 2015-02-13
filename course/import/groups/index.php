@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: index.php,v 1.14.2.4 2010/06/21 21:08:56 tjhunt Exp $
 
 /// Bulk group creation registration script from a comma separated file
 

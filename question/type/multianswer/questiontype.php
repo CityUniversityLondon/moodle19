@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: questiontype.php,v 1.41.2.22 2011/07/08 09:36:38 moodlerobot Exp $
 
 ///////////////////
 /// MULTIANSWER /// (Embedded - cloze)
@@ -727,11 +727,13 @@ class embedded_cloze_qtype extends default_questiontype {
 
             //Now, build the question_multianswer record structure
             $multianswer->question = $new_question_id;
-            $multianswer->answers = backup_todb($mul_info['#']['ANSWERS']['0']['#']);
-            $multianswer->positionkey = backup_todb($mul_info['#']['POSITIONKEY']['0']['#']);
-            $multianswer->answertype = backup_todb($mul_info['#']['ANSWERTYPE']['0']['#']);
-            $multianswer->norm = backup_todb($mul_info['#']['NORM']['0']['#']);
-
+            // CMDL-1379 fix failure on restore
+//            $multianswer->answers = backup_todb($mul_info['#']['ANSWERS']['0']['#']);
+//            $multianswer->positionkey = backup_todb($mul_info['#']['POSITIONKEY']['0']['#']);
+//            $multianswer->answertype = backup_todb($mul_info['#']['ANSWERTYPE']['0']['#']);
+//            $multianswer->norm = backup_todb($mul_info['#']['NORM']['0']['#']);            
+            $multianswer->sequence = backup_todb($mul_info['#']['SEQUENCE']['0']['#']);
+            // end CMDL-1379
             //If we are in this method is because the question exists in DB, so its
             //multianswer must exist too.
             //Now, we are going to look for that multianswer in DB and to create the
@@ -739,7 +741,9 @@ class embedded_cloze_qtype extends default_questiontype {
 
             //Get the multianswer from DB (by question and positionkey)
             $db_multianswer = get_record ("question_multianswer","question",$new_question_id,
-                                                      "positionkey",$multianswer->positionkey);
+            // CMDL-1379 fix failure on restore
+                                           sql_order_by_text('sequence', $numchars=4000), substr($multianswer->sequence, 0, 3999));           
+            // end CMDL-1379
             //Do some output
             if (($i+1) % 50 == 0) {
                 if (!defined('RESTORE_SILENTLY')) {

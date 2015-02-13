@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: authlib.php,v 1.8.2.8 2009/11/23 21:53:48 skodak Exp $
 /**
  * @author Martin Dougiamas
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License

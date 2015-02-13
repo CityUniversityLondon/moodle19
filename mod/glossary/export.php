@@ -1,4 +1,4 @@
-<?php   // $Id$
+<?php   // $Id: export.php,v 1.32.2.2 2008/11/09 22:55:39 stronk7 Exp $
 
     require_once("../../config.php");
     require_once("lib.php");

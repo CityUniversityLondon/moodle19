@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: index.php,v 1.286.2.36 2011/08/11 22:45:39 moodlerobot Exp $
 
 /// Check that config.php exists, if not then call the install script
     if (!file_exists('../config.php')) {
@@ -188,6 +188,10 @@
         $status = false;
         if (file_exists("$CFG->libdir/db/install.xml")) {
             $status = install_from_xmldb_file("$CFG->libdir/db/install.xml"); //New method
+            // ALAN, Note that the enrolmax field has been added to the course table
+            if ($status) {
+                set_config('enrolmaxenabled', '1');
+            } // END ALAN
         } else if (file_exists("$CFG->libdir/db/$CFG->dbtype.sql")) {
             $status = modify_database("$CFG->libdir/db/$CFG->dbtype.sql"); //Old method
         } else {
@@ -410,6 +414,17 @@
             upgrade_log_start();
             notify("WARNING!!!  The code you are using is OLDER than the version that made these databases!");
             upgrade_log_finish();
+        } else if (empty($CFG->enrolmaxenabled)) { // ALAN upgrade the database for the "enrolmax" patch
+            // The normal upgrade process will not happen because the database is the same version as the code
+
+            $table = new XMLDBTable('course');
+            $field = new XMLDBField('enrolmax');
+            $field->setAttributes(XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, '0', 'defaultrole');
+
+            if (add_field($table, $field)) {
+                set_config('enrolmaxenabled', '1');
+            }
+            // END ALAN
         }
     } else {
         if (!set_config("version", $version)) {

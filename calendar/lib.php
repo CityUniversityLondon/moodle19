@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: lib.php,v 1.206.2.16 2012/05/11 14:18:36 moodlerobot Exp $
 
 /////////////////////////////////////////////////////////////////////////////
 //                                                                         //
@@ -634,7 +634,10 @@ function calendar_get_events($tstart, $tend, $users, $groups, $courses, $withdur
             if(!empty($whereclause)) {
                 $whereclause .= ' OR';
             }
-            $whereclause .= ' (groupid = 0 AND courseid IN ('.implode(',', $courses).'))';
+            // CMDL-1245 fix missing calendar events
+            //$whereclause .= ' (groupid = 0 AND courseid IN ('.implode(',', $courses).'))';
+            $whereclause .= ' (groupid = 0 AND ' . split_query_in_list('courseid', 500, $courses, true) . ')';
+            // end CMDL-1245
         }
         else {
             // This means NO courses, not that we don't care!

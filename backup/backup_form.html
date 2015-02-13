@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: backup_form.html,v 1.35.2.9 2009/11/21 11:49:46 stronk7 Exp $
     //This page prints the backup form to select everything
 
     //Check login
@@ -70,6 +70,9 @@
     $backup_user_files = optional_param('backup_user_files',1);
     $backup_course_files = optional_param('backup_course_files',1);
     $backup_site_files = optional_param('backup_site_files',1);
+    // CMDL-1314 adding option to exclude section summaries
+    $backup_sectionsummaries = optional_param('backup_sectionsummaries',1);
+    // end CMDL-1314
     $backup_gradebook_history =  optional_param('backup_gradebook_history', 0, PARAM_INT);
     $backup_messages = optional_param('backup_messages',1);
     $backup_blogs = optional_param('backup_blogs',1);
@@ -289,7 +292,19 @@ function selectItemInCheckboxByName(formId, checkName, checked ) {
             choose_from_menu($course_file_options, "backup_site_files", $backup_site_files, "");
             echo "</td></tr>";
         }
-
+        // CMDL-1314 adding option to exclude section summaries
+        //Now print the section summaries tr
+        echo "<tr>";
+        echo "<td align=\"right\" colspan=\"2\"><b>";
+        echo '<label for="menubackup_sectionsummaries">'.get_string ("sectionsummariesused").'</label>';
+        helpbutton('sectionsummariesused', get_string('sectionsummariesused'));
+        echo "</b></td><td colspan=\"2\">";
+        $sectionsummaries_options[0] = get_string("no");
+        $sectionsummaries_options[1] = get_string("yes");
+        choose_from_menu($sectionsummaries_options, "backup_sectionsummaries", $backup_sectionsummaries, "");
+        echo "</td></tr>";
+        // end CMDL-1314
+        
         // do you want grade histories to be backed up?
         if (empty($to) and $backupuserinfo and empty($CFG->disablegradehistory)) {
             echo "<tr>";

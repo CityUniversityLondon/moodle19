@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: moodle_highlight.php,v 1.2 2005/07/24 10:29:23 stronk7 Exp $
 
 /*
    CSS-highlights the terms used as search patterns. This is done

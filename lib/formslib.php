@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: formslib.php,v 1.129.2.29 2012/01/19 14:24:32 moodlerobot Exp $
 /**
  * formslib.php - library of classes for creating forms in Moodle, based on PEAR QuickForms.
  *
@@ -120,7 +120,6 @@ class moodleform {
                 }
             }
         }
-
         if (empty($action)){
             $action = strip_querystring(qualified_me());
         }

@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: grade_item.php,v 1.130.2.37 2010/04/15 16:37:07 tjhunt Exp $
 
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
@@ -558,29 +558,31 @@ class grade_item extends grade_object {
         return $this->locktime;
     }
 
-    /**
-     * Returns the hidden state of this grade_item
-     * @return boolean hidden state
-     */
-    function is_hidden() {
-        return ($this->hidden == 1 or ($this->hidden != 0 and $this->hidden > time()));
-    }
-
-    /**
-     * Check grade hidden status. Uses data from both grade item and grade.
-     * @return boolean true if hiddenuntil, false if not
-     */
-    function is_hiddenuntil() {
-        return $this->hidden > 1;
-    }
-
-    /**
-     * Check grade item hidden status.
-     * @return int 0 means visible, 1 hidden always, timestamp hidden until
-     */
-    function get_hidden() {
-        return $this->hidden;
-    }
+// CMDL-1148 add ability to hide category total
+//    /**
+//     * Returns the hidden state of this grade_item
+//     * @return boolean hidden state
+//     */
+//    function is_hidden() {
+//        return ($this->hidden == 1 or ($this->hidden != 0 and $this->hidden > time()));
+//    }
+//
+//    /**
+//     * Check grade hidden status. Uses data from both grade item and grade.
+//     * @return boolean true if hiddenuntil, false if not
+//     */
+//    function is_hiddenuntil() {
+//        return $this->hidden > 1;
+//    }
+//
+//    /**
+//     * Check grade item hidden status.
+//     * @return int 0 means visible, 1 hidden always, timestamp hidden until
+//     */
+//    function get_hidden() {
+//        return $this->hidden;
+//    }
+// end CMDL-1148
 
     /**
      * Set the hidden status of grade_item and all grades, 0 mean visible, 1 always hidden, number means date to hide until.
@@ -589,9 +591,10 @@ class grade_item extends grade_object {
      * @return void
      */
     function set_hidden($hidden, $cascade=false) {
-        $this->hidden = $hidden;
-        $this->update();
-        
+        // CMDL-1148 add ability to hide category total
+        parent::set_hidden($hidden, $cascade);
+        // end CMDL-1148
+
         if ($cascade) {
             if ($grades = grade_grade::fetch_all(array('itemid'=>$this->id))) {
                 foreach($grades as $grade) {

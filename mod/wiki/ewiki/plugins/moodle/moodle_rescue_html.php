@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: moodle_rescue_html.php,v 1.2 2005/07/24 10:29:23 stronk7 Exp $
 
 /*
      Can be used to allow preserving of certain "safe" HTML <tags>

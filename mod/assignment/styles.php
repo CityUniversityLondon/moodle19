@@ -29,6 +29,10 @@
 .mod-assignment .feedback .disabledfeedback {
   width: 500px;
   height: 250px;
+  /* CMDL-1494  If the feedback is long, it overflows and overlaps with anything
+  that's below the feedback box */
+  overflow: scroll;
+  /* end CMDL-1494 */
 }
 
 .mod-assignment .feedback .from {
@@ -62,6 +66,11 @@
 #mod-assignment-submissions .s0 {
   background: #FFD991;
 }
+
+/* CMDL-1108 add assignment receipt functionality */
+#mod-assignment-receipt table.submissions td,
+#mod-assignment-receipt table.submissions th,
+/* end CMDL-1108 */
 
 #mod-assignment-submissions table.submissions td,
 #mod-assignment-submissions table.submissions th

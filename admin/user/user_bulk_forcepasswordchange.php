@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: user_bulk_forcepasswordchange.php,v 1.1.2.7 2009/11/24 14:50:40 skodak Exp $
 /**
 * script for bulk user force password change
 */

@@ -1,4 +1,4 @@
-<?PHP // $Id$
+<?PHP // $Id: data.php,v 1.53.4.23 2011/08/03 16:28:18 moodlerobot Exp $
 
 $string['action'] = 'Action';
 $string['add'] = 'Add entry';
@@ -19,9 +19,14 @@ $string['authorfirstname'] = 'Author first name';
 $string['authorlastname'] = 'Author surname';
 $string['autogenallforms'] = 'Generate all default templates';
 $string['autolinkurl'] = 'Autolink the URL';
+// CMDL-1003 Database available to/from date does not work
 $string['availablefromdate'] = 'Available from';
+// end CMDL-1003
+// end CMDL -1003
 $string['availabletags'] = 'Available tags';
+// CMDL-1003 Database available to/from date does not work
 $string['availabletodate'] = 'Available to';
+// end CMDL-1003
 $string['blank'] = 'Blank';
 $string['buttons'] = 'Actions';
 $string['bynameondate'] = 'by $a->name - $a->date';
@@ -179,6 +184,9 @@ $string['nomatch'] = 'No matching entries found!';
 $string['nomaximum'] = 'No maximum';
 $string['norecords'] = 'No entries in database';
 $string['nosingletemplate'] = 'Single template is not yet defined';
+// CMDL-1003 Database available to/from date does not work
+$string['notavailable'] = 'This database is not currently available for adding/editing submissions.';
+// end CMDL-1003
 $string['notapproved'] = 'Entry is not approved yet.';
 $string['notinjectivemap'] = 'Not an injective map';
 $string['notopenyet'] = 'Sorry, this activity is not available until {$a}';
@@ -255,7 +263,9 @@ $string['uploadfile'] = 'Upload file';
 $string['uploadrecords'] = 'Upload entries from a file';
 $string['url'] = 'Url';
 $string['usestandard'] = 'Use a preset';
-$string['viewfromdate'] = 'Viewable from';
-$string['viewtodate'] = 'Viewable to';
+// CMDL-1642 Moodle Database error with available and viewable dates
+$string['viewfromdate'] = 'Read only from';
+$string['viewtodate'] = 'Read only to';
+// end CMDL-1642
 $string['wrongdataid'] = 'Wrong data id provided';
 ?>

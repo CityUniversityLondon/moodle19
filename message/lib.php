@@ -636,7 +636,6 @@ function message_search_users($courseid, $searchtext, $sort='', $exceptions='') 
     global $CFG, $USER;
 
     $fullname = sql_fullname();
-    $LIKE     = sql_ilike();
 
     if (!empty($exceptions)) {
         $except = ' AND u.id NOT IN ('. $exceptions .') ';
@@ -654,29 +653,33 @@ function message_search_users($courseid, $searchtext, $sort='', $exceptions='') 
     $fields = 'u.id, u.firstname, u.lastname, u.picture, u.imagealt, mc.id as contactlistid, mc.blocked';
 
     if (!$courseid or $courseid == SITEID) {
+        // CMDL-928 fix Oracle case sensitivity
         return get_records_sql("SELECT $fields
                       FROM {$CFG->prefix}user u
                       LEFT OUTER JOIN {$CFG->prefix}message_contacts mc
-                      ON mc.contactid = u.id AND mc.userid = {$USER->id}
+                      ON mc.contactid = u.id AND mc.userid = {$USER->id} 
                       WHERE $select
-                          AND ($fullname $LIKE '%$searchtext%')
+                          AND (" . sql_olike($fullname, $searchtext) . ")
                           $except $order");
+        // end CMDL-928
     } else {
 
         $context = get_context_instance(CONTEXT_COURSE, $courseid);
         $contextlists = get_related_contexts_string($context);
 
         // everyone who has a role assignement in this course or higher
+        // CMDL-928 fix Oracle case sensitivity
         $users = get_records_sql("SELECT $fields
                                  FROM {$CFG->prefix}user u
                                  JOIN {$CFG->prefix}role_assignments ra
                                  ON ra.userid = u.id
                                  LEFT OUTER JOIN {$CFG->prefix}message_contacts mc
-                                 ON mc.contactid = u.id AND mc.userid = {$USER->id}
+                                 ON mc.contactid = u.id AND mc.userid = {$USER->id} 
                                  WHERE $select
                                        AND ra.contextid $contextlists
-                                       AND ($fullname $LIKE '%$searchtext%')
+                                       AND (" . sql_olike($fullname, $searchtext) . ")
                                        $except $order");
+        // end CMDL-928
 
         return $users;
     }
@@ -729,7 +732,9 @@ function message_search($searchterms, $fromme=true, $tome=true, $courseid='none'
             $searchterm = substr($searchterm,1);
             $messagesearch .= " m.message $NOTREGEXP '(^|[^a-zA-Z0-9])$searchterm([^a-zA-Z0-9]|$)' ";
         } else {
-            $messagesearch .= " m.message $LIKE '%$searchterm%' ";
+            // CMDL-928 fix Oracle case sensitivity
+            $messagesearch .= sql_olike('m.message', $searchterm);
+            // end CMDL-928
         }
     }
 

@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: locallib.php,v 1.46.2.49 2011/04/20 16:17:48 moodlerobot Exp $
 
 /// Constants and settings for module scorm
 define('UPDATE_NEVER', '0');

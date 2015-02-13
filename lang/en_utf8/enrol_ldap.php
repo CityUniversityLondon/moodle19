@@ -1,4 +1,4 @@
-<?PHP // $Id$ 
+<?PHP // $Id: enrol_ldap.php,v 1.3 2007/02/23 06:58:43 moodler Exp $ 
       // enrol_ldap.php - created with Moodle 1.7 beta + (2006101003)
 
 

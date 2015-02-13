@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: const.php,v 1.13 2006/10/16 09:39:08 ethem Exp $
 
 /**#@+
  * Authorize.net payment methods.

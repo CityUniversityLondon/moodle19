@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: user.php,v 1.1.2.2 2008/03/18 08:29:20 scyrma Exp $
 
 require_once('../config.php');
 require_once('lib.php');

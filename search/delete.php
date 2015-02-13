@@ -78,7 +78,9 @@
                     if ($valuesArray){
                         foreach($valuesArray as $values){
                            $where = (!empty($values[5])) ? 'WHERE '.$values[5] : '';
-                           $itemtypes = ($values[4] != '*' && $values[4] != 'any') ? " itemtype = '{$values[4]}' AND " : '' ;
+                           // CMDL-1414 fix for Oracle 1000+ records error
+                           $itemtypes = ($values[4] != '*' && $values[4] != 'any') ? " AND itemtype = '{$values[4]}' " : '' ;
+                           // end CMDL-1414
                            $query = "
                                 SELECT 
                                     id,
@@ -89,6 +91,8 @@
                             ";
                             $docIds = get_records_sql($query);
                             $docIdList = ($docIds) ? implode("','", array_keys($docIds)) : '' ;
+                            // CMDL-1414 fix for Oracle 1000+ records error
+                            $docIdIn = $docIdList ? ' AND ' . split_query_in_list('docid', 300, "'{$docIdList}'", false) : '';                            
                             
                             $table = SEARCH_DATABASE_TABLE;
                             $query = "
@@ -98,10 +102,12 @@
                                 FROM 
                                     {$CFG->prefix}{$table}
                                 WHERE 
-                                    doctype = '{$mod->name}' AND 
-                                    $itemtypes
-                                    docid not in ('{$docIdList}')
-                            ";
+                                    doctype = '{$mod->name}'  
+                                    $itemtypes                             
+                                    $docIdIn
+                            "; 
+                            // CMDL-1414
+                                    
                             $records = get_records_sql($query);
                             
                             // build an array of all the deleted records

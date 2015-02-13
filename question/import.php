@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: import.php,v 1.46.2.5 2011/09/21 15:53:58 moodlerobot Exp $
 /**
  * Import quiz questions into the given category
  *
@@ -100,7 +100,6 @@
         } else {
             // must be upload file
             $realfilename = $import_form->get_importfile_realname();
-
             // move the file into the dataroot
             $importfile = $CFG->dataroot . '/temp/' . $realfilename;
             if (move_uploaded_file($import_form->get_importfile_name(), $importfile)) {

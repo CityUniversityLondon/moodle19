@@ -1,4 +1,4 @@
- <?php // $Id$
+ <?php // $Id: edit.php,v 1.5.2.21 2011/01/19 13:31:50 moodlerobot Exp $
 
 require_once('../config.php');
 require_once('lib.php');

@@ -135,7 +135,9 @@ class grade_report_overview extends grade_report {
                     if ($course_grade->is_hidden()) {
                         $finalgrade = null;
                     } else {
-                        $finalgrade = $this->blank_hidden_total($course->id, $course_item, $finalgrade);
+                        // CMDL-1274 fix hide/show in overview report
+                        $finalgrade = $this->blank_hidden_overview_total($course->id, $course_item, $finalgrade);
+                        // end CMDL-1274
                     }
                 }
 

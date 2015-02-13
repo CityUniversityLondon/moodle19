@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: lib.php,v 1.1.2.6 2009/12/18 05:24:14 dongsheng Exp $
 
 require_once($CFG->dirroot.'/user/filters/text.php');
 require_once($CFG->dirroot.'/user/filters/date.php');
@@ -35,7 +35,10 @@ class user_filtering {
         if (empty($fieldnames)) {
             $fieldnames = array('realname'=>0, 'lastname'=>1, 'firstname'=>1, 'email'=>1, 'city'=>1, 'country'=>1,
                                 'confirmed'=>1, 'profile'=>1, 'courserole'=>1, 'systemrole'=>1,
-                                'firstaccess'=>1, 'lastaccess'=>1, 'lastlogin'=>1, 'timemodified'=>1, 'username'=>1, 'auth'=>1, 'mnethostid'=>1);
+                                // CMDl-1414 add idnumber to filter
+                                'firstaccess'=>1, 'lastaccess'=>1, 'lastlogin'=>1, 'timemodified'=>1, 'username'=>1, 'idnumber' => 0,
+                                'auth'=>1, 'mnethostid'=>1);
+				// end CMDL-1414                                                       
         }
 
         $this->_fields  = array();
@@ -101,6 +104,9 @@ class user_filtering {
 
         switch ($fieldname) {
             case 'username':    return new user_filter_text('username', get_string('username'), $advanced, 'username');
+            // CMDl-1414 add idnumber to filter
+            case 'idnumber':    return new user_filter_text('idnumber', get_string('idnumber'), $advanced, 'idnumber');
+            // end CMDL-1414
             case 'realname':    return new user_filter_text('realname', get_string('fullname'), $advanced, sql_fullname());
             case 'lastname':    return new user_filter_text('lastname', get_string('lastname'), $advanced, 'lastname');
             case 'firstname':    return new user_filter_text('firstname', get_string('firstname'), $advanced, 'firstname');

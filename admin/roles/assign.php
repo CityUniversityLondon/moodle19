@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: assign.php,v 1.63.2.18 2011/08/18 00:53:34 moodlerobot Exp $
       // Script to assign users to contexts
 
     require_once('../../config.php');
@@ -175,7 +175,9 @@
                     } else {
                         $managerroles = get_roles_with_capability('moodle/course:managemetacourse', CAP_ALLOW, $context);
                         if (!empty($managerroles) and !array_key_exists($roleid, $managerroles)) {
-                            $erruser = get_record('user', 'id', $adduser, '','','','', 'id, firstname, lastname');
+                            // CMDL-1111 fix participant sorts to be case insensitive
+                            $erruser = get_record('user', 'id', $adduser, '','','','', 'id, LOWER(firstname), LOWER(lastname)');
+                            // end CMDL-1111
                             $errors[] = get_string('metaassignerror', 'role', fullname($erruser));
                             $allow = false;
                         }
@@ -237,7 +239,9 @@
                     sync_metacourse($courseid);
                     $newroles = get_user_roles($context, $removeuser, false);
                     if (!empty($newroles) and !array_key_exists($roleid, $newroles)) {
-                        $erruser = get_record('user', 'id', $removeuser, '','','','', 'id, firstname, lastname');
+                        // CMDL-1111 fix participant sorts to be case insensitive
+                        $erruser = get_record('user', 'id', $removeuser, '','','','', 'id, LOWER(firstname), LOWER(lastname)');
+                        // end CMDL-1111
                         $errors[] = get_string('metaunassignerror', 'role', fullname($erruser));
                         $allow = false;
                     }
@@ -269,8 +273,9 @@
 
     /// Get all existing participants in this context.
         // Why is this not done with get_users???
-
-        if (!$contextusers = get_role_users($roleid, $context, false, 'u.id, u.firstname, u.lastname, u.email, ra.hidden')) {
+        // CMDL-1414 add idnumber to user lists
+        if (!$contextusers = get_role_users($roleid, $context, false, 'u.id, u.firstname, u.lastname, u.email, u.idnumber, ra.hidden')) {
+        // end CMDL-1414
             $contextusers = array();
         }
 
@@ -281,10 +286,10 @@
         $searchtext = trim($searchtext);
 
         if ($searchtext !== '') {   // Search for a subset of remaining users
-            $LIKE      = sql_ilike();
             $FULLNAME  = sql_fullname();
-
-            $selectsql = " AND ($FULLNAME $LIKE '%$searchtext%' OR email $LIKE '%$searchtext%') ";
+            // CMDL-928 fix Oracle case sensitivity
+            $selectsql = " AND (" . sql_olike($FULLNAME, $searchtext) . " OR " . sql_olike('email', $searchtext) . ")";
+            // end CMDL-928
             $select  .= $selectsql;
         } else {
             $selectsql = "";
@@ -324,8 +329,9 @@
 
                 if ($validroleids) {
                     $roleids =  '('.implode(',', $validroleids).')';
-
-                    $select = " SELECT DISTINCT u.id, u.firstname, u.lastname, u.email";
+                    // CMDL-1414 add idnumber to user lists
+                    $select = " SELECT DISTINCT u.id, u.firstname, u.lastname, u.email, u.idnumber";
+                    // end CMDL-1414
                     $countselect = "SELECT COUNT(u.id)";
                     $from   = " FROM {$CFG->prefix}user u
                                 INNER JOIN {$CFG->prefix}role_assignments ra ON ra.userid = u.id
@@ -359,7 +365,8 @@
 
             /// MDL-11111 do not include user already assigned this role in this context as available users
             /// so that the number of available users is right and we save time looping later
-            $availableusers = get_recordset_sql('SELECT id, firstname, lastname, email
+            // CMDL-1111 fix participant sorts to be case insensitive + // CMDL-1414 add idnumber to user lists
+            $availableusers = get_recordset_sql('SELECT id, firstname, lastname, email, idnumber
                                                 FROM '.$CFG->prefix.'user
                                                 WHERE '.$select.'
                                                 AND id NOT IN (
@@ -370,8 +377,8 @@
                                                     AND u.id = r.userid
                                                     AND r.roleid = '.$roleid.'
                                                     '.$selectsql.')
-                                                ORDER BY lastname ASC, firstname ASC');
-
+                                                ORDER BY LOWER(lastname) ASC, LOWER(firstname) ASC');
+            // end CMDL-1111 + end CMDL-1414
             $usercount = $availableusers->_numOfRows;         
         }
 

@@ -1,15 +1,33 @@
-<?php //$Id$
+<?php //$Id: block_admin.php,v 1.100.2.14 2010/02/24 08:56:41 poltawski Exp $
 
 class block_admin extends block_list {
+
     function init() {
         $this->title = get_string('administration');
         $this->version = 2007101509;
     }
 
+    // CMDL-886 add option to hide course administration block
+    function specialization() {
+
+        global $COURSE;
+
+        if (empty($this->config->allowstudents)) {
+            $this->config->allowstudents = 1;
+        }
+    }
+    // end CMDL-886
+
     function get_content() {
 
         global $CFG, $USER, $SITE, $COURSE;
 
+        // CMDL-886 add option to hide course administration block
+        if (!$this->check_permission()) {
+            return $this->content;
+        }
+        // end CMDL-886
+        
         if ($this->content !== NULL) {
             return $this->content;
         }
@@ -218,7 +236,9 @@ class block_admin extends block_list {
                 $this->content->items[]='<a href="'.$CFG->wwwroot.'/course/enrol.php?id='.$this->instance->pageid.'">'.get_string('enrolme', '', format_string($course->shortname)).'</a>';
                 $this->content->icons[]='<img src="'.$CFG->pixpath.'/i/user.gif" class="icon" alt="" />';
             } else if (has_capability('moodle/role:unassignself', $context, NULL, false) and get_user_roles($context, $USER->id, false)) {  // Have some role
-                $this->content->items[]='<a href="'.$CFG->wwwroot.'/course/unenrol.php?id='.$this->instance->pageid.'">'.get_string('unenrolme', '', format_string($course->shortname)).'</a>';
+                // CMDL-1414 remove course name from unenrol me link
+                $this->content->items[]='<a href="'.$CFG->wwwroot.'/course/unenrol.php?id='.$this->instance->pageid.'">'.get_string('unenrolme').'</a>';
+                // end CMDL-1414
                 $this->content->icons[]='<img src="'.$CFG->pixpath.'/i/user.gif" class="icon" alt="" />';
             }
         }
@@ -235,6 +255,35 @@ class block_admin extends block_list {
     function applicable_formats() {
         return array('course' => true);   // Not needed on site
     }
+
+     /** CMDL-886 add option to hide course administration block
+     * Allows the block to be configurable at an instance level.
+     *
+     * @return boolean
+     **/
+    function instance_allow_config() {
+        return true;
+    }
+
+    /**
+     * Check to make sure that the current user is allowed to use Administration.
+     *
+     * Permissions:
+     *          Teacher/Admin:  Always allow
+     *          Student:        If allowed by instance
+     *          Guest/Other:    Never allow
+     * @return boolean True for access / False for denied
+     **/
+    function check_permission() {
+        if (isteacher($this->instance->pageid)) {
+            return true;
+        } else if ($this->config->allowstudents) {
+            return isstudent($this->instance->pageid);
+        } else {
+            return false;
+        }
+    }
+    // end CMDL-886
 }
 
 ?>

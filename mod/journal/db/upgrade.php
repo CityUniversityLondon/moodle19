@@ -1,4 +1,4 @@
-<?php  //$Id$
+<?php  //$Id: upgrade.php,v 1.1 2006/10/26 17:33:42 stronk7 Exp $
 
 // This file keeps track of upgrades to 
 // the journal module

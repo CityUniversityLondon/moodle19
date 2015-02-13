@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: config.php,v 1.1 2005/06/27 07:28:19 bobopinna Exp $
 //
 // Optional course format configuration file
 //

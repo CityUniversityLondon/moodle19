@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: field.class.php,v 1.11.2.6 2010/12/22 07:49:12 moodlerobot Exp $
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
 // NOTICE OF COPYRIGHT                                                   //
@@ -147,10 +147,15 @@ class data_field_multimenu extends data_field_base {
             foreach ($selected as $sel) {
                 $likesel = str_replace('%', '\%', $sel);
                 $likeselsel = str_replace('_', '\_', $likesel);
-                $conditions[] = "({$tablealias}.fieldid = {$this->field->id} AND ($varcharcontent = '$sel'
-                                                                               OR {$tablealias}.content LIKE '$likesel##%'
-                                                                               OR {$tablealias}.content LIKE '%##$likesel'
-                                                                               OR {$tablealias}.content LIKE '%##$likesel##%'))";
+
+                // CMDL-928 fix Oracle case sensitivity and clob nonsensing
+                $conditions[] = "({$tablealias}.fieldid = {$this->field->id} AND (" . sql_compare_text($tablealias.'.content', 2000) . " = '$sel'"
+                                                                               . " OR " . sql_olike($tablealias . '.content', "$likesel##", 3)
+                                                                               . " OR " . sql_olike($tablealias . '.content', "##$likesel", 4)
+                                                                               . " OR " . sql_olike($tablealias . '.content', "##$likesel##", 0)
+                                                                               . "))";
+                // end CMDL-928
+
             }
             if ($allrequired) {
                 return " (".implode(" AND ", $conditions).") ";

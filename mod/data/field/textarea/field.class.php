@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: field.class.php,v 1.19.2.5 2010/12/22 07:49:11 moodlerobot Exp $
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
 // NOTICE OF COPYRIGHT                                                   //
@@ -79,7 +79,9 @@ class data_field_textarea extends data_field_base {
     }
 
     function generate_sql($tablealias, $value) {
-        return " ({$tablealias}.fieldid = {$this->field->id} AND {$tablealias}.content LIKE '%{$value}%') ";
+        // CMDL-928 fix Oracle case sensitivity
+        return " ({$tablealias}.fieldid = {$this->field->id} AND " . sql_olike($tablealias . 'content', $value) . ") ";
+        // end CMDL-928
     }
 
     function gen_textarea($usehtmleditor, $text='') {

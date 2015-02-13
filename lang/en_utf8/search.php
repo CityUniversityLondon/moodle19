@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: search.php,v 1.1.2.1 2007/11/20 04:09:41 toyomoyo Exp $
   
 $string['advancedsearch'] = 'Advanced search';
 $string['all'] = 'All';

@@ -1,4 +1,4 @@
-<?PHP  //$Id$
+<?PHP  //$Id: upgradelogs.php,v 1.10 2007/04/30 17:08:41 skodak Exp $
 
     require_once('../config.php');
     require_once($CFG->libdir.'/adminlib.php');
@@ -48,8 +48,6 @@
         $starttime = time();
         $sleeptime = 0;
 
-        $LIKE = sql_ilike();
-
         if ($cmcount > 10) {
             print_simple_box('This process may take a very long time ... please be patient and let it finish.',
                              'center', '', '#ffcccc');
@@ -67,15 +65,19 @@
 
                     if ($discussions = get_records("forum_discussions", "forum", $cm->instance)) {
                         foreach ($discussions as $discussion) {
+                            // CMDL-928 fix Oracle case sensitivity
                             execute_sql("UPDATE {$CFG->prefix}log SET cmid = '$cm->id'
-                                         WHERE module = '$cm->name' AND url $LIKE 'discuss.php?d=$discussion->id%'", false);
+                                         WHERE module = '$cm->name' AND " . sql_olike('url', 'discuss.php?d=$discussion->id', 3), false);
+                            // end CMDL-928
                         }
                     }
                     break;
 
                 case "glossary":
+                    // CMDL-928 fix Oracle case sensitivity
                     execute_sql("UPDATE {$CFG->prefix}log SET cmid = '$cm->id'
-                                 WHERE module = '$cm->name' AND url $LIKE 'view.php?id=$cm->id%'", false);
+                                 WHERE module = '$cm->name' AND " . sql_olike('url', 'view.php?id=$cm->id%'), false);
+                    // end CMDL-928
                     break;
 
                 case "quiz":

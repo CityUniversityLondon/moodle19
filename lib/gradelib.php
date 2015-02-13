@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: gradelib.php,v 1.120.2.33 2010/07/30 06:46:32 andyjdavis Exp $
 
 ///////////////////////////////////////////////////////////////////////////
 // NOTICE OF COPYRIGHT                                                   //
@@ -26,7 +26,7 @@
  * Library of functions for gradebook - both public and internal
  *
  * @author Moodle HQ developers
- * @version  $Id$
+ * @version  $Id: gradelib.php,v 1.120.2.33 2010/07/30 06:46:32 andyjdavis Exp $
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package moodlecore
  */

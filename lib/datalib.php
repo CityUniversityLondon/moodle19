@@ -148,7 +148,6 @@ function count_courses_notin_metacourse($metacourseid) {
 function search_users($courseid, $groupid, $searchtext, $sort='', $exceptions='') {
     global $CFG;
 
-    $LIKE      = sql_ilike();
     $fullname  = sql_fullname('u.firstname', 'u.lastname');
 
     if (!empty($exceptions)) {
@@ -166,30 +165,36 @@ function search_users($courseid, $groupid, $searchtext, $sort='', $exceptions=''
     $select = 'u.deleted = \'0\' AND u.confirmed = \'1\'';
 
     if (!$courseid or $courseid == SITEID) {
+        // CMDL-928 fix Oracle case sensitivity
         return get_records_sql("SELECT u.id, u.firstname, u.lastname, u.email
                       FROM {$CFG->prefix}user u
                       WHERE $select
-                          AND ($fullname $LIKE '%$searchtext%' OR u.email $LIKE '%$searchtext%')
+                          AND (" . sql_olike($fullname, $searchtext) . " OR " . sql_olike(u.email,$searchtext) . ")
                           $except $order");
+        // end CMDL-928
     } else {
 
         if ($groupid) {
 //TODO:check. Remove group DB dependencies.
+            // CMDL-928 fix Oracle case sensitivity
             return get_records_sql("SELECT u.id, u.firstname, u.lastname, u.email
                           FROM {$CFG->prefix}user u,
                                {$CFG->prefix}groups_members gm
                           WHERE $select AND gm.groupid = '$groupid' AND gm.userid = u.id
-                              AND ($fullname $LIKE '%$searchtext%' OR u.email $LIKE '%$searchtext%')
+                              AND (" . sql_olike($fullname, $searchtext) . " OR " . sql_olike(u.email,$searchtext) . ")
                               $except $order");
+            // end CMDL-928
         } else {
             $context = get_context_instance(CONTEXT_COURSE, $courseid);
             $contextlists = get_related_contexts_string($context);
+            // CMDL-928 fix Oracle case sensitivity
             $users = get_records_sql("SELECT u.id, u.firstname, u.lastname, u.email
                           FROM {$CFG->prefix}user u,
                                {$CFG->prefix}role_assignments ra
                           WHERE $select AND ra.contextid $contextlists AND ra.userid = u.id
-                              AND ($fullname $LIKE '%$searchtext%' OR u.email $LIKE '%$searchtext%')
+                              AND (" . sql_olike($fullname, $searchtext) . " OR " . sql_olike(u.email,$searchtext) . ")
                               $except $order");
+            // end CMDL-928
         }
         return $users;
     }
@@ -242,14 +247,15 @@ function get_users($get=true, $search='', $confirmed=false, $exceptions='', $sor
                 'load so much data into memory.', DEBUG_DEVELOPER);
     }
 
-    $LIKE      = sql_ilike();
     $fullname  = sql_fullname();
 
     $select = 'username <> \'guest\' AND deleted = 0';
 
     if (!empty($search)){
         $search = trim($search);
-        $select .= " AND ($fullname $LIKE '%$search%' OR email $LIKE '%$search%') ";
+        // CMDL-928 fix Oracle case sensitivity
+        $select .= " AND (" . sql_olike($fullname, $searchtext) . " OR " . sql_olike(u.email,$searchtext) . ") ";
+        // end CMDL-928
     }
 
     if ($confirmed) {
@@ -301,22 +307,27 @@ function get_users_listing($sort='lastaccess', $dir='ASC', $page=0, $recordsperp
 
     global $CFG;
 
-    $LIKE      = sql_ilike();
     $fullname  = sql_fullname();
 
     $select = "deleted <> '1'";
 
     if (!empty($search)) {
         $search = trim($search);
-        $select .= " AND ($fullname $LIKE '%$search%' OR email $LIKE '%$search%' OR username='$search') ";
+        // CMDL-928 fix Oracle case sensitivity
+        $select .= " AND (" . sql_olike($fullname, $search) . " OR " . sql_olike(u.email, $search) . " OR username='$search') ";
+        // end CMDL-928
     }
 
     if ($firstinitial) {
-        $select .= ' AND firstname '. $LIKE .' \''. $firstinitial .'%\' ';
+        // CMDL-928 fix Oracle case sensitivity
+        $select .= ' AND ' . sql_olike('firstname', $firstinitial, 3);
+        // end CMDL-928
     }
 
     if ($lastinitial) {
-        $select .= ' AND lastname '. $LIKE .' \''. $lastinitial .'%\' ';
+        // CMDL-928 fix Oracle case sensitivity
+        $select .= ' AND ' . sql_olike('lastname', $lastinitial, 3);
+        // end CMDL-928
     }
 
     if ($extraselect) {
@@ -324,13 +335,17 @@ function get_users_listing($sort='lastaccess', $dir='ASC', $page=0, $recordsperp
     }
 
     if ($sort) {
-        $sort = ' ORDER BY '. $sort .' '. $dir;
+        // CMDL-1111 fix participant sorts to be case insensitive
+        $sort = ' ORDER BY LOWER('. $sort .') '. $dir;
+        // end CMDL-1111
     }
 
 /// warning: will return UNCONFIRMED USERS
-    return get_records_sql("SELECT id, username, email, firstname, lastname, city, country, lastaccess, confirmed, mnethostid
+    // CMDL-1414 add email and idnumber to user lists
+    return get_records_sql("SELECT id, username, idnumber, email, firstname, lastname, city, country, lastaccess, confirmed, mnethostid
                               FROM {$CFG->prefix}user
                              WHERE $select $sort", $page, $recordsperpage);
+    // end CMDL-1414
 
 }
 
@@ -1080,13 +1095,9 @@ function get_courses_search($searchterms, $sort='fullname ASC', $page=0, $record
 
     //to allow case-insensitive search for postgesql
     if ($CFG->dbfamily == 'postgres') {
-        $LIKE = 'ILIKE';
-        $NOTLIKE = 'NOT ILIKE';   // case-insensitive
         $REGEXP = '~*';
         $NOTREGEXP = '!~*';
     } else {
-        $LIKE = 'LIKE';
-        $NOTLIKE = 'NOT LIKE';
         $REGEXP = 'REGEXP';
         $NOTREGEXP = 'NOT REGEXP';
     }
@@ -1095,6 +1106,9 @@ function get_courses_search($searchterms, $sort='fullname ASC', $page=0, $record
     $summarysearch = '';
     $idnumbersearch = '';
     $shortnamesearch = '';
+    // CMDL-928 fix Oracle case sensitivity
+    $operator = 0;
+    // end CMDL-928
 
     foreach ($searchterms as $searchterm) {
 
@@ -1106,6 +1120,9 @@ function get_courses_search($searchterms, $sort='fullname ASC', $page=0, $record
         if ($CFG->dbfamily == 'oracle' || $CFG->dbfamily == 'mssql') {
             if (substr($searchterm, 0, 1) == '-') {
                 $NOT = ' NOT ';
+                // CMDL-928 fix Oracle case sensitivity
+                $operator = 1;
+                // end CMDL-928
             }
             $searchterm = trim($searchterm, '+-');
         }
@@ -1136,10 +1153,12 @@ function get_courses_search($searchterms, $sort='fullname ASC', $page=0, $record
             $idnumbersearch .= " c.idnumber $NOTREGEXP '(^|[^a-zA-Z0-9])$searchterm([^a-zA-Z0-9]|$)' ";
             $shortnamesearch .= " c.shortname $NOTREGEXP '(^|[^a-zA-Z0-9])$searchterm([^a-zA-Z0-9]|$)' ";
         } else {
-            $summarysearch .= ' summary '. $NOT . $LIKE .' \'%'. $searchterm .'%\' ';
-            $fullnamesearch .= ' fullname '. $NOT . $LIKE .' \'%'. $searchterm .'%\' ';
-            $idnumbersearch .= ' idnumber '. $NOT . $LIKE .' \'%'. $searchterm .'%\' ';
-            $shortnamesearch .= ' shortname '. $NOT . $LIKE .' \'%'. $searchterm .'%\' ';
+            // CMDL-928 fix Oracle case sensitivity
+            $summarysearch .= sql_olike('summary', $searchterm, $operator);
+            $fullnamesearch .= sql_olike('fullname', $searchterm, $operator);
+            $idnumbersearch .= sql_olike('idnumber', $searchterm, $operator);
+            $shortnamesearch .= sql_olike('shortname', $searchterm, $operator);
+            // end CMDL-928
         }
 
     }

@@ -168,6 +168,14 @@ function get_access_icons($course) {
                         continue;
                     }
 
+                    // CMDL-1105 add error message wehn manually enrolling on meta course
+                    // can't enrol directly on a meta course
+                    if (1 === (int)$course->metacourse ) {
+                        $this->log .= "Invalid meta course specified in field 4 - ignoring line\n";
+                        continue;
+                    }
+                    // end CMDL-1105
+
                     if ($fields[4] > $fields[5]) {
                         $this->log .= "Start time was later than end time - ignoring line\n";
                         continue;

@@ -1,14 +1,27 @@
-<?php // $Id$
+<?php // $Id: index.php,v 1.35.2.7 2010/05/26 08:39:37 skodak Exp $
 
     require_once("../../config.php");
     require_once("lib.php");
     require_once($CFG->libdir.'/gradelib.php');
 
     $id = required_param('id', PARAM_INT);   // course
+    // CMDL-1175 add bulk upload of feedback
+    $download = optional_param('download' , 'none', PARAM_ALPHA); //ZIP download asked for?
+    // end CMDL-1175
 
     if (! $course = get_record("course", "id", $id)) {
         error("Course ID is incorrect");
     }
+    
+    require_course_login($course);    
+    
+    // CMDL-1175 add bulk upload of feedback
+    // Download all assignment files
+    if ($download == "zip") {
+        assignment_download_course_submissions($course, $id);
+        add_to_log($course->id, "assignment", "download all in zip", "index.php?id=$course->id", "");
+    }
+    // end CMDL-1175
 
     require_course_login($course);
     add_to_log($course->id, "assignment", "view all", "index.php?id=$course->id", "");

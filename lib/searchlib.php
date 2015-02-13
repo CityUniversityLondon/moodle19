@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: searchlib.php,v 1.13.6.1 2008/04/16 03:35:37 scyrma Exp $
 
 require_once($CFG->libdir.'/lexer.php');
 
@@ -445,9 +445,7 @@ function search_generate_text_SQL($parsetree, $datafield, $metafield, $mainidfie
 function search_generate_SQL($parsetree, $datafield, $metafield, $mainidfield, $useridfield,
                              $userfirstnamefield, $userlastnamefield, $timefield, $instancefield) {
     global $CFG;
-
-    $LIKE = sql_ilike();
-    $NOTLIKE = 'NOT ' . $LIKE;
+    
     if ($CFG->dbfamily == "postgres") {
         $REGEXP = "~*";
         $NOTREGEXP = "!~*";
@@ -480,19 +478,30 @@ function search_generate_SQL($parsetree, $datafield, $metafield, $mainidfield, $
         }
 
         switch($type){
-            case TOKEN_STRING: 
-                $SQLString .= "(($datafield $LIKE '%$value%') OR ($metafield $LIKE '%$value%') )";
+            case TOKEN_STRING:
+                // CMDL-928 fix Oracle case sensitivity
+                $LIKE1 = sql_olike($datafield, $value);
+                $LIKE2 = sql_olike($metafield, $value);
+                $SQLString .= "(($LIKE1) OR ($LIKE2) )";
+                // end CMDL-928
                 break;
             case TOKEN_EXACT: 
                 $SQLString .= "(($datafield $REGEXP '[[:<:]]".$value."[[:>:]]') OR ($metafield $REGEXP '[[:<:]]".$value."[[:>:]]'))";
                 break; 
             case TOKEN_META: 
                 if ($metafield != '') {
-                    $SQLString .= "($metafield $LIKE '%$value%')";
+                    // CMDL-928 fix Oracle case sensitivity
+                    $LIKE = sql_olike($metafield, $value);
+                    $SQLString .= "($LIKE)";
+                    // end CMDL-928
                 }
                 break;
-            case TOKEN_USER: 
-                $SQLString .= "(($mainidfield = $useridfield) AND (($userfirstnamefield $LIKE '%$value%') OR ($userlastnamefield $LIKE '%$value%')))";
+            case TOKEN_USER:
+                // CMDL-928 fix Oracle case sensitivity
+                $LIKE1 = sql_olike($userfirstnamefield, $value);
+                $LIKE2 = sql_olike($userlastnamefield, $value);
+                $SQLString .= "(($mainidfield = $useridfield) AND (($LIKE1) OR ($LIKE2)))";
+                // end CMDL-928
                 break; 
             case TOKEN_USERID: 
                 $SQLString .= "($useridfield = $value)";
@@ -506,8 +515,12 @@ function search_generate_SQL($parsetree, $datafield, $metafield, $mainidfield, $
             case TOKEN_DATEFROM: 
                 $SQLString .= "($timefield >= $value)";
                 break; 
-            case TOKEN_NEGATE: 
-                $SQLString .= "(NOT (($datafield  $LIKE '%$value%') OR ($metafield  $LIKE '%$value%')))";
+            case TOKEN_NEGATE:
+                // CMDL-928 fix Oracle case sensitivity
+                $LIKE1 = sql_olike($datafield, $value);
+                $LIKE2 = sql_olike($metafield, $value);
+                $SQLString .= "(NOT (($LIKE1) OR ($LIKE2)))";
+                // end CMDL-928
                 break; 
             default:
                 return '';

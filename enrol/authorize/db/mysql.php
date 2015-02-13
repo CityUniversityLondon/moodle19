@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: mysql.php,v 1.29.6.1 2008/02/07 16:27:50 ethem Exp $
 
 // THIS FILE IS DEPRECATED!  PLEASE DO NOT MAKE CHANGES TO IT!
 //

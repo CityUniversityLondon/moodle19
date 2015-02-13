@@ -274,6 +274,9 @@ if (!defined('SORT_LOCALE_STRING')) { // PHP < 4.4.0 - TODO: remove in 2.0
     define('SORT_LOCALE_STRING', SORT_STRING);
 }
 
+// CMDL-1175 add bulk upload of feedback
+include('moodlelib_append.php');
+// end CMDL-1175
 
 /// PARAMETER HANDLING ////////////////////////////////////////////////////
 
@@ -3002,7 +3005,7 @@ function create_user_record($username, $password, $auth='manual') {
  * @param string $username New user's username to add to record
  * @return user A {@link $USER} object
  */
-function update_user_record($username, $unused) {
+function update_user_record($username, $authplugin) {
     global $CFG;
 
     $username = trim(moodle_strtolower($username)); /// just in case check text case
@@ -3031,14 +3034,49 @@ function update_user_record($username, $unused) {
                 // nothing_ for this field. Thus it makes sense to let this value
                 // stand in until LDAP is giving a value for this field.
                 if (!(empty($value) && $lockval === 'unlockedifempty')) {
-                    set_field('user', $key, $value, 'id', $oldinfo->id)
-                        || error_log("Error updating $key for $username");
+                    // CMDL-1414 MH change to add custom fields
+                    if(in_array($key, $authplugin->userfields)) {
+                        //if the field modified is one of the standard fields then change it
+                        set_field('user', $key, $value, 'username', $username) || error_log("Error updating $key for $username");
+                    } else if(in_array($key, $authplugin->custom_fields)) {
+                        //if there is no value in the user_info_data then
+                        $info_field = get_record('user_info_field', 'shortname', $key);
+
+                        $userid = get_field('user', 'id', 'username', $username);
+
+                        $data = get_field('user_info_data', 'data', 'userid', $userid, 'fieldid', $info_field->id);
+
+                        if($data === false) {
+                            $data = $info_field->defaultdata;
+                }
+
+                        if(strcmp($data, $value) !== 0) {
+                            $valid = true;
+
+                                //check to make sure that the value we are placing in is a valid one
+                            if(strcmp($info_field->datatype, 'menu') == 0){
+                                $validValues = explode("\n", $info_field->param1);
+                                if(!in_array($value, $validValues)) {
+                                    $valid = false;
+            }
+                            } else if(strcmp($info_field->datatype, 'checkbox') == 0) {
+                                if($value != 1 && $value != 0) {
+                                    $valid = false;
+        }
+    }
+
+                            if($valid) {
+                                set_field('user_info_data', 'data', $value, 'userid', $userid, 'fieldid', $info_field->id);
+                            }
+                        }
+                    }
+                    // end CMDL-1414
                 }
             }
         }
     }
 
-    return get_complete_user_data('username', $username, $CFG->mnet_localhost_id);
+    return get_complete_user_data('username', $username);
 }
 
 function truncate_userinfo($info) {
@@ -4911,12 +4949,19 @@ function get_max_upload_sizes($sitebytes=0, $coursebytes=0, $modulebytes=0) {
     $filesize[$maxsize] = display_size($maxsize);
 
     $sizelist = array(10240, 51200, 102400, 512000, 1048576, 2097152,
-                      5242880, 10485760, 20971520, 52428800, 104857600);
+                      5242880, 8388608, 10485760, 20971520, 52428800, 104857600);
 
     // Allow maxbytes to be selected if it falls outside the above boundaries
     if( isset($CFG->maxbytes) && !in_array($CFG->maxbytes, $sizelist) ){
             $sizelist[] = $CFG->maxbytes;
     }
+
+    // CMDL-1577 Upload limit in my settings (INC0017301)
+    // Allow maxbytes to be selected if it falls outside the above boundaries
+    if( isset($coursebytes) && !in_array($coursebytes, $sizelist) ){
+            $sizelist[] = $coursebytes;
+    }
+    // end CMDL-1577
 
     foreach ($sizelist as $sizebytes) {
        if ($sizebytes < $maxsize) {

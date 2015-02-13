@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: indexlive.php,v 1.1.2.3 2009/12/17 08:03:19 andyjdavis Exp $
       // Display link to live logs in separate window
 
     require_once('../../../config.php');

@@ -1,4 +1,4 @@
-<?php  //$Id$
+<?php  //$Id: environmentlib.php,v 1.27.2.5 2012/05/26 09:40:14 moodlerobot Exp $
 
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
@@ -482,7 +482,6 @@ function environment_check_php_extensions($version) {
         $result->setErrorCode(NO_PHP_EXTENSIONS_SECTION_FOUND);
         return array($result);
     }
-
 /// Hack alert: inject extra mysqli dependency, mysql PHP extension is not supported in Moodle 2.x, warn only ppl using MySQL.
     global $CFG;
     set_dbfamily();
@@ -492,7 +491,6 @@ function environment_check_php_extensions($version) {
             $data['#']['PHP_EXTENSIONS']['0']['#']['PHP_EXTENSION'][] = array('#' => '', '@' => array('name' => 'mysqli', 'level' => 'required'));
         }
     }
-
 /// Iterate over extensions checking them and creating the needed environment_results
     foreach($data['#']['PHP_EXTENSIONS']['0']['#']['PHP_EXTENSION'] as $extension) {
         $result = new environment_results('php_extension');

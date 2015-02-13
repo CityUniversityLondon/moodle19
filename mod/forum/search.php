@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: search.php,v 1.86.2.6 2008/04/14 08:50:58 skodak Exp $
 
     require_once('../../config.php');
     require_once('lib.php');

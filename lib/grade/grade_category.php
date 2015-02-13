@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: grade_category.php,v 1.96.2.31 2010/02/03 02:22:58 andyjdavis Exp $
 
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
@@ -38,8 +38,9 @@ class grade_category extends grade_object {
      */
     var $required_fields = array('id', 'courseid', 'parent', 'depth', 'path', 'fullname', 'aggregation',
                                  'keephigh', 'droplow', 'aggregateonlygraded', 'aggregateoutcomes',
-                                 'aggregatesubcats', 'timecreated', 'timemodified');
-
+                                 // CMDL-1148 add ability to hide category total
+                                 'aggregatesubcats', 'timecreated', 'timemodified', 'hidden');
+                                 // end CMDL-1148
     /**
      * The course this category belongs to.
      * @var int $courseid
@@ -1332,25 +1333,26 @@ class grade_category extends grade_object {
 
         return $result;
     }
-
+// CMDL-1148 add ability to hide category total
     /**
      * Returns the hidden state/date of the associated grade_item. This method is also available in
      * grade_item.
      * @return boolean
      */
-    function is_hidden() {
-        $this->load_grade_item();
-        return $this->grade_item->is_hidden();
-    }
+//    function is_hidden() {
+//        $this->load_grade_item();
+//        return $this->grade_item->is_hidden();
+//    }
 
     /**
      * Check grade hidden status. Uses data from both grade item and grade.
      * @return boolean true if hiddenuntil, false if not
      */
-    function is_hiddenuntil() {
-        $this->load_grade_item();
-        return $this->grade_item->is_hiddenuntil();
-    }
+//    function is_hiddenuntil() {
+//        $this->load_grade_item();
+//        return $this->grade_item->is_hiddenuntil();
+//    }
+// end CMDL-1148
 
     /**
      * Sets the grade_item's hidden variable and updates the grade_item.
@@ -1361,7 +1363,16 @@ class grade_category extends grade_object {
      */
     function set_hidden($hidden, $cascade=false) {
         $this->load_grade_item();
-        $this->grade_item->set_hidden($hidden);
+        // CMDL-1148 add ability to hide category total
+        //this hides the associated grade item (the course total)
+        if ($cascade) {
+            $this->grade_item->set_hidden($hidden, $cascade);
+        }
+        
+        //this hides the category itself and everything it contains
+        parent::set_hidden($hidden, $cascade);
+        // end CMDL-1148
+        
         if ($cascade) {
             if ($children = grade_item::fetch_all(array('categoryid'=>$this->id))) {
                 foreach($children as $child) {

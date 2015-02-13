@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: questiontype.php,v 1.32.2.13 2012/01/12 10:58:51 moodlerobot Exp $
 
 /////////////
 /// MATCH ///
@@ -571,9 +571,11 @@ class question_match_qtype extends default_questiontype {
             //mappings in backup_ids to use them later where restoring states (user level).
 
             //Get the match_sub from DB (by question, questiontext and answertext)
-            $db_match_sub = get_record('question_match_sub', 'question', $new_question_id,
-                    sql_compare_text('questiontext', 255), $match_sub->questiontext,
-                    'answertext', $match_sub->answertext);
+            $db_match_sub = get_record ("question_match_sub","question",$new_question_id,
+                                        // CMDL-1379 fix failure on restore
+					sql_order_by_text('questiontext', $numchars=4000), substr($match_sub->questiontext, 0, 3999),          
+                                        // end CMDL-1379
+                    "answertext",$match_sub->answertext);
             //Do some output
             if (($i+1) % 50 == 0) {
                 if (!defined('RESTORE_SILENTLY')) {

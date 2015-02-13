@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: overview.php,v 1.1.2.3 2008/10/02 15:29:57 poltawski Exp $
 /**
  * Print an overview of groupings & group membership
  *
@@ -60,22 +60,26 @@ if (!$groups = get_records('groups', 'courseid', $courseid, 'name')) {
 
 if (empty($CFG->enablegroupings)) {
     $groupwhere    = $groupid ? "AND g.id = $groupid" : "";
+    // CMDL-1111 fix participant sorts to be case insensitive
     $sql = "SELECT g.id AS groupid, NULL AS groupingid, u.id AS userid, u.firstname, u.lastname, u.idnumber, u.username
               FROM {$CFG->prefix}groups g
                    LEFT JOIN {$CFG->prefix}groups_members gm ON g.id = gm.groupid
                    LEFT JOIN {$CFG->prefix}user u ON gm.userid = u.id
              WHERE g.courseid = {$course->id} $groupwhere
-          ORDER BY g.name, u.lastname, u.firstname";
+          ORDER BY LOWER(g.name), LOWER(u.lastname), LOWER(u.firstname)";
+    // end CMDL-1111
 } else {
     $groupingwhere = $groupingid ? "AND gg.groupingid = $groupingid" : "";
     $groupwhere    = $groupid ? "AND g.id = $groupid" : "";
+    // CMDL-1111 fix participant sorts to be case insensitive
     $sql = "SELECT g.id AS groupid, gg.groupingid, u.id AS userid, u.firstname, u.lastname, u.idnumber, u.username
               FROM {$CFG->prefix}groups g
                    LEFT JOIN {$CFG->prefix}groupings_groups gg ON g.id = gg.groupid
                    LEFT JOIN {$CFG->prefix}groups_members gm ON g.id = gm.groupid
                    LEFT JOIN {$CFG->prefix}user u ON gm.userid = u.id
              WHERE g.courseid = {$course->id} $groupingwhere $groupwhere
-          ORDER BY g.name, u.lastname, u.firstname";
+          ORDER BY LOWER(g.name), LOWER(u.lastname), LOWER(u.firstname)";
+    // end CMDL-1111
 }
 
 if ($rs = get_recordset_sql($sql)) {

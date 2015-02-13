@@ -1,36 +1,48 @@
 <?php
+// CMDL-1085 Redesign Moodle Login Page
+$show_instructions = isset($show_instructions)? $show_instructions : 0;
+
 if ($show_instructions) {
     $columns = 'twocolumns';
 } else {
     $columns = 'onecolumn';
 }
 ?>
-<div class="loginbox clearfix <?php echo $columns ?>">
+<div class="box">
   <div class="loginpanel">
-    <h2><?php print_string("returningtosite") ?></h2>
+    
+    <!-- <h3><?php print_string("returningtosite") ?></h3>    -->
       <div class="subcontent loginsub">
-        <div class="desc">
+<!--        <div class="desc">
           <?php
             print_string("loginusing");
+            helpbutton("login", "logging in");
             if (empty($CFG->usesid)) {
                 echo '<br/>';
-                echo '('.get_string("cookiesenabled").')';
+                echo get_string("cookiesenabled");
                 helpbutton("cookies", get_string("cookiesenabled"));
             }
            ?>
-        </div>
+        </div>-->
+<!-- end CMDL-1085 -->
+
         <?php
           if (!empty($errormsg)) {
               echo '<div class="loginerrors">';
               formerr($errormsg);
               echo '</div>';
           }
+          httpsrequired();
         ?>
         <form action="<?php echo $CFG->httpswwwroot; ?>/login/index.php" method="post" id="login">
           <div class="loginform">
             <div class="form-label"><label for="username"><?php print_string("username") ?></label></div>
             <div class="form-input">
-              <input type="text" name="username" id="username" size="15" value="<?php p($frm->username, true) ?>" />
+
+              <!--CMDL-1085 Redesign Moodle Login Page -->
+              <input type="text" name="username" id="username" size="15" value="<?php p(isset($frm)? $frm->username: '', true) ?>" />
+              <!-- end CMDL-1085 -->
+
             </div>
             <div class="clearer"><!-- --></div>
             <div class="form-label"><label for="password"><?php print_string("password") ?></label></div>
@@ -42,6 +54,13 @@ if ($show_instructions) {
             <div class="clearer"><!-- --></div>
           </div>
         </form>
+
+        <!--CMDL-1085 Redesign Moodle Login Page -->
+        <div class="forgotsub"><div class="desc">
+          <a title="#" href="/help.php?module=moodle&file=login.html" onclick="this.target='popup'; return openpopup('/help.php?module=moodle&file=login.html', 'popup', 'menubar=0,location=0,scrollbars,resizable,width=500,height=400', 0);">Forgotten your username or password?</a>
+        </div></div>
+        <!-- end CMDL-1085 -->
+
       </div>
 
 <?php if ($CFG->guestloginbutton) {  ?>
@@ -60,6 +79,8 @@ if ($show_instructions) {
       </div>
 <?php } ?>
 
+    <!--CMDL-1085 Redesign Moodle Login Page -->
+      <!--
       <div class="subcontent forgotsub">
         <div class="desc">
           <?php print_string("forgotten") ?>
@@ -71,6 +92,9 @@ if ($show_instructions) {
           </div>
         </form>
       </div>
+      -->
+    <!-- end CMDL-1085 -->
+
      </div>
 <?php if ($show_instructions) { ?>
     <div class="signuppanel">

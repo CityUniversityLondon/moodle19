@@ -159,7 +159,7 @@ function search_escape_string($str) {
                 //ugly hack for 1.9 stable ONLY to get it to work for mysqli.
                 $s = mysqli_real_escape_string($db->_connectionID, $str);
             } else {
-                $s = mysql_real_escape_string($str);
+            $s = mysql_real_escape_string($str);
             }
             break;
         case 'postgres':

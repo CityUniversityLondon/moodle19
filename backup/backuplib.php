@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: backuplib.php,v 1.179.2.48 2010/04/23 15:45:19 stronk7 Exp $
     //This file contains all the function needed in the backup utility
     //except the mod-related funtions that are into every backuplib.php inside
     //every mod directory
@@ -572,6 +572,14 @@
         } else {
             fwrite ($bf,full_tag("SITEFILES",3,false,"false"));
         }
+        // CMDL-1314 adding option to exclude section summaries
+        //The section summaries
+        if ($preferences->backup_sectionsummaries == 1) {
+            fwrite ($bf,full_tag("SECTIONSUMMARIES",3,false,"true"));
+        } else {
+            fwrite ($bf,full_tag("SECTIONSUMMARIES",3,false,"false"));
+        }
+        // end CMDL-1314
         //The gradebook histories
         if (empty($CFG->disablegradehistory) && $preferences->backup_gradebook_history == 1) {
             fwrite ($bf,full_tag("GRADEBOOKHISTORIES",3,false,"true"));
@@ -2774,6 +2782,9 @@
         $preferences->backup_course_files = optional_param('backup_course_files',1,PARAM_INT);
         $preferences->backup_gradebook_history = optional_param('backup_gradebook_history', 1, PARAM_INT);
         $preferences->backup_site_files = optional_param('backup_site_files',1,PARAM_INT);
+        // CMDL-1314 adding option to exclude section summaries
+        $preferences->backup_sectionsummaries = optional_param('backup_sectionsummaries',1,PARAM_INT);
+        // end CMDL-1314
         $preferences->backup_messages = optional_param('backup_messages',1,PARAM_INT);
         $preferences->backup_blogs = optional_param('backup_blogs',1,PARAM_INT);
         $preferences->backup_course = $course->id;

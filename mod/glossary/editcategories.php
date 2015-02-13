@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: editcategories.php,v 1.41.2.2 2010/10/10 10:21:28 skodak Exp $
 
 /// This page allows to edit entries categories for a particular instance of glossary
 
@@ -139,8 +139,9 @@
 
     } elseif ( $action == "add" ) {
         if ( $confirm ) {
-            $ILIKE = sql_ilike();
-            $dupcategory = get_records_sql("SELECT * FROM {$CFG->prefix}glossary_categories WHERE name $ILIKE '$name' AND glossaryid=$glossary->id");
+            // CMDL-928 fix Oracle case sensitivity
+            $dupcategory = get_records_sql("SELECT * FROM {$CFG->prefix}glossary_categories WHERE " . sql_olike('name', $name) . " AND glossaryid=$glossary->id");
+            // end CMDL-928
             if ( $dupcategory ) {
                 echo "<p style=\"text-align:center\">" . get_string("add"). " " . get_string("category","glossary");
 

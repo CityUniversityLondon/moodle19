@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: assignment.class.php,v 1.33.2.6 2009/11/20 08:25:32 skodak Exp $
 
 /**
  * Extend the base assignment class for assignments where you upload a single file
@@ -172,7 +172,9 @@ class assignment_uploadsingle extends assignment_base {
 
         $mform->addElement('select', 'emailteachers', get_string("emailteachers", "assignment"), $ynoptions);
         $mform->setHelpButton('emailteachers', array('emailteachers', get_string('emailteachers', 'assignment'), 'assignment'));
-        $mform->setDefault('emailteachers', 0);
+        // CMDL-1141 fix emails sent to roles above teacher
+        $mform->setAdvanced('emailteachers', 0);
+        // end CMDL-1141
 
         $choices = get_max_upload_sizes($CFG->maxbytes, $COURSE->maxbytes);
         $choices[0] = get_string('courseuploadlimit') . ' ('.display_size($COURSE->maxbytes).')';
@@ -180,6 +182,86 @@ class assignment_uploadsingle extends assignment_base {
         $mform->setDefault('maxbytes', $CFG->assignment_maxbytes);
 
     }
+
+  // CMDL-1175 add bulk upload of feedback
+  function download_submissions() {
+	        global $CFG;
+
+	        $submissions = $this->get_submissions('','');
+
+	        $filesforzipping = array();
+	        $filesnewname = array();
+	        $desttemp = "";
+
+	        //create prefix of new filename
+		$filenewname = clean_filename($this->assignment->name. "_");
+		$course     = $this->course;
+		$assignment = $this->assignment;
+		$cm         = $this->cm;
+		$context    = get_context_instance(CONTEXT_MODULE, $cm->id);
+		$groupmode = groupmode($course,$cm);
+		$groupid = 0;	// All users
+		if($groupmode) $groupid = get_current_group($course->id, $full = false);
+		$count = 0;
+
+	        foreach ($submissions as $submission) {
+		$a_userid = $submission->userid; //get userid
+		if ( (groups_is_member( $groupid,$a_userid)or !$groupmode or !$groupid)) {
+		$count = $count + 1;
+
+			    $a_assignid = $submission->assignment; //get name of this assignment for use in the file names.
+
+			    $a_user = get_complete_user_data("id", $a_userid); //get user
+
+	            $filearea = $this->file_area_name($a_userid);
+
+			    $desttemp = $CFG->dataroot . "/" . substr($filearea, 0, strrpos($filearea, "/")). "/temp/"; //get temp directory name
+
+			    if (!file_exists($desttemp)) { //create temp dir if it doesn't already exist.
+			        mkdir($desttemp);
+			    }
+
+	            if ($basedir = $this->file_area($a_userid)) {
+	                if ($files = get_directory_list($basedir)) {
+	                    foreach ($files as $key => $file) {
+	                        require_once($CFG->libdir.'/filelib.php');
+
+	                        //get files new name.
+	                        $filesforzip = $desttemp . $a_user->firstname ."_". $a_user->lastname  . "_" . $a_user->username . "_" . $filenewname . $file;
+
+	                        //get files old name
+	                        $fileold = $CFG->dataroot . "/" . $filearea . "/" . $file;
+
+	                        if (!copy($fileold, $filesforzip)) {
+						        error ("failed to copy file<br>" . $filesforzip . "<br>" .$fileold);
+						    }
+
+	                        //save file name to array for zipping.
+	                        $filesforzipping[] = $filesforzip;
+	                    }
+	                }
+	            }
+	        }   }     // End of foreach
+
+	        //zip files
+	        $filename = "assignment.zip"; //name of new zip file.
+	        if ($count) zip_files($filesforzipping, $desttemp.$filename);
+		// skip if no files zipped
+	        //delete old temp files
+	        foreach ($filesforzipping as $filefor) {
+			   unlink($filefor);
+	        }
+
+	        //send file to user.
+	        if (file_exists($desttemp.$filename)) {
+	           header ("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+	           header ("Content-Type: application/octet-stream");
+	           header ("Content-Length: " . filesize($desttemp.$filename));
+	           header ("Content-Disposition: attachment; filename=$filename");
+		       readfile($desttemp.$filename);
+	        }
+	    }
+// end CMDL-1175
 
 }
 

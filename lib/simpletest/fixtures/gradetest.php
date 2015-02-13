@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: gradetest.php,v 1.23.2.3 2008/04/02 06:36:36 nicolasconnault Exp $
 
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
@@ -105,7 +105,7 @@ class grade_test extends UnitTestCase {
         }
 
         if (!$this->prepare_test_history_tables()) {
-            die("Could not create all the test tables!");
+            die("Could not create all the test history tables!");
         }
 
         foreach ($this->tables as $table) {

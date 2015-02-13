@@ -1,4 +1,4 @@
-<?php /// $Id$
+<?php /// $Id: multilangupgrade.php,v 1.6 2007/10/10 12:19:40 skodak Exp $
       /// Search and replace strings throughout all texts in the whole database
 
 require_once('../config.php');

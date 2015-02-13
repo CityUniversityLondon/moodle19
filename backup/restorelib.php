@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: restorelib.php,v 1.283.2.98 2011/10/19 19:39:26 moodlerobot Exp $
     //Functions used in restore
 
     require_once($CFG->libdir.'/gradelib.php');
@@ -203,7 +203,7 @@ define('RESTORE_GROUPS_GROUPINGS', 3);
     /**
      * This function decodes some well-know links to course
      */
-    function course_decode_content_links($content, $restore) {
+     function course_decode_content_links($content, $restore) {
 
         global $CFG;
 
@@ -232,8 +232,8 @@ define('RESTORE_GROUPS_GROUPINGS', 3);
         }
 
         return $content;
-    }
-
+        }
+ 
     //This function is called from all xxxx_decode_content_links_caller(),
     //its task is to ask all modules (maybe other linkable objects) to restore
     //links to them.
@@ -657,6 +657,16 @@ define('RESTORE_GROUPS_GROUPINGS', 3);
                 $tab[$elem][1] = get_string("no");
             }
             $elem++;
+            // CMDL-1314 adding option to exclude section summaries
+            //sections info
+            $tab[$elem][0] = "<b>".get_string("sectionsummaries").":</b>";
+            if (!isset($info->backup_sectionsummaries) ||(isset($info->backup_sectionsummaries) && $info->backup_sectionsummaries == "true")) {
+                $tab[$elem][1] = get_string("yes");
+            } else {
+                $tab[$elem][1] = get_string("no");
+            }
+            $elem++;
+            // end CMDL-1314
             //gradebook history info
             $tab[$elem][0] = "<b>".get_string('gradebookhistories', 'grades').":</b>";
             if (isset($info->gradebook_histories) && $info->gradebook_histories == "true") {
@@ -1462,7 +1472,9 @@ define('RESTORE_GROUPS_GROUPINGS', 3);
                 $section = new object();
                 $section->course = $restore->course_id;
                 $section->section = $sect->number;
-                $section->summary = backup_todb($sect->summary);
+                // CMDL-1314 adding option to exclude section summaries
+                $section->summary = $restore->sectionsummaries? backup_todb($sect->summary): '';
+                // end CMDL-1314
                 $section->visible = $sect->visible;
                 $section->sequence = "";
                 //Now calculate the section's newid
@@ -1474,8 +1486,10 @@ define('RESTORE_GROUPS_GROUPINGS', 3);
                     //Get section id when restoring in existing course
                     $rec = get_record("course_sections","course",$restore->course_id,
                                                         "section",$section->section);
-                    //If section exists, has empty summary and backup has some summary, use it. MDL-8848
-                    if ($rec && empty($rec->summary) && !empty($section->summary)) {
+                    // CMDL-1314 adding option to exclude section summaries
+                    //If section exists, has empty summary, sections were selected and backup has some summary, use it. MDL-8848
+                    if ($rec && empty($rec->summary) && $restore->sectionsummaries && !empty($section->summary)) {
+                    // end CMDL-1314
                         $rec->summary = $section->summary;
                         update_record("course_sections", $rec);
                     }
@@ -5655,6 +5669,11 @@ define('RESTORE_GROUPS_GROUPINGS', 3);
                             case "SITEFILES":
                                 $this->info->backup_site_files = $this->getContents();
                                 break;
+                            // CMDL-1314 adding option to exclude section summaries
+                            case "SECTIONSUMMARIES":
+                                $this->info->backup_sectionsummaries = $this->getContents();
+                                break;
+                            // end CMDL-1314
                             case "GRADEBOOKHISTORIES":
                                 $this->info->gradebook_histories = $this->getContents();
                                 break;
@@ -8147,6 +8166,9 @@ define('RESTORE_GROUPS_GROUPINGS', 3);
         // we set these from restore object on silent restore and from info (backup) object on import
         $restore->course_files = isset($SESSION->restore->restore_course_files) ? $SESSION->restore->restore_course_files : $SESSION->info->backup_course_files;
         $restore->site_files = isset($SESSION->restore->restore_site_files) ? $SESSION->restore->restore_site_files : $SESSION->info->backup_site_files;
+        // CMDL-1314 adding option to exclude section summaries
+        $restore->sectionsummaries = isset($SESSION->restore->restore_sectionsummaries) ? $SESSION->restore->restore_sectionsummaries : $SESSION->info->backup_sectionsummaries;
+        // end CMDL-1314
         if ($allmods = get_records("modules")) {
             foreach ($allmods as $mod) {
                 $modname = $mod->name;

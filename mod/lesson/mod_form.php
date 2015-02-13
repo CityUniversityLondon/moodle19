@@ -1,9 +1,9 @@
-<?php  // $Id$
+<?php  // $Id: mod_form.php,v 1.20.2.4 2008/11/26 14:30:22 thepurpleblob Exp $
 /**
  * Form to define a new instance of lesson or edit an instance.
  * It is used from /course/modedit.php.
  *
- * @version $Id$
+ * @version $Id: mod_form.php,v 1.20.2.4 2008/11/26 14:30:22 thepurpleblob Exp $
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package lesson
  **/

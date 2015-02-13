@@ -1,4 +1,4 @@
-<?PHP // $Id$
+<?PHP // $Id: format.php,v 1.12.4.18 2012/05/19 11:04:54 moodlerobot Exp $
 ////////////////////////////////////////////////////////////////////////////
 /// Hotpotatoes 5.0 and 6.0 Format
 ///
@@ -42,7 +42,7 @@ class qformat_hotpot extends qformat_default {
                 break;
             default:
                 // shouldn't happen !!
-                $courseid = 0;
+                $courseid = 0; 
         }
         require_once($CFG->libdir.'/filelib.php');
         $baseurl = get_file_url($courseid).'/';
@@ -149,8 +149,8 @@ class qformat_hotpot extends qformat_default {
                 $question->usecase = 0; // Ignore case
                 $question->image = "";  // No images with this format
             }
-
             $question->qtype = MULTIANSWER;
+
             $question->name = $this->hotpot_get_title($xml, $x);
             $question->questiontext = '';
 
@@ -197,7 +197,7 @@ class qformat_hotpot extends qformat_default {
                     $gap_count ++;
                     $positionkey = $q+1;
                     $gap = '{#'.$positionkey.'}';
-
+        
                     // initialize answer settings
                     if ($moodle_14) {
                         $question->answers[$q]->positionkey = $positionkey;
@@ -223,7 +223,7 @@ class qformat_hotpot extends qformat_default {
                         // array of answers
                         $answers = array();
                     }
-
+        
                     // add answers
                     if ($dropdownlist) {
 
@@ -260,31 +260,30 @@ class qformat_hotpot extends qformat_default {
                             }
                         }
                     } else {
-                        $a = 0;
-                        while (($answer=$question_record."['answer'][$a]['#']") && $xml->xml_value($tags, $answer)) {
-                            $text = $this->hotpot_prepare_str($xml->xml_value($tags,  $answer."['text'][0]['#']"));
-                            $correct = $xml->xml_value($tags,  $answer."['correct'][0]['#']");
-                            $feedback = $this->hotpot_prepare_str($xml->xml_value($tags,  $answer."['feedback'][0]['#']"));
-                            if (strlen($text)) {
-                                // set score (0=0%, 1=100%)
-                                $fraction = empty($correct) ? 0 : 1;
-                                // store answer
-                                if ($moodle_14) {
-                                    $question->answers[$q]->alternatives[$a] = new stdClass();
-                                    $question->answers[$q]->alternatives[$a]->answer = $text;
-                                    $question->answers[$q]->alternatives[$a]->fraction = $fraction;
-                                    $question->answers[$q]->alternatives[$a]->feedback = $feedback;
-                                } else {
-                                    $wrapped->answer[] = $text;
-                                    $wrapped->fraction[] = $fraction;
-                                    $wrapped->feedback[] = $feedback;
-                                    $answers[] = (empty($fraction) ? '' : '=').$text.(empty($feedback) ? '' : ('#'.$feedback));
-                                }
+                    $a = 0;
+                    while (($answer=$question_record."['answer'][$a]['#']") && $xml->xml_value($tags, $answer)) {
+                        $text = $this->hotpot_prepare_str($xml->xml_value($tags,  $answer."['text'][0]['#']"));
+                        $correct = $xml->xml_value($tags,  $answer."['correct'][0]['#']");
+                        $feedback = $this->hotpot_prepare_str($xml->xml_value($tags,  $answer."['feedback'][0]['#']"));
+                        if (strlen($text)) {
+                            // set score (0=0%, 1=100%)
+                            $fraction = empty($correct) ? 0 : 1;
+                            // store answer
+                            if ($moodle_14) {
+                                $question->answers[$q]->alternatives[$a] = new stdClass();
+                                $question->answers[$q]->alternatives[$a]->answer = $text;
+                                $question->answers[$q]->alternatives[$a]->fraction = $fraction;
+                                $question->answers[$q]->alternatives[$a]->feedback = $feedback;
+                            } else {
+                                $wrapped->answer[] = $text;
+                                $wrapped->fraction[] = $fraction;
+                                $wrapped->feedback[] = $feedback;
+                                $answers[] = (empty($fraction) ? '' : '=').$text.(empty($feedback) ? '' : ('#'.$feedback));
                             }
-                            $a++;
                         }
+                        $a++;
                     }
-
+                    }
                     // compile answers into question text, if necessary
                     if ($moodle_14) {
                         // do nothing
@@ -293,7 +292,6 @@ class qformat_hotpot extends qformat_default {
                         $question->options->questions[] = $wrapped;
                     }
                 } // end if gap
-
                 if (strlen($questiontext) || strlen($gap)) {
                     if ($startwithgap) {
                         $question->questiontext .= $gap.$questiontext;
@@ -303,7 +301,6 @@ class qformat_hotpot extends qformat_default {
                 } else {
                     $looping = false;
                 }
-
                 $q++;
             } // end while $looping
 
@@ -595,7 +592,7 @@ class qformat_hotpot extends qformat_default {
                     $a++;
                 }
                 if ($correct_answers_all_zero) {
-                    // correct answers all have score of 0%,
+                    // correct answers all have score of 0%, 
                     // so reset score for correct answers 100%
                     foreach ($correct_answers as $aa) {
                         $question->fraction[$aa] = 1;
@@ -679,7 +676,7 @@ function hotpot_charcode_to_utf8($charcode) {
         return chr(($charcode >> 0x12) + 0xF0).chr((($charcode >> 0x0C) & 0x3F) + 0x80).chr((($charcode >> 0x06) & 0x3F) + 0x80).chr(($charcode & 0x3F) + 0x80);
     }
     // unidentified char code !!
-    return ' ';
+    return ' '; 
 }
 
 function hotpot_convert_relative_urls($str, $baseurl, $filename) {

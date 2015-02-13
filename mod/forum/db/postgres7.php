@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: postgres7.php,v 1.52 2006/10/26 22:46:07 stronk7 Exp $
 
 // THIS FILE IS DEPRECATED!  PLEASE DO NOT MAKE CHANGES TO IT!
 //
@@ -228,9 +228,13 @@ function forum_upgrade($oldversion) {
     
   if ($oldversion < 2006082700) {
       $sql = "UPDATE {$CFG->prefix}forum_posts SET message = REPLACE(message, '".TRUSTTEXT."', '');";
-      $likecond = sql_ilike()." '%".TRUSTTEXT."%'";
+      // CMDL-928 fix Oracle case sensitivity
+      $likecond = sql_olike('message', TRUSTTEXT);
+      // end CMDl-928
       while (true) {
-          if (!count_records_select('forum_posts', "message $likecond")) {
+          // CMDL-928 fix Oracle case sensitivity
+          if (!count_records_select('forum_posts', $likecond)) {
+          // end CMDL-928
               break;
           }
           execute_sql($sql);

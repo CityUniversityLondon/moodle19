@@ -141,7 +141,7 @@ class mnet_xmlrpc_client {
                 $id_list .= ', '.$CFG->mnet_all_hosts_id;
             }
 
-            // At this point, we don't care if the remote host implements the 
+            // At this point, we don't care if the remote host implements the
             // method we're trying to call. We just want to know that:
             // 1. The method belongs to some service, as far as OUR host knows
             // 2. We are allowed to subscribe to that service on this mnet_peer
@@ -186,6 +186,7 @@ class mnet_xmlrpc_client {
         curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: text/xml charset=UTF-8"));
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:')); //CUL CMDL-1778: Workaround for squid 'Expect-100' header incompatibility.
 
         $timestamp_send    = time();
         $this->rawresponse = curl_exec($ch);

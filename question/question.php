@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: question.php,v 1.49.2.5 2009/11/19 17:59:55 tjhunt Exp $
 /**
  * Page for editing questions using the new form library.
  *
@@ -59,6 +59,13 @@ if ($id) {
 } else {
     print_error('notenoughdatatoeditaquestion', 'question', $returnurl);
 }
+
+// CMDL-1356 WIRIS plugin
+/**** start WIRIS Plugin ****/
+if (array_key_exists($question->qtype . "wiris", $QTYPES))
+$question->qtype = $question->qtype . "wiris";
+/**** end WIRIS Plugin ****/
+// end CMDL-1356
 
 // Validate the question category.
 if (!$category = get_record('question_categories', 'id', $question->category)) {

@@ -1,4 +1,4 @@
-<?php  //$Id$
+<?php  //$Id: edit_form.php,v 1.37.2.20 2010/05/13 01:40:36 moodler Exp $
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
@@ -158,7 +158,11 @@ class course_edit_form extends moodleform {
         $mform->setHelpButton('showreports', array('coursereports', get_string('activityreport')), true);
         $mform->setDefault('showreports', $courseconfig->showreports);
 
+        // CMDL-1577 Upload limit in my settings (INC0017301)
         $choices = get_max_upload_sizes($CFG->maxbytes);
+        //$choices = get_max_upload_sizes($CFG->maxbytes, $course->maxbytes);
+        // end CMDL-1577
+
         $mform->addElement('select', 'maxbytes', get_string('maximumupload'), $choices);
         $mform->setHelpButton('maxbytes', array('courseuploadsize', get_string('maximumupload')), true);
         $mform->setDefault('maxbytes', $courseconfig->maxbytes);
@@ -183,6 +187,12 @@ class course_edit_form extends moodleform {
                 ((empty($course->metacourse)) ? $meta[0] : $meta[1]) . " - $disable_meta ");
             $mform->setHelpButton('nometacourse', array('metacourse', get_string('metacourse')), true);
         }
+        
+        // CMDL-1367 new option to allow turning on/off of scheduled backup
+        $mform->addElement('selectyesno', 'autobackup', get_string('autobackup'));
+        $mform->setHelpButton('autobackup', array('courseautobackup', get_string('autobackup')), true);
+        $mform->setDefault('autobackup', $courseconfig->autobackup);
+        // end CMDL-1367
 
 //--------------------------------------------------------------------------------
         $mform->addElement('header','enrolhdr', get_string('enrolments'));
@@ -233,7 +243,7 @@ class course_edit_form extends moodleform {
         $radio[] = &MoodleQuickForm::createElement('radio', 'enrollable', null, get_string('enroldate'), 2);
         $mform->addGroup($radio, 'enrollable', get_string('enrollable'), ' ', false);
         $mform->setHelpButton('enrollable', array('courseenrollable2', get_string('enrollable')), true);
-        $mform->setDefault('enrollable', 1);
+        $mform->setDefault('enrollable', 0);
 
         $enroldatestartgrp = array();
         $enroldatestartgrp[] = &MoodleQuickForm::createElement('date_selector', 'enrolstartdate');
@@ -284,6 +294,15 @@ class course_edit_form extends moodleform {
         $mform->setHelpButton('expirythreshold', array('expirythreshold', get_string('expirythreshold')), true);
         $mform->setDefault('expirythreshold', 10 * 86400);
 
+        // ALAN...
+//--------------------------------------------------------------------------------
+        if (!empty($CFG->enrolmaxenabled)) {
+        $mform->addElement('header','', get_string('enrolmaxheader'));
+
+        $mform->addElement('text', 'enrolmax', get_string('enrolmax'), 'size="4"'); // Maximum number of students allowed on this course
+        $mform->setHelpButton('enrolmax', array('enrolmax', get_string('enrolmax')), true);
+        $mform->setDefault('enrolmax', '0');
+        } // END ALAN
 //--------------------------------------------------------------------------------
         $mform->addElement('header','', get_string('groups', 'group'));
 
@@ -490,6 +509,11 @@ class course_edit_form extends moodleform {
             }
         }
 
+        if (!empty($CFG->enrolmaxenabled)) { // ALAN...
+            if (!preg_match('/^[0-9]+$/', $data['enrolmax'])) {
+                $errors['enrolmax'] = get_string('enrolmaxerror');
+            }
+        } // END ALAN
         return $errors;
     }
 }

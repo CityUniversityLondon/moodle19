@@ -1,4 +1,4 @@
-<?PHP // $Id$
+<?PHP // $Id: gradeimport_xml.php,v 1.5.2.1 2008/01/10 15:38:47 tjhunt Exp $
 
 $string['errbadxmlformat'] = 'Error - bad XML format';
 $string['errduplicateidnumber'] = 'Error - duplicate idnumber';

@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: user_bulk_message.php,v 1.2.2.1 2007/11/13 09:02:12 skodak Exp $
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/message/lib.php');

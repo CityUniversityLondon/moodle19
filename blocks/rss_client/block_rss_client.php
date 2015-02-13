@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: block_rss_client.php,v 1.77.2.8 2008/07/24 21:58:08 skodak Exp $
 
 /*******************************************************************
 * This file contains one class which defines a block for display on
@@ -6,7 +6,7 @@
 * of a remote RSS news feed in your web site.
 *
 * @author Daryl Hawes
-* @version  $Id$
+* @version  $Id: block_rss_client.php,v 1.77.2.8 2008/07/24 21:58:08 skodak Exp $
 * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
 * @package base
 ******************************************************************/
@@ -178,10 +178,11 @@
         $returnstring = '';
         $now = time();
         require_once($CFG->libdir .'/rsslib.php');
-        require_once(MAGPIE_DIR .'rss_fetch.inc');
-        if (!defined('MAGPIE_OUTPUT_ENCODING')) {
-            define('MAGPIE_OUTPUT_ENCODING', 'utf-8');  // see bug 3107
-        }
+        //require_once(MAGPIE_DIR .'rss_fetch.inc');
+        require_once($CFG->libdir . '/rsslib_ext.php');
+//        if (!defined('MAGPIE_OUTPUT_ENCODING')) {
+//            define('MAGPIE_OUTPUT_ENCODING', 'utf-8');  // see bug 3107
+//        }
 
         $rss_record = get_record('block_rss_client', 'id', $rssid);
         if (isset($rss_record) && isset($rss_record->id)) {

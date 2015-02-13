@@ -1,4 +1,4 @@
-<?PHP //$Id$
+<?PHP //$Id: delete.php,v 1.13.4.2 2008/05/02 04:07:27 dongsheng Exp $
 
 // Deletes the moodledata directory, COMPLETELY!!
 // BE VERY CAREFUL USING THIS!

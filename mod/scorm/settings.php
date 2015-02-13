@@ -1,4 +1,4 @@
-<?php  //$Id$
+<?php  //$Id: settings.php,v 1.1.2.6 2008/12/04 03:26:24 piers Exp $
 
 require_once($CFG->dirroot . '/mod/scorm/locallib.php');
 

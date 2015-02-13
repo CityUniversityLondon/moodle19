@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: moodle_wikidump.php,v 1.12.4.3 2009/05/10 15:27:35 stronk7 Exp $
 # ToDo: Binary Content
 #       Binary Linking
 /*

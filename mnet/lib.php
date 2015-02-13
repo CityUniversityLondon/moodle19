@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: lib.php,v 1.16.2.15 2011/11/18 01:18:51 moodlerobot Exp $
 /**
  * Library functions for mnet
  *

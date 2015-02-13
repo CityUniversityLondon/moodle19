@@ -1,4 +1,4 @@
-<?PHP  //$Id$
+<?PHP  //$Id: upgrade.php,v 1.154.2.81 2011/08/26 16:22:55 moodlerobot Exp $
 
 // This file keeps track of upgrades to Moodle.
 //
@@ -3300,7 +3300,6 @@ function xmldb_main_upgrade($oldversion=0) {
         if (index_exists($table, $index)) {
             drop_index($table, $index);
         }
-
         // MDL-21011 bring down course sort orders away from maximum values
         $sql = "SELECT id, category, sortorder from {$CFG->prefix}course
                 ORDER BY sortorder ASC;";
@@ -3389,7 +3388,28 @@ function xmldb_main_upgrade($oldversion=0) {
         upgrade_main_savepoint($result, 2007101591.05);
     }
 
+    // ALAN
+    if ($result) {
+        if (empty($CFG->enrolmaxenabled)) { // Verify that max_enrolment has not already been installed
 
+        /// Define field name to be added to course
+            $table = new XMLDBTable('course');
+            $field = new XMLDBField('enrolmax');
+            $field->setAttributes(XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, '0', 'defaultrole');
+
+        /// Launch add field name
+            $result = $result && add_field($table, $field);
+
+            if ($result) {
+                set_config('enrolmaxenabled', '1');
+                notify('Added enrolmax field to course table.', 'notifysuccess');
+            }
+        }
+        else {
+            notify('enrolmax field was previously added to course table.', 'notifysuccess');
+        }
+    }
+    // END ALAN
     return $result;
 }
 

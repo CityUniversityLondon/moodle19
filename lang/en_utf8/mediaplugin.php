@@ -1,4 +1,4 @@
-<?PHP // $Id$
+<?PHP // $Id: mediaplugin.php,v 1.3.6.2 2011/01/19 13:31:52 moodlerobot Exp $
       // mediaplugin.php - created with Moodle 1.7 beta + (2006101003)
 
 

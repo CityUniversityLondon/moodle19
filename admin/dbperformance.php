@@ -1,4 +1,4 @@
-<?PHP  // $Id$
+<?PHP  // $Id: dbperformance.php,v 1.9.2.1 2008/05/02 04:07:27 dongsheng Exp $
        // dbperformance.php - shows latest ADOdb stats for the current server
 
     require_once('../config.php');

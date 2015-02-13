@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: auth.php,v 1.27.2.22 2011/11/15 11:30:58 moodlerobot Exp $
 
 /**
  * @author Martin Dougiamas
@@ -312,7 +312,13 @@ class auth_plugin_mnet extends auth_plugin_base {
             $remoteuser->firstaccess = time(); // First time user in this server, grab it here
             $remoteuser->confirmed = 1;
 
-            if (!$remoteuser->id =  insert_record('user', addslashes_recursive($remoteuser))) {
+            //CUL CMDL-1779: Workaround for M1.9/M2.n {user}.picture datatype difference.
+            //...although this should never occur here, as we _should_ only be updating and not inserting!
+            if (is_numeric($remoteuser->picture) && ($remoteuser->picture > 0)) {
+                $remoteuser->picture = 1;
+            }
+
+            if (!$remoteuser->id = insert_record('user', addslashes_recursive($remoteuser))) {
                 print_error('databaseerror', 'mnet');
             }
             $firsttime = true;
@@ -364,6 +370,7 @@ class auth_plugin_mnet extends auth_plugin_base {
                 }
             }
 
+
             if($key == 'myhosts') {
                 $localuser->mnet_foreign_host_array = array();
                 foreach($val as $rhost) {
@@ -385,6 +392,11 @@ class auth_plugin_mnet extends auth_plugin_base {
         $localuser->mnethostid = $remotepeer->id;
         if (empty($localuser->firstaccess)) { // Now firstaccess, grab it here
             $localuser->firstaccess = time();
+        }
+
+        //CUL CMDL-1779: Workaround for M1.9/M2.n {user}.picture datatype difference.
+        if (is_numeric($localuser->picture) && ($localuser->picture > 0)) {
+            $localuser->picture = 1;
         }
 
         $bool = update_record('user', addslashes_recursive($localuser));

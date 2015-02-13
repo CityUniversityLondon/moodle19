@@ -1,4 +1,4 @@
-<?PHP // $Id$
+<?PHP // $Id: quiz.php,v 1.83.2.15 2009/09/30 10:58:03 tjhunt Exp $
 
 $string['1day'] = '1 Day';
 $string['1hour'] = '1 Hour';
@@ -459,6 +459,26 @@ $string['reattemptquiz'] = 'Re-attempt quiz';
 $string['recentlyaddedquestion'] = 'Recently added question!';
 $string['recurse'] = 'Display questions from sub-categories too';
 $string['regrade'] = 'Regrade all attempts';
+// CMDL-1268 add prompt to regrade link
+$string['regradecheck'] = 'Regrade quiz?';
+$string['regradecheckfull'] = 'Regrade quiz?</h2>
+                               <p>
+                               Regrading will update the scores for all students on all questions for this quiz.
+                               Do not use the regrade link if students are taking the quiz. Be sure you want to 
+                               recalculate the quiz. You can regrade the quiz as many times as you want.
+                               </p><p>
+                               Regrade is used to force Moodle to recalculate points awarded for correct and incorrect 
+                               responses to quiz questions after the quiz has been taken by students. It is used 
+                               when the teacher changes a score or evaluation of a question after the Quiz has been 
+                               completed by one or more students.
+                               </p><p>
+                               IMPORTANT! If quiz settings are changed prior to regrading, the new grades will reflect the changes.
+                               For example, changing a due date could result in 0 grades for students that are now deemed
+                               to have submitted late answers.
+                               </p><p>
+                               This process can take some time.
+                               </p><h2>';
+// end CMDL-1268
 $string['regradecomplete'] = 'All attempts have been regraded';
 $string['regradecount'] = '$a->changed out of $a->attempt grades were changed';
 $string['regradedisplayexplanation'] = 'Attempts that change during regrading are displayed as hyperlinks to the question review window';
@@ -612,5 +632,7 @@ $string['xmltypeunsupported'] = 'Question type $a is not supported by xml import
 $string['youneedtoenrol'] = 'You need to enrol in this course before you can attempt this quiz';
 $string['yourfinalgradeis'] = 'Your final grade for this quiz is $a.';
 $string['zerosignificantfiguresnotallowed'] = 'The correct answer cannot have zero significant figures!';
-
+// CMDL-1152
+$string['respondusqti'] = 'Respondus QTI format';
+// end CMDL-1152
 ?>

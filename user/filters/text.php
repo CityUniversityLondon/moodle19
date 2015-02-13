@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: text.php,v 1.1.2.2 2007/12/11 13:01:13 nfreear Exp $
 
 require_once($CFG->dirroot.'/user/filters/lib.php');
 
@@ -83,25 +83,9 @@ class user_filter_text extends user_filter_type {
             return '';
         }
 
-        $ilike = sql_ilike();
-
-        switch($operator) {
-            case 0: // contains
-                $res = "$ilike '%$value%'"; break;
-            case 1: // does not contain
-                $res = "NOT $ilike '%$value%'"; break;
-            case 2: // equal to
-                $res = "$ilike '$value'"; break;
-            case 3: // starts with
-                $res = "$ilike '$value%'"; break;
-            case 4: // ends with
-                $res = "$ilike '%$value'"; break;
-            case 5: // empty
-                $res = "=''"; break;
-            default:
-                return '';
-        }
-        return $field.' '.$res;
+        // CMDL-928 fix Oracle case sensitivity
+        return sql_olike($field, $data['value'], $operator);
+        // end CMDL-928
     }
 
     /**

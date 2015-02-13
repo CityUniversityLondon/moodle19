@@ -1,4 +1,4 @@
-<?php //$Id$
+<?php //$Id: group_form.php,v 1.3.2.4 2008/12/29 21:32:36 skodak Exp $
 
 require_once($CFG->dirroot.'/lib/formslib.php');
 
@@ -21,7 +21,7 @@ class group_form extends moodleform {
         $mform->addElement('passwordunmask', 'enrolmentkey', get_string('enrolmentkey', 'group'), 'maxlength="254" size="24"', get_string('enrolmentkey'));
         $mform->setHelpButton('enrolmentkey', array('groupenrolmentkey', get_string('enrolmentkey', 'group')), true);
         $mform->setType('enrolmentkey', PARAM_RAW);
-
+        
         $maxbytes = get_max_upload_file_size($CFG->maxbytes, $COURSE->maxbytes);
 
         if (!empty($CFG->gdversion) and $maxbytes) {

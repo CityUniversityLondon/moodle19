@@ -1,4 +1,4 @@
-<?php  //$Id$
+<?php  //$Id: settings.php,v 1.1.2.3 2008/01/24 20:29:36 skodak Exp $
 
 require_once($CFG->dirroot.'/mod/assignment/lib.php');
 
@@ -13,4 +13,13 @@ $settings->add(new admin_setting_configselect('assignment_itemstocount', get_str
 $settings->add(new admin_setting_configcheckbox('assignment_showrecentsubmissions', get_string('showrecentsubmissions', 'assignment'),
                    get_string('configshowrecentsubmissions', 'assignment'), 1));
 
+// CMDL-1592 Enable send for marking default as no (REQ0026604)
+$settings->add(new admin_setting_configcheckbox('assignment_trackdrafts', get_string('trackdrafts', 'assignment'),
+                   get_string('configtrackdrafts', 'assignment'), 1));
+// end CMDL-1592
+
+// CMDL-1620 Change default setting in Moodle Assignments (REQ0031559)
+$settings->add(new admin_setting_configtext('assignment_allowmaxfiles', get_string('allowmaxfiles', 'assignment'),
+                   get_string('configallowmaxfiles', 'assignment'), 1, PARAM_INT));
+// end CMDL-1620
 ?>

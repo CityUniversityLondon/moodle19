@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: f_fixhtml.php,v 1.7 2007/05/08 16:12:10 poltawski Exp $
 
 /*
    This filter plugin implements minimal html tag balancing, and can also

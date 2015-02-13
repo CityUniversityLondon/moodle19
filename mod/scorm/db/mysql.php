@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: mysql.php,v 1.33.6.1 2011/08/30 23:43:20 moodlerobot Exp $
 
 // THIS FILE IS DEPRECATED!  PLEASE DO NOT MAKE CHANGES TO IT!
 //
@@ -74,7 +74,7 @@ function scorm_upgrade($oldversion) {
                         KEY userdata (userid, scormid, scoid),
                         KEY id (id)
                     ) ENGINE=MyISAM;",false);
-
+    
         $oldtrackingdata = get_records_select("scorm_sco_users","1","id ASC");
         $oldelements = array ('cmi_core_lesson_location',
                               'cmi_core_lesson_status',

@@ -1,9 +1,9 @@
-<?php // $Id$
+<?php // $Id: locallib.php,v 1.1.2.19 2009/03/02 21:36:50 mudrd8mz Exp $
 
 /**
  * locallib.php - moodle tag local library - output functions
  *
- * @version: $Id$
+ * @version: $Id: locallib.php,v 1.1.2.19 2009/03/02 21:36:50 mudrd8mz Exp $
  * @licence http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package moodlecore
  *

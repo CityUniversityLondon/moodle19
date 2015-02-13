@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: enrol.class.php,v 1.27 2006/09/26 04:38:00 moodler Exp $
 
 /**
 * enrolment_factory is used to "manufacture" an instance of required enrolment plugin.

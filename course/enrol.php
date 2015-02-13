@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: enrol.php,v 1.50.2.2 2011/08/26 16:22:55 moodlerobot Exp $
       // Depending on the current enrolment method, this page
       // presents the user with whatever they need to know when
       // they try to enrol in a course.
@@ -6,6 +6,7 @@
     require_once("../config.php");
     require_once("lib.php");
     require_once("$CFG->dirroot/enrol/enrol.class.php");
+    require_once("../lib/datalib.php"); // ALAN Added for maximum number of student enrolments per course (below)
 
     $id           = required_param('id', PARAM_INT);
     $loginasguest = optional_param('loginasguest', 0, PARAM_BOOL); // hmm, is this still needed?
@@ -25,6 +26,12 @@
 
     if (! $context = get_context_instance(CONTEXT_COURSE, $course->id) ) {
         error("That's an invalid course id");
+    }
+
+/// ALAN Check if course is full
+    if (!empty($course->enrolmax) && (count_course_students($course) >= $course->enrolmax)) {
+      print_header();
+      notice(get_string('enrolcoursefull'), "$CFG->wwwroot/index.php");
     }
 
 /// do not use when in course login as

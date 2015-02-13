@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: field.class.php,v 1.17.2.9 2010/10/25 09:31:10 stronk7 Exp $
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
 // NOTICE OF COPYRIGHT                                                   //
@@ -75,7 +75,9 @@ class data_field_file extends data_field_base {
     }
 
     function generate_sql($tablealias, $value) {
-        return " ({$tablealias}.fieldid = {$this->field->id} AND {$tablealias}.content LIKE '%{$value}%') ";
+        // CMDL-928 fix Oracle case sensitivity
+        return " ({$tablealias}.fieldid = {$this->field->id} AND " . sql_olike($tablealias . 'content', $value) . ") ";
+        // end CMDL-928
     }
 
     function parse_search_field() {

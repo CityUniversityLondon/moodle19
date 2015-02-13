@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: rest.php,v 1.8.6.8 2010/01/20 04:36:23 rwijaya Exp $
        // Provide interface for topics AJAX course formats
 
 require_once('../config.php');
@@ -44,7 +44,9 @@ if (!empty($instanceid)) {
 
 $context = get_context_instance(CONTEXT_COURSE, $course->id);
 require_login($course->id);
-require_capability('moodle/course:update', $context);
+// CMDl-1414 mirror non-ajax code
+require_capability('moodle/course:manageactivities', $context); //
+// end CMDL-1414
 
 if (!empty($CFG->disablecourseajax)) {
     error_log('Course AJAX not allowed');
@@ -257,19 +259,33 @@ switch($req_method) {
                     error_log("Ajax rest.php: This module is missing important code ($modlib)");
                     die;
                 }
-                $deleteinstancefunction = $mod->name."_delete_instance";
 
-                // Run the module's cleanup funtion.
-                if (!$deleteinstancefunction($cm->instance)) {
-                    error_log("Ajax rest.php: Could not delete the $mod->name (instance)");
+                // CMDL-1096 fix problem deleting mods
+                if ($instance = get_record($mod->name, "id", $cm->instance)) {
+                    $deleteinstancefunction = $mod->name."_delete_instance";
+                    // Run the module's cleanup funtion.
+                    if (!$deleteinstancefunction($cm->instance)) {
+                        error_log("Ajax rest.php: Could not delete the $mod->name (instance)");
+                        die;
+                    }
+                } else {
+                    error_log("Ajax rest.php: The required instance ($cm->instance) of this $mod->name module didn't exist.  Module deleted.");
+
+                }
+
+                // CMDL-1101 fix IE bugs on profile edit page
+                // Delete this module from the course whether an instance exists or not
+                if (!delete_mod_from_section($cm->id, $cm->section)) {
+                    error_log("Ajax rest.php: Could not delete the $mod->name from that section");
                     die;
                 }
-                // Remove the course_modules entry.
                 if (!delete_course_module($cm->id)) {
                     error_log("Ajax rest.php: Could not delete the $mod->modulename (coursemodule)");
                     die;
                 }
-
+                // end CMDL-1101
+                // end CMDl-1096
+           
                 rebuild_course_cache($course->id);
 
                 add_to_log($courseid, "course", "delete mod",

@@ -1,4 +1,4 @@
-<?PHP // $Id$
+<?PHP // $Id: moodle.php,v 1.141.2.86 2011/12/01 17:47:47 moodlerobot Exp $
       // moodle.php - created with Moodle 1.7 beta + (2006101003)
 
 
@@ -128,6 +128,9 @@ $string['assignteachers'] = 'Assign teachers';
 $string['authentication'] = 'Authentication';
 $string['authenticateduser'] = 'Authenticated user';
 $string['authenticateduserdescription'] = 'All logged in users.';
+// CMDL-1367 new option to allow turning on/off of scheduled backup
+$string['autobackup'] = 'Allow scheduled backups?';
+// end CMDL-1367
 $string['autosubscribe'] = 'Forum auto-subscribe';
 $string['autosubscribeno'] = 'No: don\'t automatically subscribe me to forums';
 $string['autosubscribeyes'] = 'Yes: when I post, subscribe me to that forum';
@@ -392,6 +395,9 @@ $string['deleteall'] = 'Delete all';
 $string['deleteallcannotundo'] = 'Delete all - cannot be undone';
 $string['deleteallcomments'] = 'Delete all comments';
 $string['deleteallratings'] = 'Delete all ratings';
+// CMDL-1447 changing alert message for activity deletion
+$string['deleteasscheckfull'] = 'NOTE: This will delete all student submissions and any feedback/grades you may have given to them';
+// end CMDL-1447
 $string['deletecategory'] = 'Delete category: $a';
 $string['deletecategorycheck'] = 'Are you absolutely sure you want to completely delete this category <b>\'$a\'</b>?<br />This will move all courses into the parent category if there is one, or into Miscellaneous.';
 $string['deletecategorycheck2'] = 'If you delete this category, you need to choose what to do with the courses and subcategories it contains.';
@@ -802,7 +808,9 @@ $string['hidesettings'] = 'Hide settings';
 $string['hits'] = 'Hits';
 $string['hitsoncourse'] = 'Hits on $a->coursename by $a->username';
 $string['hitsoncoursetoday'] = 'Today\'s hits on $a->coursename by $a->username';
-$string['home'] = 'Home';
+// CMDL-1692 Add Global Navigation to Moodle
+$string['home'] = 'Moodle Home';
+// end CMDL-1692
 $string['hour'] = 'hour';
 $string['hours'] = 'hours';
 $string['howtomakethemes'] = 'How to make new themes';
@@ -840,6 +848,9 @@ $string['includeneededusers'] = 'Include Needed Users';
 $string['includenoneusers'] = 'Include No Users';
 $string['includeroleassignments'] = 'Include role assignments';
 $string['includesitefiles'] = 'Include Site Files Used in This Course';
+// CMDL-1314 adding option to exclude section summaries
+$string['includesectionsummaries'] = 'Include section summaries';
+// end CMDL-1314
 $string['includeuserfiles'] = 'Include User Files';
 $string['info'] = 'Information';
 $string['institution'] = 'Institution';
@@ -886,7 +897,9 @@ $string['loginalready'] = 'You are already logged in';
 $string['loginas'] = 'Login as';
 $string['loginaspasswordexplain'] = '<p>You must enter the special \"loginas password\" to use this feature.<br />If you do not know it, ask your server administrator.</p>';
 $string['loginguest'] = 'Login as a guest';
-$string['loginsite'] = 'Login to the site';
+// CMDL-1085 Redesign Moodle Login Page
+$string['loginsite'] = 'Login to Moodle';
+// end CMDL-1085
 $string['loginsteps'] = 'Hi! For full access to courses you\'ll need to take
    a minute to create a new account for yourself on this web site.
    Each of the individual courses may also have a one-time
@@ -1015,7 +1028,9 @@ $string['moveup'] = 'Move up';
 $string['msnid'] = 'MSN ID';
 $string['mustchangepassword'] = 'The new password must be different than the current one';
 $string['mustconfirm'] = 'You need to confirm your login';
-$string['mycourses'] = 'My courses';
+// CMDL-1414 ????
+$string['mycourses'] = 'My Courses';
+// end CMDL-1414
 $string['name'] = 'Name';
 $string['namelams'] = 'LAMS';
 $string['namescorm'] = 'SCORM';
@@ -1279,6 +1294,9 @@ $string['rejectdots'] = 'Reject...';
 $string['reload'] = 'Reload';
 $string['remoteappuser'] = 'Remote $a User';
 $string['remove'] = 'Remove';
+// CMDL-1414 ????
+$string['removeall'] = 'Remove all';
+// end CMDL-1414
 $string['removeadmin'] = 'Remove admin';
 $string['removecreator'] = 'Remove course creator';
 $string['removestudent'] = 'Remove student';
@@ -1324,7 +1342,9 @@ $string['restoreusersprecheck'] = 'Checking user data';
 $string['restoreusersprecheckerror'] = 'Some problems were detected when checking user data';
 $string['restricted'] = 'Restricted';
 $string['restrictmodules'] = 'Restrict activity modules?';
-$string['returningtosite'] = 'Returning to this web site?';
+// CMDL-1085 Redesign Moodle Login Page
+$string['returningtosite'] = 'Login to Moodle';
+// end CMDL-1085
 $string['revert'] = 'Revert';
 $string['role'] = 'Role';
 $string['rolemappings'] = 'Role mappings';
@@ -1332,7 +1352,9 @@ $string['rolerenaming'] = 'Role renaming';
 $string['roles'] = 'Roles';
 $string['rss'] = 'RSS';
 $string['rssarticles'] = 'Number of RSS recent articles';
-$string['rsserror'] = 'Error reading RSS data';
+// CMDL-1343 change rss message when there is no feed
+$string['rsserror'] = 'No RSS data';
+// end CMDL-1343
 $string['rsstype'] = 'RSS feed for this activity';
 $string['saveandnext'] = 'Save and show next';
 $string['savechanges'] = 'Save changes';
@@ -1374,6 +1396,10 @@ $string['secretalreadyused'] = 'Change password confirmation link was already us
 $string['secs'] = 'secs';
 $string['section'] = 'Section';
 $string['sections'] = 'Sections';
+// CMDL-1314 adding option to exclude section summaries
+$string['sectionsummaries'] = 'Section summaries';
+$string['sectionsummariesused'] = 'Section summaries used in this course';
+// end CMDL-1314
 $string['seealsostats'] = 'See also: stats';
 $string['select'] = 'Select';
 $string['selectacountry'] = 'Select a country';
@@ -1564,7 +1590,9 @@ $string['unenrol'] = 'Unenrol';
 $string['unenrolroleusers'] = 'Unenrol users';
 $string['unenrolallstudents'] = 'Unenrol all students';
 $string['unenrolallstudentssure'] = 'Are you sure you want to completely unenrol all students from this course?';
-$string['unenrolme'] = 'Unenrol me from $a';
+// CMDL-1414 remove course name from unenrol me link
+$string['unenrolme'] = 'Unenrol me';
+// end CMDL-1414
 $string['unenrolsure'] = 'Are you sure you want to unenrol $a from this course?';
 $string['unfinished'] = 'Unfinished';
 $string['unknowncategory'] = 'Unknown category';
@@ -1719,4 +1747,12 @@ $string['authenticationplugins'] = 'Authentication Plugins';
 $string['chooseauthmethod'] = 'Choose authentication plugin';
 $string['nocourses'] = 'No courses';
 $string['requestedcourses'] = 'Requested courses';
+$string['availableenrolments'] = 'Available places';                // ALAN
+$string['availableenrolmentsnone'] = 'NO Available places';         // ALAN
+$string['availableenrolmentsunlimited'] = 'Unlimited';              // ALAN
+$string['enrolcoursefull'] = 'Sorry, the number of enrolments on this course has reached the maximum limit set. This course is full.'; // ALAN
+$string['enrolmax'] = 'Maximum enrolled students';                  // ALAN
+$string['enrolmaxerror'] = 'Maximum enrolled students must be a non-negative number with no spaces'; // ALAN
+$string['enrolmaxheader'] = 'Enrolment - Limit number of students'; // ALAN
+$string['enrolmaxshort'] = 'Maximum students';                      // ALAN
 ?>

@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: jsupdate.php,v 1.32.2.5 2008/10/14 08:38:26 dongsheng Exp $
 
     $nomoodlecookie = true;     // Session not needed!
 

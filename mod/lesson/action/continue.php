@@ -1,8 +1,8 @@
-<?php // $Id$
+<?php // $Id: continue.php,v 1.39.2.12 2011/11/15 11:30:59 moodlerobot Exp $
 /**
  * Action for processing page answers by users
  *
- * @version $Id$
+ * @version $Id: continue.php,v 1.39.2.12 2011/11/15 11:30:59 moodlerobot Exp $
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package lesson
  **/
@@ -414,7 +414,7 @@
             $userresponse = implode(",", $userresponse);
 
             $response = '';
-            if ($ncorrect == count($answers) - 2) {  // dont count correct/wrong responses in the total.
+            if ($ncorrect == count($answers)-2) {  // dont count correct/wrong responses in the total.
                 $answer = reset($answers);
                 $response = $answer->answer;
                 if (isset($correctpageid)) {

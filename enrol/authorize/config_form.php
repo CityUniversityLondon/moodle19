@@ -1,4 +1,4 @@
-<?php //  $Id$
+<?php //  $Id: config_form.php,v 1.4.2.2 2008/07/04 17:07:00 ethem Exp $
 
 if (!isset($frm->enrol_cost)) $frm->enrol_cost = '5';
 if (!isset($frm->enrol_currency)) $frm->enrol_currency = 'USD';

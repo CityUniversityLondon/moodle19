@@ -2,7 +2,7 @@
 /**
  * OO AJAX Implementation for PHP, contains HTML_AJAX_Response
  *
- * SVN Rev: $Id$ 
+ * SVN Rev: $Id: Response.php,v 1.1.2.1 2008/10/03 07:09:50 nicolasconnault Exp $ 
  *
  * @category   HTML
  * @package    AJAX
@@ -25,7 +25,7 @@ require_once 'HTML/AJAX.php';
  * getPayload method or fill the payload property with your extended classes's
  * serialized content
  *
- * @version   $Id$
+ * @version   $Id: Response.php,v 1.1.2.1 2008/10/03 07:09:50 nicolasconnault Exp $
  */
 class HTML_AJAX_Response
 {

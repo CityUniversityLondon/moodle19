@@ -1,4 +1,4 @@
-<?PHP // $Id$
+<?PHP // $Id: delete.php,v 1.4.6.1 2009/11/21 21:57:03 skodak Exp $
 
     require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
     include_once($CFG->dirroot.'/mnet/lib.php');

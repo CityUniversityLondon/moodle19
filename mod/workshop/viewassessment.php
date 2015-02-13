@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: viewassessment.php,v 1.18.2.1 2007/10/12 16:09:46 tjhunt Exp $
 
     require("../../config.php");
     require("lib.php");

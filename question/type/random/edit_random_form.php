@@ -1,4 +1,4 @@
-<?php  // $Id$
+<?php  // $Id: edit_random_form.php,v 1.6.2.3 2009/02/19 01:09:35 tjhunt Exp $
 /**
  * Defines the editing form for the random question type.
  *

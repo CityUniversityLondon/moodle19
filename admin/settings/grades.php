@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: grades.php,v 1.14.2.22 2009/04/24 17:58:58 skodak Exp $
 
 // This file defines settingpages and externalpages under the "grades" section
 

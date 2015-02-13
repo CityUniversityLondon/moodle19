@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: cron.php,v 1.126.2.22 2011/08/30 23:43:18 moodlerobot Exp $
 
 /// This script looks through all the module directories for cron.php files
 /// and runs them.  These files can contain cleanup functions, email functions
@@ -198,6 +198,7 @@
     // The preferred way saves memory, dmllib.php
     // find courses where limited enrolment is enabled
     global $CFG;
+    // CMDL-1359 removing dependancy on course enrollment setting
     $rs_enrol = get_recordset_sql("SELECT ra.roleid, ra.userid, ra.contextid
         FROM {$CFG->prefix}course c
         INNER JOIN {$CFG->prefix}context cx ON cx.instanceid = c.id
@@ -205,8 +206,9 @@
         WHERE cx.contextlevel = '".CONTEXT_COURSE."'
         AND ra.timeend > 0
         AND ra.timeend < '$timenow'
-        AND c.enrolperiod > 0
+        --AND c.enrolperiod > 0
         ");
+    // end CMDL-1359
     while ($oldenrolment = rs_fetch_next_record($rs_enrol)) {
         role_unassign($oldenrolment->roleid, $oldenrolment->userid, 0, $oldenrolment->contextid);
         $somefound = true;
@@ -352,23 +354,24 @@
         if (count_records('user_preferences', 'name', 'create_password', 'value', '1')) {
             mtrace('creating passwords for new users');
             $newuserssql = "SELECT u.id as id, u.email, u.firstname, u.lastname, u.username, p.id as prefid
-                              FROM {$CFG->prefix}user u
-                              JOIN {$CFG->prefix}user_preferences p ON u.id=p.userid
+                                        FROM {$CFG->prefix}user u 
+                                             JOIN {$CFG->prefix}user_preferences p ON u.id=p.userid
                              WHERE p.name='create_password' AND p.value='1' AND u.email !='' ";
             if ($newusers = get_records_sql($newuserssql)) {
-                foreach ($newusers as $newuserid => $newuser) {
-                    $newuser->emailstop = 0; // send email regardless
-                    // email user
-                    if (setnew_password_and_mail($newuser)) {
-                        // remove user pref
-                        delete_records('user_preferences', 'id', $newuser->prefid);
-                    } else {
-                        trigger_error("Could not create and mail new user password!");
+
+            foreach ($newusers as $newuserid => $newuser) {
+                $newuser->emailstop = 0; // send email regardless
+                // email user                               
+                if (setnew_password_and_mail($newuser)) {
+                    // remove user pref
+                    delete_records('user_preferences', 'id', $newuser->prefid);
+                } else {
+                    trigger_error("Could not create and mail new user password!");
                     }
                 }
             }
         }
-
+        
         if (!empty($CFG->usetags)) {
             require_once($CFG->dirroot.'/tag/lib.php');
             tag_cron();
@@ -389,36 +392,36 @@
 
     } // End of occasional clean-up tasks
 
-
-    if (empty($CFG->disablescheduledbackups)) {   // Defined in config.php
-        //Execute backup's cron
-        //Perhaps a long time and memory could help in large sites
-        @set_time_limit(0);
-        @raise_memory_limit("192M");
-        if (function_exists('apache_child_terminate')) {
-            // if we are running from Apache, give httpd a hint that 
-            // it can recycle the process after it's done. Apache's 
-            // memory management is truly awful but we can help it.
-            @apache_child_terminate();
-        }
-        if (file_exists("$CFG->dirroot/backup/backup_scheduled.php") and
-            file_exists("$CFG->dirroot/backup/backuplib.php") and
-            file_exists("$CFG->dirroot/backup/lib.php") and
-            file_exists("$CFG->libdir/blocklib.php")) {
-            include_once("$CFG->dirroot/backup/backup_scheduled.php");
-            include_once("$CFG->dirroot/backup/backuplib.php");
-            include_once("$CFG->dirroot/backup/lib.php");
-            require_once ("$CFG->libdir/blocklib.php");
-            mtrace("Running backups if required...");
-    
-            if (! schedule_backup_cron()) {
-                mtrace("ERROR: Something went wrong while performing backup tasks!!!");
-            } else {
-                mtrace("Backup tasks finished.");
-            }
-        }
-    }
-
+// CMDL-1292 remove duplicate scheduled back up code
+//    if (empty($CFG->disablescheduledbackups)) {   // Defined in config.php
+//        //Execute backup's cron
+//        //Perhaps a long time and memory could help in large sites
+//        @set_time_limit(0);
+//        @raise_memory_limit("192M");
+//        if (function_exists('apache_child_terminate')) {
+//            // if we are running from Apache, give httpd a hint that
+//            // it can recycle the process after it's done. Apache's
+//            // memory management is truly awful but we can help it.
+//            @apache_child_terminate();
+//        }
+//        if (file_exists("$CFG->dirroot/backup/backup_scheduled.php") and
+//            file_exists("$CFG->dirroot/backup/backuplib.php") and
+//            file_exists("$CFG->dirroot/backup/lib.php") and
+//            file_exists("$CFG->libdir/blocklib.php")) {
+//            include_once("$CFG->dirroot/backup/backup_scheduled.php");
+//            include_once("$CFG->dirroot/backup/backuplib.php");
+//            include_once("$CFG->dirroot/backup/lib.php");
+//            require_once ("$CFG->libdir/blocklib.php");
+//            mtrace("Running backups if required...");
+//
+//            if (! schedule_backup_cron()) {
+//                mtrace("ERROR: Something went wrong while performing backup tasks!!!");
+//            } else {
+//                mtrace("Backup tasks finished.");
+//            }
+//        }
+//    }
+// end CMDL-1292
     if (!empty($CFG->enablerssfeeds)) {  //Defined in admin/variables page
         include_once("$CFG->libdir/rsslib.php");
         mtrace("Running rssfeeds if required...");
@@ -463,26 +466,26 @@
         unset($enrol);
     }
 
-    if (!empty($CFG->enablestats) and empty($CFG->disablestatsprocessing)) {
-        require_once($CFG->dirroot.'/lib/statslib.php');
-        // check we're not before our runtime
-        $timetocheck = stats_get_base_daily() + $CFG->statsruntimestarthour*60*60 + $CFG->statsruntimestartminute*60;
-
-        if (time() > $timetocheck) {
-            // process configured number of days as max (defaulting to 31)
-            $maxdays = empty($CFG->statsruntimedays) ? 31 : abs($CFG->statsruntimedays);
-            if (stats_cron_daily($maxdays)) {
-                if (stats_cron_weekly()) {
-                    if (stats_cron_monthly()) {
-                        stats_clean_old();
-                    }
-                }
-            }
-            @set_time_limit(0);
-        } else {
-            mtrace('Next stats run after:'. userdate($timetocheck));
-        }
-    }
+//    if (!empty($CFG->enablestats) and empty($CFG->disablestatsprocessing)) {
+//        require_once($CFG->dirroot.'/lib/statslib.php');
+//        // check we're not before our runtime
+//        $timetocheck = stats_get_base_daily() + $CFG->statsruntimestarthour*60*60 + $CFG->statsruntimestartminute*60;
+//
+//        if (time() > $timetocheck) {
+//            // process configured number of days as max (defaulting to 31)
+//            $maxdays = empty($CFG->statsruntimedays) ? 31 : abs($CFG->statsruntimedays);
+//            if (stats_cron_daily($maxdays)) {
+//                if (stats_cron_weekly()) {
+//                    if (stats_cron_monthly()) {
+//                        stats_clean_old();
+//                    }
+//                }
+//            }
+//            @set_time_limit(0);
+//        } else {
+//            mtrace('Next stats run after:'. userdate($timetocheck));
+//        }
+//    }
 
     // run gradebook import/export/report cron
     if ($gradeimports = get_list_of_plugins('grade/import')) {

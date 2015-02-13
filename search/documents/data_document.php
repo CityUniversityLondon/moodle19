@@ -115,19 +115,23 @@ function data_get_records($database_id, $typematch = '*', $recordid = 0) {
     
     $fieldset = get_records('data_fields', 'dataid', $database_id);
     $uniquerecordclause = ($recordid > 0) ? " AND c.recordid = $recordid " : '' ;
+    
+    // CMDL-1414 remove AS keyword
     $query = "
         SELECT
            c.*
-        FROM 
-            {$CFG->prefix}data_content as c,
-            {$CFG->prefix}data_records as r
+        FROM
+            {$CFG->prefix}data_content c,
+            {$CFG->prefix}data_records r
         WHERE
             c.recordid = r.id AND
-            r.dataid = {$database_id} 
+            r.dataid = {$database_id}
             $uniquerecordclause
-        ORDER BY 
+        ORDER BY
             c.fieldid
     ";
+    // end CMDL-1414
+
     $data = get_records_sql($query);
     $records = array();
     if ($data){
@@ -153,6 +157,7 @@ function data_get_records($database_id, $typematch = '*', $recordid = 0) {
 function data_get_comments($database_id) {
     global $CFG;
 
+    // CMDL-1414 remove AS keyword
     $query = "
        SELECT
           c.id,
@@ -164,11 +169,12 @@ function data_get_comments($database_id) {
           c.modified,
           r.dataid
        FROM
-          {$CFG->prefix}data_comments as c,
-          {$CFG->prefix}data_records as r 
+          {$CFG->prefix}data_comments c,
+          {$CFG->prefix}data_records r 
        WHERE
           c.recordid = r.id
     ";
+    // end CMDL-1414
     $comments = get_records_sql($query);
     return $comments;
 }

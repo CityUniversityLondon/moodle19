@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: category_class.php,v 1.32.2.10 2009/11/19 17:46:17 tjhunt Exp $
 /**
  * Class representing question categories
  *

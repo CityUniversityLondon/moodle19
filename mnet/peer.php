@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php // $Id: peer.php,v 1.9.2.5 2010/02/17 22:18:11 poltawski Exp $
 /**
  * An object to represent lots of information about an RPC-peer machine
  *

@@ -1,4 +1,4 @@
-<?php  //$Id$
+<?php  //$Id: override.php,v 1.36.2.11 2008/12/11 09:21:52 tjhunt Exp $
 
     require_once('../../config.php');
 
