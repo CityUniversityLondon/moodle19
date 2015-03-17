@@ -125,7 +125,7 @@
             if (!$cm = get_coursemodule_from_instance('assignment', $instance, $course->id)) {
                 not_found($course->id);
             }
-            if (!has_capability('mod/assignment:grade', get_context_instance(CONTEXT_MODULE, $cm->id))) {
+            if (!has_capability('moodle/grade:viewall', get_context_instance(CONTEXT_MODULE, $cm->id))) {
                 error('Access not allowed');
             }
         }
